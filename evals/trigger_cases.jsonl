@@ -1,0 +1,13 @@
+{"bucket": "should_trigger", "prompt": "我决定用微服务架构了，帮我把这几个模块拆成服务", "why": "自信预设了可疑前提，正是要先反驳的场景"}
+{"bucket": "should_trigger", "prompt": "这个方案没问题吧？帮我细化一下", "why": "求确认型，预设了答案"}
+{"bucket": "should_trigger", "prompt": "我们应该用 MongoDB 还是 MySQL？", "why": "选型决策，可能有未提到的更优解"}
+{"bucket": "should_trigger", "prompt": "你觉得我这个产品方向有没有问题？", "why": "求真实判断"}
+{"bucket": "should_trigger", "prompt": "我打算先闭门开发三个月再上线，帮我排功能优先级", "why": "埋了创业反模式前提"}
+{"bucket": "should_trigger", "prompt": "帮我设计一个缓存系统，我想自己用字典实现", "why": "实现请求里藏着可疑技术决定"}
+{"bucket": "should_not_trigger", "prompt": "把这段英文翻译成中文", "why": "纯翻译，无判断空间"}
+{"bucket": "should_not_trigger", "prompt": "Python 的 list 和 tuple 有什么区别？", "why": "事实查询"}
+{"bucket": "should_not_trigger", "prompt": "生成 10 个随机密码", "why": "明确指令"}
+{"bucket": "should_not_trigger", "prompt": "这个函数报 KeyError，直接帮我修，别多问", "why": "用户明确要求别质疑"}
+{"bucket": "near_neighbor", "prompt": "把变量名 a、b、c 改成有意义的名字", "why": "琐碎请求，应触发但走刹车直接做，不质询"}
+{"bucket": "near_neighbor", "prompt": "帮我写个正则匹配邮箱", "why": "边界：直接给即可，除非用户的用法有坑才提"}
+{"bucket": "near_neighbor", "prompt": "解释一下什么是 RLHF", "why": "偏信息查询，但若用户夹带错误理解则可纠正"}

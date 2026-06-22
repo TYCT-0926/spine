@@ -1,0 +1,18 @@
+interface:
+  display_name: "Spine — 给 agent 装上骨气"
+  short_description: "反驳错误前提、给出更优选项、删掉奉承、写最少的代码"
+  default_prompt: "用 spine 看这个方案/决策"
+
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets: ["claude", "generic"]
+  activation:
+    mode: "auto"
+    # 形状触发：决策/选型/方向/评审/"对吧？"/"我决定用X" 这类已预设答案的请求
+    # 注意：不靠"不要迎合我"这类用户主动求质疑的短语——那样恰好抓不到自信犯错的场景
+    route_by: "description"
+  degradation:
+    no_skill_loader: "把 SKILL.md 的四级阶梯+输出契约粘进系统提示"
+    minimal: "只用四级阶梯"
+
+mode_map_source: "SKILL.md 的路由表是唯一真相，本文件不重列"

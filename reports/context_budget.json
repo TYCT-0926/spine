@@ -1,0 +1,26 @@
+{
+ "SKILL.md": {
+  "tokens": 1023,
+  "chars": 1487
+ },
+ "references/think.md": {
+  "tokens": 946,
+  "chars": 1267
+ },
+ "references/write.md": {
+  "tokens": 1163,
+  "chars": 1577
+ },
+ "references/code.md": {
+  "tokens": 767,
+  "chars": 1311
+ },
+ "references/exemplars.md": {
+  "tokens": 25456,
+  "chars": 36385
+ },
+ "summary": {
+  "entry_tokens": 1023,
+  "lazy_total_tokens": 28332
+ }
+}

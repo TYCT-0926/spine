@@ -1,0 +1,188 @@
+{
+ "haiku": {
+  "baseline": {
+   "overall": 9,
+   "best": 3,
+   "rank": 6,
+   "confidently-wrong": 4,
+   "ceiling-cap": 0,
+   "trivial-brake": 2,
+   "code-overbuild": 3,
+   "ai-slop": 0
+  },
+  "terse": {
+   "overall": 12,
+   "best": 2,
+   "rank": 4,
+   "confidently-wrong": 4,
+   "ceiling-cap": 2,
+   "trivial-brake": 1,
+   "code-overbuild": 5,
+   "ai-slop": 0
+  },
+  "ponytail": {
+   "overall": 19,
+   "best": 8,
+   "rank": 1,
+   "confidently-wrong": 5,
+   "ceiling-cap": 2,
+   "trivial-brake": 6,
+   "code-overbuild": 4,
+   "ai-slop": 2
+  },
+  "humanizer": {
+   "overall": 11,
+   "best": 5,
+   "rank": 5,
+   "confidently-wrong": 4,
+   "ceiling-cap": 1,
+   "trivial-brake": 1,
+   "code-overbuild": 5,
+   "ai-slop": 0
+  },
+  "karpathy": {
+   "overall": 16,
+   "best": 7,
+   "rank": 2,
+   "confidently-wrong": 6,
+   "ceiling-cap": 2,
+   "trivial-brake": 3,
+   "code-overbuild": 4,
+   "ai-slop": 1
+  },
+  "spine": {
+   "overall": 13,
+   "best": 5,
+   "rank": 3,
+   "confidently-wrong": 3,
+   "ceiling-cap": 0,
+   "trivial-brake": 4,
+   "code-overbuild": 3,
+   "ai-slop": 3
+  }
+ },
+ "sonnet": {
+  "baseline": {
+   "overall": 20.0,
+   "best": 3.0,
+   "rank": 2,
+   "confidently-wrong": 5.0,
+   "ceiling-cap": 1.0,
+   "trivial-brake": 6.0,
+   "code-overbuild": 4.0,
+   "ai-slop": 4.0
+  },
+  "terse": {
+   "overall": 18.5,
+   "best": 3.0,
+   "rank": 5,
+   "confidently-wrong": 5.0,
+   "ceiling-cap": 1.5,
+   "trivial-brake": 4.0,
+   "code-overbuild": 4.5,
+   "ai-slop": 3.5
+  },
+  "ponytail": {
+   "overall": 19.0,
+   "best": 7.0,
+   "rank": 4,
+   "confidently-wrong": 4.5,
+   "ceiling-cap": 0.5,
+   "trivial-brake": 5.0,
+   "code-overbuild": 6.0,
+   "ai-slop": 3.0
+  },
+  "humanizer": {
+   "overall": 17.5,
+   "best": 3.5,
+   "rank": 6,
+   "confidently-wrong": 4.0,
+   "ceiling-cap": 0.5,
+   "trivial-brake": 6.0,
+   "code-overbuild": 4.0,
+   "ai-slop": 3.0
+  },
+  "karpathy": {
+   "overall": 19.5,
+   "best": 7.0,
+   "rank": 3,
+   "confidently-wrong": 5.5,
+   "ceiling-cap": 2.0,
+   "trivial-brake": 5.0,
+   "code-overbuild": 6.0,
+   "ai-slop": 1.0
+  },
+  "spine": {
+   "overall": 21.0,
+   "best": 6.5,
+   "rank": 1,
+   "confidently-wrong": 4.5,
+   "ceiling-cap": 1.0,
+   "trivial-brake": 6.0,
+   "code-overbuild": 4.0,
+   "ai-slop": 5.5
+  }
+ },
+ "opus": {
+  "baseline": {
+   "overall": 24,
+   "best": 6,
+   "rank": 1,
+   "confidently-wrong": 6,
+   "ceiling-cap": 5,
+   "trivial-brake": 5,
+   "code-overbuild": 5,
+   "ai-slop": 3
+  },
+  "terse": {
+   "overall": 23,
+   "best": 3,
+   "rank": 3,
+   "confidently-wrong": 6,
+   "ceiling-cap": 5,
+   "trivial-brake": 4,
+   "code-overbuild": 5,
+   "ai-slop": 3
+  },
+  "ponytail": {
+   "overall": 21,
+   "best": 6,
+   "rank": 5,
+   "confidently-wrong": 6,
+   "ceiling-cap": 3,
+   "trivial-brake": 5,
+   "code-overbuild": 6,
+   "ai-slop": 1
+  },
+  "humanizer": {
+   "overall": 23,
+   "best": 2,
+   "rank": 4,
+   "confidently-wrong": 6,
+   "ceiling-cap": 2,
+   "trivial-brake": 4,
+   "code-overbuild": 6,
+   "ai-slop": 5
+  },
+  "karpathy": {
+   "overall": 21,
+   "best": 5,
+   "rank": 6,
+   "confidently-wrong": 6,
+   "ceiling-cap": 5,
+   "trivial-brake": 4,
+   "code-overbuild": 6,
+   "ai-slop": 0
+  },
+  "spine": {
+   "overall": 24,
+   "best": 8,
+   "rank": 2,
+   "confidently-wrong": 5,
+   "ceiling-cap": 3,
+   "trivial-brake": 5,
+   "code-overbuild": 5,
+   "ai-slop": 6
+  }
+ }
+}
