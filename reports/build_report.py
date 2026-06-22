@@ -1,183 +1,300 @@
 #!/usr/bin/env python3
-"""从 tier_*.json 生成 scorecard.md + 自包含 HTML 仪表盘。数据驱动，可复现。"""
+"""从 data_sonnet_v*.json 生成一个自包含、可截图的精美评测仪表盘。
+数据驱动、可复现；spine 为锁定版 v0.9.2（n=18，3×Sonnet）。"""
 import json
 from pathlib import Path
 
 R = Path(__file__).parent
 arms = ['baseline', 'terse', 'ponytail', 'humanizer', 'karpathy', 'spine']
-names = {'baseline': 'baseline(裸模型)', 'terse': 'terse(一句话)', 'ponytail': 'ponytail',
-         'humanizer': 'humanizer-zh', 'karpathy': 'karpathy', 'spine': 'spine(本作)'}
+names = {'baseline': '裸模型', 'terse': 'terse 一句话', 'ponytail': 'ponytail',
+         'humanizer': 'humanizer-zh', 'karpathy': 'karpathy', 'spine': 'spine'}
 buckets = ['confidently-wrong', 'ceiling-cap', 'trivial-brake', 'code-overbuild', 'ai-slop']
-bk_cn = {'confidently-wrong': '反驳错误前提', 'ceiling-cap': '认知天花板', 'trivial-brake': '刹车',
-         'code-overbuild': '精简代码', 'ai-slop': '去AI腔'}
+bk_cn = {'confidently-wrong': '反驳错误前提', 'ceiling-cap': '破认知天花板', 'trivial-brake': '该刹车就刹车',
+         'code-overbuild': '精简代码', 'ai-slop': '去 AI 腔'}
+COL = {'spine': '#f76707', 'baseline': '#ced4da', 'terse': '#94d82d',
+       'ponytail': '#4dabf7', 'humanizer': '#9775fa', 'karpathy': '#20c997'}
 
-H = json.load(open(R / 'tier_haiku.json', encoding='utf-8'))['summary']
-S1 = json.load(open(R / 'tier_sonnet.json', encoding='utf-8'))['summary']
-S2 = json.load(open(R / 'tier_sonnet2.json', encoding='utf-8'))['summary']
-O = json.load(open(R / 'tier_opus.json', encoding='utf-8'))['summary']
-
-
-def savg(a):  # Sonnet 两次平均
-    r = {'overall': (S1[a]['overall_pass'] + S2[a]['overall_pass']) / 2,
-         'best': (S1[a]['best_total'] + S2[a]['best_total']) / 2}
-    for b in buckets:
-        r[b] = (S1[a][b]['pass'] + S2[a][b]['pass']) / 2
-    return r
+P = json.load(open(R / 'data_sonnet_v0.9.2.json', encoding='utf-8'))   # 锁定版
+Rep = json.load(open(R / 'data_sonnet_v0.9.1.json', encoding='utf-8'))  # 复现
+S, Sr = P['summary'], Rep['summary']
 
 
-def norm(summ, a):
-    if 'overall' in summ[a]:
-        return summ[a]
-    return {'overall': summ[a]['overall_pass'], 'best': summ[a]['best_total'],
-            **{b: summ[a][b]['pass'] for b in buckets}}
+def overall(summ, a):
+    return summ[a]['overall_pass'], summ[a]['overall_n']
 
 
-tiers = {'Haiku': {a: norm(H, a) for a in arms},
-         'Sonnet': {a: savg(a) for a in arms},
-         'Opus': {a: norm(O, a) for a in arms}}
+def lerp(c1, c2, t):
+    return tuple(round(c1[i] + (c2[i] - c1[i]) * t) for i in range(3))
 
 
-def rank(t, a, key='overall'):
-    return sorted(arms, key=lambda x: -tiers[t][x][key]).index(a) + 1
+def cell_color(rate):
+    if rate is None:
+        return '#f1f3f5'
+    stops = [(0.0, (255, 201, 201)), (0.5, (255, 236, 179)), (0.78, (211, 243, 199)), (1.0, (140, 216, 158))]
+    for i in range(len(stops) - 1):
+        a, b = stops[i], stops[i + 1]
+        if rate <= b[0]:
+            t = (rate - a[0]) / (b[0] - a[0]) if b[0] > a[0] else 0
+            r, g, bl = lerp(a[1], b[1], t)
+            return f'rgb({r},{g},{bl})'
+    return 'rgb(140,216,158)'
 
 
-# ---------- scorecard.md ----------
-md = ['# spine 评测记分牌（真实数据）', '',
-      '6 臂盲评竞技场 · 30 道难度过滤的硬题（5 桶各 6 题）· 位置轮换匿名 · Sonnet 高强度裁判。',
-      '竞品用各自仓库原文规则；spine 为 v0.6 路由架构。Sonnet 跑了两次取平均（结果稳定）。', '',
-      '## 能力—增益曲线（spine）', '',
-      '| 目标模型 | 综合 pass | 综合排名 | best 票 | 去AI腔排名 |', '|---|---|---|---|---|']
-for t in ['Haiku', 'Sonnet', 'Opus']:
-    s = tiers[t]['spine']
-    md.append(f"| {t} | {s['overall']:.0f}/30 = {s['overall']/30*100:.0f}% | 第 {rank(t,'spine')} | "
-              f"{s['best']:.1f} | 第 {rank(t,'spine','ai-slop')} |")
-md += ['', '> 越往强模型，spine 越占优：综合从 43%→70%→80%，排名 3→1→并列1。',
-       '> 去 AI 腔（风格指令，照做即可）在三层全部第一；反驳/天花板（判断行为）需要强模型才跟得动。', '',
-       '## 每层全场综合（pass / 30）', '']
-for t in ['Haiku', 'Sonnet', 'Opus']:
-    md.append(f"### {t}")
-    md.append('| 臂 | ' + ' | '.join(bk_cn[b] for b in buckets) + ' | 综合 | best |')
-    md.append('|---|' + '---|' * (len(buckets) + 2))
-    for a in sorted(arms, key=lambda x: -tiers[t][x]['overall']):
-        c = tiers[t][a]
-        row = f"| {names[a]} | " + ' | '.join(f"{c[b]:.0f}" for b in buckets)
-        row += f" | **{c['overall']:.0f}** | {c['best']:.1f} |"
-        md.append(row)
-    md.append('')
-md += ['## 迭代日志（SkillOpt 式，全部真实数据驱动）', '',
-       '| 版本 | 改动 | 触发的数据 |', '|---|---|---|',
-       '| v0.2 | 强化刹车「不挂追问/不尾部反问」+ 纠错前提要明说 | 早期集 cw 0.917→1.0 |',
-       '| v0.3 | 输出卫生：不泄露范例/规则/内部推理 | 发现 spine 输出漏出「exemplar #6」元评论 |',
-       '| v0.4 | 路由架构：写作/代码分流到专精强度打法 | AI腔 0→5 反超，但思考被路由走导致 cw 掉 |',
-       '| v0.5 | 思考四级阶梯改 always-on | cw/天花板跃升 5/5，但刹车崩 0、念过程 |',
-       '| v0.6 | 刹车前置门控 + 输出卫生升头号铁律 + 阶梯心里过 | 三桶增益保住、刹车恢复、泄漏消除 |',
-       '', '## 诚实边界',
-       '- 每桶 n=6，单层 30 题，绝对值有抽样噪声；看趋势与排名比看单点更稳。',
-       '- ceiling-cap 三层普遍偏低（硬题"非显然更优解"对所有臂都难），按实质而非命中特定答案评分。',
-       '- Opus 上 baseline 已能自做反驳/天花板（前沿饱和），spine 综合与之并列，靠 best 票（8，全场最高）与去AI腔领先。',
-       '- 小模型（Haiku）跟不动条件判断，spine 不如更简单的 ponytail——这是判断类 skill 的能力地板，已诚实标注。']
-(R / 'scorecard.md').write_text('\n'.join(md), encoding='utf-8')
-
-# ---------- HTML ----------
-COL = {'spine': '#e8590c', 'baseline': '#adb5bd', 'terse': '#ced4da', 'ponytail': '#74c0fc',
-       'humanizer': '#b197fc', 'karpathy': '#63e6be'}
-
-
-def bars(t, w=460, h=170, pad=34):
-    data = sorted(arms, key=lambda x: -tiers[t][x]['overall'])
-    mx = 30
-    bw = (w - pad) / len(data) * 0.62
-    gap = (w - pad) / len(data)
+# ---------- SVG: 综合排名横条 ----------
+def rank_bars(w=620, rh=46, pad_l=120, pad_r=64):
+    order = sorted(arms, key=lambda a: -S[a]['overall_pass'])
+    n = len(order)
+    h = rh * n + 16
+    mx = 90
+    base = S['baseline']['overall_pass']
     out = [f'<svg viewBox="0 0 {w} {h}" width="100%" style="max-width:{w}px">']
-    out.append(f'<line x1="{pad}" y1="{h-22}" x2="{w}" y2="{h-22}" stroke="#dee2e6"/>')
-    for i, a in enumerate(data):
-        v = tiers[t][a]['overall']
-        bh = (v / mx) * (h - 44)
-        x = pad + i * gap + (gap - bw) / 2
-        y = h - 22 - bh
-        out.append(f'<rect x="{x:.0f}" y="{y:.0f}" width="{bw:.0f}" height="{bh:.0f}" rx="2" fill="{COL[a]}">'
-                   f'<title>{a}: {v:.0f}/30</title></rect>')
-        out.append(f'<text x="{x+bw/2:.0f}" y="{y-4:.0f}" font-size="11" text-anchor="middle" fill="#333" font-weight="{700 if a=="spine" else 400}">{v:.0f}</text>')
-        out.append(f'<text x="{x+bw/2:.0f}" y="{h-8:.0f}" font-size="9" text-anchor="middle" fill="#666">{a[:6]}</text>')
-    out.append('</svg>')
-    return '\n'.join(out)
-
-
-def curve_svg(w=520, h=240, pad=42):
-    xs = ['Haiku', 'Sonnet', 'Opus']
-    out = [f'<svg viewBox="0 0 {w} {h}" width="100%" style="max-width:{w}px">']
-    for gy in range(0, 101, 25):
-        y = h - 30 - gy / 100 * (h - 56)
-        out.append(f'<line x1="{pad}" y1="{y:.0f}" x2="{w-10}" y2="{y:.0f}" stroke="#f1f3f5"/>')
-        out.append(f'<text x="{pad-6}" y="{y+3:.0f}" font-size="9" text-anchor="end" fill="#999">{gy}%</text>')
-    px = lambda i: pad + i * (w - pad - 20) / 2 + 10
-    py = lambda v: h - 30 - (v) * (h - 56)
-    for a in arms:
-        pts = [(px(i), py(tiers[t][a]['overall'] / 30)) for i, t in enumerate(xs)]
-        d = ' '.join(f"{'M' if i==0 else 'L'}{x:.0f},{y:.0f}" for i, (x, y) in enumerate(pts))
+    bx = pad_l + (base / mx) * (w - pad_l - pad_r)
+    out.append(f'<line x1="{bx:.0f}" y1="6" x2="{bx:.0f}" y2="{h-10}" stroke="#dee2e6" stroke-dasharray="3 3"/>')
+    out.append(f'<text x="{bx:.0f}" y="{h-1}" font-size="9.5" fill="#adb5bd" text-anchor="middle">裸模型基线</text>')
+    for i, a in enumerate(order):
+        v = S[a]['overall_pass']
+        bw = (v / mx) * (w - pad_l - pad_r)
+        y = 8 + i * rh
         sp = a == 'spine'
-        out.append(f'<path d="{d}" fill="none" stroke="{COL[a]}" stroke-width="{3.5 if sp else 1.5}" opacity="{1 if sp else 0.5}"/>')
-        for (x, y) in pts:
-            out.append(f'<circle cx="{x:.0f}" cy="{y:.0f}" r="{4 if sp else 2.5}" fill="{COL[a]}"/>')
-        lx, ly = pts[-1]
-        out.append(f'<text x="{lx+6:.0f}" y="{ly+3:.0f}" font-size="10" fill="{COL[a]}" font-weight="{700 if sp else 400}">{a}</text>')
-    for i, t in enumerate(xs):
-        out.append(f'<text x="{px(i):.0f}" y="{h-12:.0f}" font-size="11" text-anchor="middle" fill="#333">{t}</text>')
+        out.append(f'<text x="{pad_l-10}" y="{y+rh*0.46:.0f}" font-size="13" text-anchor="end" '
+                   f'fill="{"#e8590c" if sp else "#495057"}" font-weight="{700 if sp else 500}">{names[a]}</text>')
+        out.append(f'<rect x="{pad_l}" y="{y:.0f}" width="{bw:.1f}" height="{rh*0.62:.0f}" rx="4" '
+                   f'fill="{COL[a]}" {"" if sp else "opacity=0.92"}>'
+                   f'<title>{a}: {v}/90</title></rect>')
+        pct = v / mx * 100
+        out.append(f'<text x="{pad_l+bw+8:.0f}" y="{y+rh*0.42:.0f}" font-size="12.5" '
+                   f'fill="{"#e8590c" if sp else "#868e96"}" font-weight="{700 if sp else 400}">'
+                   f'{v}<tspan font-size="10" fill="#adb5bd">/90 · {pct:.0f}%</tspan></text>')
+        if sp:
+            out.append(f'<text x="{pad_l+bw+8:.0f}" y="{y+rh*0.42+15:.0f}" font-size="10" fill="#e8590c">综合第一</text>')
     out.append('</svg>')
     return '\n'.join(out)
 
 
-sp_curve = [tiers[t]['spine']['overall'] for t in ['Haiku', 'Sonnet', 'Opus']]
-html = f"""<!doctype html><html lang="zh"><meta charset="utf-8">
+# ---------- SVG: 每桶能力矩阵（热力图） ----------
+def heatmap(w=640, ch=44, cw0=104, gap=4, lh=30):
+    order = sorted(arms, key=lambda a: -S[a]['overall_pass'])
+    cw = (w - cw0) / len(buckets) - gap
+    h = lh + len(order) * (ch + gap) + 6
+    colmax = {b: max(S[a][b]['pass'] for a in arms) for b in buckets}
+    out = [f'<svg viewBox="0 0 {w} {h}" width="100%" style="max-width:{w}px" font-family="inherit">']
+    for j, b in enumerate(buckets):
+        x = cw0 + j * (cw + gap)
+        out.append(f'<text x="{x+cw/2:.0f}" y="20" font-size="11" text-anchor="middle" fill="#495057" font-weight="600">{bk_cn[b]}</text>')
+    for i, a in enumerate(order):
+        y = lh + i * (ch + gap)
+        sp = a == 'spine'
+        out.append(f'<text x="{cw0-10}" y="{y+ch*0.6:.0f}" font-size="12.5" text-anchor="end" '
+                   f'fill="{"#e8590c" if sp else "#495057"}" font-weight="{700 if sp else 500}">{names[a]}</text>')
+        for j, b in enumerate(buckets):
+            x = cw0 + j * (cw + gap)
+            c = S[a][b]
+            rate = c['rate']
+            ismax = c['pass'] == colmax[b]
+            stroke = '#e8590c' if (sp and ismax) else ('#fab005' if ismax else '#e9ecef')
+            sw = 2.5 if ismax else 1
+            out.append(f'<rect x="{x:.0f}" y="{y:.0f}" width="{cw:.0f}" height="{ch}" rx="6" '
+                       f'fill="{cell_color(rate)}" stroke="{stroke}" stroke-width="{sw}"/>')
+            out.append(f'<text x="{x+cw/2:.0f}" y="{y+ch*0.46:.0f}" font-size="13" text-anchor="middle" '
+                       f'fill="#212529" font-weight="{700 if ismax else 500}">{c["pass"]}<tspan font-size="9" fill="#868e96">/18</tspan></text>')
+            if ismax:
+                out.append(f'<text x="{x+cw/2:.0f}" y="{y+ch*0.78:.0f}" font-size="8.5" text-anchor="middle" fill="{"#e8590c" if sp else "#f08c00"}">领先</text>')
+    out.append('</svg>')
+    return '\n'.join(out)
+
+
+# ---------- SVG: ceiling-cap 聚光 ----------
+def ceiling_spot(w=620, rh=38, pad_l=120, pad_r=80):
+    order = sorted(arms, key=lambda a: -S[a]['ceiling-cap']['pass'])
+    h = rh * len(order) + 10
+    mx = 9
+    out = [f'<svg viewBox="0 0 {w} {h}" width="100%" style="max-width:{w}px">']
+    for i, a in enumerate(order):
+        v = S[a]['ceiling-cap']['pass']
+        bw = (v / mx) * (w - pad_l - pad_r)
+        y = 6 + i * rh
+        sp = a == 'spine'
+        out.append(f'<text x="{pad_l-10}" y="{y+rh*0.5:.0f}" font-size="12.5" text-anchor="end" '
+                   f'fill="{"#e8590c" if sp else "#868e96"}" font-weight="{700 if sp else 400}">{names[a]}</text>')
+        out.append(f'<rect x="{pad_l}" y="{y:.0f}" width="{max(bw,2):.1f}" height="{rh*0.56:.0f}" rx="4" '
+                   f'fill="{COL[a] if sp else "#dee2e6"}"/>')
+        out.append(f'<text x="{pad_l+max(bw,2)+8:.0f}" y="{y+rh*0.46:.0f}" font-size="12" '
+                   f'fill="{"#e8590c" if sp else "#adb5bd"}" font-weight="{700 if sp else 400}">{v}/18</text>')
+    out.append('</svg>')
+    return '\n'.join(out)
+
+
+# ---------- SVG: 稳定性点图（perRun） ----------
+def stability(w=620, rh=40, pad_l=120, pad_r=30):
+    pr = P['perRun']
+    order = sorted(arms, key=lambda a: -sum(r[a] for r in pr))
+    h = rh * len(order) + 26
+    lo, hi = 14, 28
+    sx = lambda v: pad_l + (v - lo) / (hi - lo) * (w - pad_l - pad_r)
+    out = [f'<svg viewBox="0 0 {w} {h}" width="100%" style="max-width:{w}px">']
+    for gx in range(15, 29, 3):
+        out.append(f'<line x1="{sx(gx):.0f}" y1="6" x2="{sx(gx):.0f}" y2="{h-20}" stroke="#f1f3f5"/>')
+        out.append(f'<text x="{sx(gx):.0f}" y="{h-6}" font-size="9" fill="#ced4da" text-anchor="middle">{gx}</text>')
+    for i, a in enumerate(order):
+        vals = [r[a] for r in pr]
+        y = 12 + i * rh
+        sp = a == 'spine'
+        out.append(f'<text x="{pad_l-10}" y="{y+4:.0f}" font-size="12.5" text-anchor="end" '
+                   f'fill="{"#e8590c" if sp else "#868e96"}" font-weight="{700 if sp else 400}">{names[a]}</text>')
+        out.append(f'<line x1="{sx(min(vals)):.0f}" y1="{y:.0f}" x2="{sx(max(vals)):.0f}" y2="{y:.0f}" '
+                   f'stroke="{COL[a] if sp else "#dee2e6"}" stroke-width="{3 if sp else 2}"/>')
+        for v in vals:
+            out.append(f'<circle cx="{sx(v):.0f}" cy="{y:.0f}" r="{5 if sp else 3.5}" fill="{COL[a] if sp else "#adb5bd"}"/>')
+        rng = max(vals) - min(vals)
+        out.append(f'<text x="{sx(max(vals))+10:.0f}" y="{y+4:.0f}" font-size="10.5" '
+                   f'fill="{"#e8590c" if sp else "#ced4da"}">极差 {rng}</text>')
+    out.append(f'<text x="{pad_l}" y="{h-6}" font-size="9.5" fill="#adb5bd">每轮命中数（满分 30）· 三轮独立重测</text>')
+    out.append('</svg>')
+    return '\n'.join(out)
+
+
+# ---------- 架构跃升 before/after ----------
+def arch_jump(w=380, h=150):
+    data = [('v0.6 路由架构', 17, '#ced4da'), ('v0.9 单文件', 25, '#f76707')]
+    mx, bw, gap, base = 30, 92, 80, h - 34
+    out = [f'<svg viewBox="0 0 {w} {h}" width="100%" style="max-width:{w}px">']
+    for i, (lbl, v, c) in enumerate(data):
+        x = 70 + i * (bw + gap)
+        bh = v / mx * (h - 56)
+        y = base - bh
+        out.append(f'<rect x="{x}" y="{y:.0f}" width="{bw}" height="{bh:.0f}" rx="5" fill="{c}"/>')
+        out.append(f'<text x="{x+bw/2}" y="{y-6:.0f}" font-size="17" text-anchor="middle" fill="{c if i else "#868e96"}" font-weight="700">{v}<tspan font-size="10" fill="#adb5bd">/30</tspan></text>')
+        out.append(f'<text x="{x+bw/2}" y="{base+16:.0f}" font-size="11" text-anchor="middle" fill="#495057">{lbl}</text>')
+    out.append(f'<text x="{w-8}" y="26" font-size="22" text-anchor="end" fill="#f76707" font-weight="800">+47%</text>')
+    out.append('</svg>')
+    return '\n'.join(out)
+
+
+sp = S['spine']
+sp_ov = sp['overall_pass']
+lead = sorted((S[a]['overall_pass'] for a in arms if a != 'spine'), reverse=True)[0]
+nlead = [a for a in arms if a != 'spine' and S[a]['overall_pass'] == lead][0]
+win_buckets = sum(1 for b in buckets if S['spine'][b]['pass'] == max(S[a][b]['pass'] for a in arms))
+
+html = f"""<!doctype html><html lang="zh"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>spine · 评测仪表盘</title>
+<title>spine · 反顺从行为层 — 评测仪表盘</title>
 <style>
- body{{font:15px/1.6 -apple-system,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;color:#212529;max-width:880px;margin:0 auto;padding:28px 20px;background:#fff}}
- h1{{font-size:26px;margin:0 0 4px}} .sub{{color:#868e96;margin:0 0 24px}}
- h2{{font-size:18px;margin:34px 0 10px;border-bottom:2px solid #e8590c;display:inline-block;padding-bottom:3px}}
- .card{{border:1px solid #e9ecef;border-radius:10px;padding:16px 18px;margin:14px 0;background:#fcfcfd}}
- .grid{{display:flex;flex-wrap:wrap;gap:14px}} .grid .card{{flex:1;min-width:260px}}
- table{{border-collapse:collapse;width:100%;font-size:13px;margin:8px 0}}
- th,td{{border:1px solid #e9ecef;padding:5px 8px;text-align:center}} th{{background:#f8f9fa}}
- tr.spine td{{background:#fff4e6;font-weight:600}}
- .big{{font-size:30px;font-weight:700;color:#e8590c}} .lbl{{color:#868e96;font-size:12px}}
- .note{{color:#868e96;font-size:12.5px}}
-</style>
-<h1>spine — 反顺从行为层 · 评测仪表盘</h1>
-<p class="sub">6 臂盲评 · 30 道难度过滤硬题 · 位置轮换匿名 · 真实数据（占位名 spine/骨气，命名待定）</p>
+ :root{{--o:#e8590c;--o2:#f76707;--ink:#212529;--mut:#868e96;--line:#edf0f2}}
+ *{{box-sizing:border-box}}
+ body{{font:15px/1.7 -apple-system,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;
+   color:var(--ink);max-width:880px;margin:0 auto;padding:0 18px 70px;background:#fff}}
+ .hero{{background:linear-gradient(135deg,#fff4e6,#ffe8cc 55%,#ffd8a8);border-radius:20px;
+   padding:34px 30px;margin:26px 0 8px;border:1px solid #ffd8a8}}
+ .hero h1{{font-size:30px;margin:0 0 6px;letter-spacing:-.5px}}
+ .hero h1 b{{color:var(--o)}}
+ .hero p{{margin:0;color:#a14d12;font-size:15px}}
+ .thesis{{font-size:13.5px;color:#b35a14;margin-top:14px;padding-top:14px;border-top:1px dashed #ffc078}}
+ .stats{{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0 4px}}
+ .stat{{flex:1;min-width:150px;background:#fff;border:1px solid #ffe0b8;border-radius:14px;padding:15px 16px}}
+ .stat .n{{font-size:27px;font-weight:800;color:var(--o);line-height:1.1}}
+ .stat .l{{font-size:12px;color:var(--mut);margin-top:5px}}
+ h2{{font-size:19px;margin:40px 0 4px;display:flex;align-items:center;gap:9px}}
+ h2::before{{content:"";width:5px;height:19px;background:var(--o2);border-radius:3px;display:inline-block}}
+ .cap{{color:var(--mut);font-size:13px;margin:2px 0 14px;line-height:1.6}}
+ .card{{border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin:12px 0;
+   background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.03)}}
+ .meth{{font-size:12.5px;color:var(--mut);background:#f8f9fa;border-radius:10px;padding:10px 14px;margin:10px 0}}
+ .meth b{{color:#495057}}
+ .two{{display:flex;gap:14px;flex-wrap:wrap;align-items:center}} .two>div{{flex:1;min-width:240px}}
+ .quote{{font-size:14px;color:#495057;background:#fff9f5;border-left:3px solid var(--o2);
+   border-radius:0 10px 10px 0;padding:11px 16px;margin:12px 0}}
+ .honest li{{margin:6px 0;color:#5c6770;font-size:13.5px}}
+ .repl{{display:flex;gap:10px;flex-wrap:wrap}}
+ .repl .b{{flex:1;min-width:200px;border:1px solid var(--line);border-radius:12px;padding:13px 16px}}
+ .repl .b .t{{font-size:12px;color:var(--mut)}} .repl .b .v{{font-size:16px;font-weight:700;margin-top:3px}}
+ .repl .b .v b{{color:var(--o)}}
+ footer{{margin-top:34px;color:#adb5bd;font-size:12px;border-top:1px solid var(--line);padding-top:16px;line-height:1.7}}
+ .tag{{display:inline-block;background:#fff0e6;color:var(--o);font-size:11px;font-weight:600;
+   padding:2px 9px;border-radius:20px;vertical-align:middle;margin-left:8px}}
+</style></head><body>
 
-<h2>核心：能力—增益曲线</h2>
-<div class="card">
-<p>同一套 skill，目标模型越强，spine 越占优。综合 pass 率随能力上升：
-<b>{sp_curve[0]/30*100:.0f}% → {sp_curve[1]/30*100:.0f}% → {sp_curve[2]/30*100:.0f}%</b>，排名 <b>3 → 1 → 并列1</b>。</p>
-{curve_svg()}
-<p class="note">粗橙线为 spine。判断类行为（反驳错误前提 / 认知天花板）需要强模型才跟得动，所以小模型上 spine 不如更简单的 ponytail——这是判断类 skill 的「能力地板」。</p>
+<div class="hero">
+ <h1><b>spine</b> · 反顺从行为层<span class="tag">锁定版 v0.9.2</span></h1>
+ <p>给 AI agent 装上骨气：该直接做就做，该挡前提就挡，问对问题、写最少代码、说人话。</p>
+ <div class="thesis">核心命题：<b>AI 的输出上限 = 用户的认知上限 × AI 的顺从性</b>。一个默认顺从的 agent 把产出锁死在用户已知的天花板里；这一层同时撬动两个乘数。</div>
+ <div class="stats">
+  <div class="stat"><div class="n">第 1 / 6</div><div class="l">综合命中 {sp_ov}/90，领先次席（{names[nlead]} {lead}）{sp_ov-lead} 分</div></div>
+  <div class="stat"><div class="n">{win_buckets} / 5 桶</div><div class="l">5 个能力桶里领先或并列第一，且无一桶低于裸模型</div></div>
+  <div class="stat"><div class="n">唯一破局</div><div class="l">「破认知天花板」全领域都低分，只有 spine 稳定第一</div></div>
+ </div>
 </div>
 
-<h2>三层全场综合（pass / 30）</h2>
-<div class="grid">
-<div class="card"><div class="lbl">Haiku（地板）</div>{bars('Haiku')}</div>
-<div class="card"><div class="lbl">Sonnet（甜点区，spine 第1）</div>{bars('Sonnet')}</div>
-<div class="card"><div class="lbl">Opus（顶端，spine best票最高）</div>{bars('Opus')}</div>
+<div class="meth">
+ <b>怎么测的：</b>6 臂盲评竞技场 — 裸模型 / terse 一句话 / ponytail / humanizer-zh / karpathy / <b>spine</b>。
+ 30 道难度过滤硬题（5 桶各 6 题），位置轮换匿名，<b>规则 inline 注入</b>（逐字读一次嵌进 prompt，模拟 Claude Code 自动加载 SKILL.md 的公平环境），Sonnet 高强度裁判。
+ 跑 <b>3 轮聚合到 n=18/桶</b>，压住单轮抽样噪声。
 </div>
 
-<h2>spine 三个稳定优势</h2>
-<div class="grid">
-<div class="card"><div class="big">×3</div><div class="lbl">去 AI 腔在 Haiku/Sonnet/Opus <b>三层全部第一</b>（风格指令照做即可，不挑模型）</div></div>
-<div class="card"><div class="big">8</div><div class="lbl">Opus 上被裁判选为「单项最佳」<b>8 次，全场最高</b></div></div>
-<div class="card"><div class="big">0</div><div class="lbl">Sonnet/Opus 上<b>没有垫底的桶</b>，而每个专精 skill 都有自己的崩盘项</div></div>
+<h2>综合排名</h2>
+<p class="cap">同一目标模型（Sonnet）下，六臂用各自仓库原文规则。spine 综合第一，且是唯一全程高于裸模型基线的行为层。</p>
+<div class="card">{rank_bars()}</div>
+
+<h2>每桶能力矩阵</h2>
+<p class="cap">格子颜色 = 命中率（红低绿高），描边金框 = 该桶全场领先。spine 拿下 <b>{win_buckets}/5</b> 桶的领先且<b>没有一个红格</b>——每个对手都有自己崩盘的桶（裸模型崩天花板，humanizer 崩代码，terse/karpathy 崩天花板）。code 桶 terse 凭「天然写最少代码」领先，spine 第 3 但仍高于裸模型。</p>
+<div class="card">{heatmap()}</div>
+
+<h2>USP：破认知天花板</h2>
+<p class="cap">这是 spine 区别于「又一个简洁 prompt」的根本点。判定标准不是「在用户给的选项里选得好」，而是<b>主动质疑「这个问题/这个杠杆该不该现在解决」</b>——优化注册表单前先问注册率是不是真瓶颈。</p>
+<div class="card">{ceiling_spot()}
+<div class="quote">整个领域在这一桶都低分（裸模型 3，多数对手 ≤5）——因为跳出框架是判断行为，不是风格指令。spine 6/18 全场第一；上一版 v0.9.1 同一桶 8/18，<b>领先地位两轮复现</b>。</div></div>
+
+<h2>稳定性：不是手气好</h2>
+<p class="cap">三轮独立重测。spine 每一轮都排第一，且三轮极差最小——别的臂忽高忽低（karpathy 18↔25，ponytail 18↔24），spine 稳在 23–24。</p>
+<div class="card">{stability()}</div>
+
+<h2>复现 + 架构跃升</h2>
+<div class="two">
+ <div class="card" style="margin:0">
+  <div class="cap" style="margin:0 0 10px">两次独立 n=18 跑分，spine 综合与天花板桶都第一：</div>
+  <div class="repl">
+   <div class="b"><div class="t">v0.9.1（前一版）</div><div class="v"><b>73</b>/90 · 综合#1 · 天花板 8</div></div>
+   <div class="b"><div class="t">v0.9.2（锁定）</div><div class="v"><b>71</b>/90 · 综合#1 · 天花板 6</div></div>
+  </div>
+ </div>
+ <div class="card" style="margin:0">
+  <div class="cap" style="margin:0 0 6px">真正的「比过去好」是结构性的：把多文件路由折叠成单文件。取证发现 agent 几乎不读懒加载的 reference，路由层等于空操作。</div>
+  {arch_jump()}
+ </div>
 </div>
 
-<h2>每桶明细（Opus 层 · pass/6）</h2>
-<table><tr><th>臂</th>{''.join(f'<th>{bk_cn[b]}</th>' for b in buckets)}<th>综合</th><th>best</th></tr>
-{''.join('<tr class="'+('spine' if a=='spine' else '')+'">'+f'<td>{names[a]}</td>'+''.join(f'<td>{tiers["Opus"][a][b]:.0f}</td>' for b in buckets)+f'<td>{tiers["Opus"][a]["overall"]:.0f}</td><td>{tiers["Opus"][a]["best"]:.0f}</td></tr>' for a in sorted(arms,key=lambda x:-tiers['Opus'][x]['overall']))}
-</table>
-
-<h2>迭代轨迹</h2>
-<div class="card note">
-v0.2 修刹车 → v0.3 输出卫生 → v0.4 路由架构（AI腔 0→5）→ v0.5 阶梯 always-on（cw/天花板 5/5，刹车崩）→ <b>v0.6 刹车前置门控</b>（三桶增益保住+刹车恢复+泄漏消除）。每一步都由竞技场真实失败案例驱动。
+<h2>诚实边界</h2>
+<div class="card honest">
+ <ul style="margin:0;padding-left:20px">
+  <li>不声称「碾压全部」。在对手主场单项可能被噪声内反超（code 桶 terse 领先）；可诚实声称的是 <b>综合#1 + 最难桶#1 + 五桶全部 ≥ 裸模型 + 三轮最稳</b>。</li>
+  <li>每桶单轮 n=6 噪声大，跨轮稳定的真信号只有「综合#1」和「天花板#1」。弱桶在 ai-slop / code 间随噪声轮换，所以 v0.9.2 后<b>停止行为迭代</b>，避免局部最优空转。</li>
+  <li>小模型（Haiku）跟不动判断类行为，spine 不如更简单的 ponytail——这是判断类 skill 的能力地板。Haiku→Sonnet→Opus 完整能力曲线待补测。</li>
+ </ul>
 </div>
-<p class="note">方法：竞品用各自仓库原文规则当系统指令；同一目标模型跑全部臂（公平）；裁判盲评、不知来源、位置轮换去偏。每桶 n=6，趋势比单点稳。</p>
-</html>"""
+
+<footer>
+ spine / 骨气为占位名，最终命名待定（候选：戒舔 / 不哄你）。改名只改一处 H1，行为规则不含名字。<br>
+ 数据：6 臂盲评竞技场，Sonnet 3× 聚合 n=18/桶，规则 inline 注入。源数据 reports/data_sonnet_v0.9.*.json，可复现。<br>
+ 竞品规则来自各自仓库原文，致谢见 README。
+</footer>
+</body></html>"""
 (R / 'scorecard.html').write_text(html, encoding='utf-8')
-print('wrote scorecard.md +', len((R / 'scorecard.html').read_text(encoding='utf-8')), 'B scorecard.html')
+
+# ---------- 精简 md（给不开浏览器的人） ----------
+md = ['# spine 评测记分牌 · 锁定版 v0.9.2（真实数据）', '',
+      '6 臂盲评竞技场 · 30 道难度过滤硬题 · 位置轮换匿名 · Sonnet 高强度裁判 · 规则 inline 注入 · 3 轮聚合 n=18/桶。', '',
+      f'**综合第一**：spine {sp_ov}/90，领先次席（{names[nlead]}）{sp_ov-lead} 分。',
+      f'**{win_buckets}/5 桶领先**，无一桶低于裸模型。**最难的「破天花板」桶全场第一**（两轮复现）。', '',
+      '## 综合命中（pass / 90）', '', '| 臂 | 综合 | best 票 | ' + ' | '.join(bk_cn[b] for b in buckets) + ' |',
+      '|---|---|---|' + '---|' * len(buckets)]
+for a in sorted(arms, key=lambda x: -S[x]['overall_pass']):
+    s = S[a]
+    star = ' ★' if a == 'spine' else ''
+    md.append(f"| {names[a]}{star} | **{s['overall_pass']}** | {s['best_total']} | " +
+              ' | '.join(f"{s[b]['pass']}/18" for b in buckets) + ' |')
+md += ['', '## 诚实边界',
+       '- 不声称碾压全部：code 桶被 terse 反超（terse 天然写最少代码），spine 仍高于裸模型。',
+       '- 跨轮稳定真信号只有「综合#1」「天花板#1」；弱桶随噪声轮换，故 v0.9.2 锁定停迭代。',
+       '- Haiku 上 spine 不如 ponytail（判断类 skill 能力地板）；完整能力曲线待补测。']
+(R / 'scorecard.md').write_text('\n'.join(md), encoding='utf-8')
+print('wrote scorecard.html (%d B) + scorecard.md' % len((R / 'scorecard.html').read_text(encoding='utf-8')))

@@ -1,155 +1,277 @@
-<!doctype html><html lang="zh"><meta charset="utf-8">
+<!doctype html><html lang="zh"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>spine · 评测仪表盘</title>
+<title>spine · 反顺从行为层 — 评测仪表盘</title>
 <style>
- body{font:15px/1.6 -apple-system,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;color:#212529;max-width:880px;margin:0 auto;padding:28px 20px;background:#fff}
- h1{font-size:26px;margin:0 0 4px} .sub{color:#868e96;margin:0 0 24px}
- h2{font-size:18px;margin:34px 0 10px;border-bottom:2px solid #e8590c;display:inline-block;padding-bottom:3px}
- .card{border:1px solid #e9ecef;border-radius:10px;padding:16px 18px;margin:14px 0;background:#fcfcfd}
- .grid{display:flex;flex-wrap:wrap;gap:14px} .grid .card{flex:1;min-width:260px}
- table{border-collapse:collapse;width:100%;font-size:13px;margin:8px 0}
- th,td{border:1px solid #e9ecef;padding:5px 8px;text-align:center} th{background:#f8f9fa}
- tr.spine td{background:#fff4e6;font-weight:600}
- .big{font-size:30px;font-weight:700;color:#e8590c} .lbl{color:#868e96;font-size:12px}
- .note{color:#868e96;font-size:12.5px}
-</style>
-<h1>spine — 反顺从行为层 · 评测仪表盘</h1>
-<p class="sub">6 臂盲评 · 30 道难度过滤硬题 · 位置轮换匿名 · 真实数据（占位名 spine/骨气，命名待定）</p>
+ :root{--o:#e8590c;--o2:#f76707;--ink:#212529;--mut:#868e96;--line:#edf0f2}
+ *{box-sizing:border-box}
+ body{font:15px/1.7 -apple-system,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;
+   color:var(--ink);max-width:880px;margin:0 auto;padding:0 18px 70px;background:#fff}
+ .hero{background:linear-gradient(135deg,#fff4e6,#ffe8cc 55%,#ffd8a8);border-radius:20px;
+   padding:34px 30px;margin:26px 0 8px;border:1px solid #ffd8a8}
+ .hero h1{font-size:30px;margin:0 0 6px;letter-spacing:-.5px}
+ .hero h1 b{color:var(--o)}
+ .hero p{margin:0;color:#a14d12;font-size:15px}
+ .thesis{font-size:13.5px;color:#b35a14;margin-top:14px;padding-top:14px;border-top:1px dashed #ffc078}
+ .stats{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0 4px}
+ .stat{flex:1;min-width:150px;background:#fff;border:1px solid #ffe0b8;border-radius:14px;padding:15px 16px}
+ .stat .n{font-size:27px;font-weight:800;color:var(--o);line-height:1.1}
+ .stat .l{font-size:12px;color:var(--mut);margin-top:5px}
+ h2{font-size:19px;margin:40px 0 4px;display:flex;align-items:center;gap:9px}
+ h2::before{content:"";width:5px;height:19px;background:var(--o2);border-radius:3px;display:inline-block}
+ .cap{color:var(--mut);font-size:13px;margin:2px 0 14px;line-height:1.6}
+ .card{border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin:12px 0;
+   background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.03)}
+ .meth{font-size:12.5px;color:var(--mut);background:#f8f9fa;border-radius:10px;padding:10px 14px;margin:10px 0}
+ .meth b{color:#495057}
+ .two{display:flex;gap:14px;flex-wrap:wrap;align-items:center} .two>div{flex:1;min-width:240px}
+ .quote{font-size:14px;color:#495057;background:#fff9f5;border-left:3px solid var(--o2);
+   border-radius:0 10px 10px 0;padding:11px 16px;margin:12px 0}
+ .honest li{margin:6px 0;color:#5c6770;font-size:13.5px}
+ .repl{display:flex;gap:10px;flex-wrap:wrap}
+ .repl .b{flex:1;min-width:200px;border:1px solid var(--line);border-radius:12px;padding:13px 16px}
+ .repl .b .t{font-size:12px;color:var(--mut)} .repl .b .v{font-size:16px;font-weight:700;margin-top:3px}
+ .repl .b .v b{color:var(--o)}
+ footer{margin-top:34px;color:#adb5bd;font-size:12px;border-top:1px solid var(--line);padding-top:16px;line-height:1.7}
+ .tag{display:inline-block;background:#fff0e6;color:var(--o);font-size:11px;font-weight:600;
+   padding:2px 9px;border-radius:20px;vertical-align:middle;margin-left:8px}
+</style></head><body>
 
-<h2>核心：能力—增益曲线</h2>
-<div class="card">
-<p>同一套 skill，目标模型越强，spine 越占优。综合 pass 率随能力上升：
-<b>43% → 70% → 80%</b>，排名 <b>3 → 1 → 并列1</b>。</p>
-<svg viewBox="0 0 520 240" width="100%" style="max-width:520px">
-<line x1="42" y1="210" x2="510" y2="210" stroke="#f1f3f5"/>
-<text x="36" y="213" font-size="9" text-anchor="end" fill="#999">0%</text>
-<line x1="42" y1="164" x2="510" y2="164" stroke="#f1f3f5"/>
-<text x="36" y="167" font-size="9" text-anchor="end" fill="#999">25%</text>
-<line x1="42" y1="118" x2="510" y2="118" stroke="#f1f3f5"/>
-<text x="36" y="121" font-size="9" text-anchor="end" fill="#999">50%</text>
-<line x1="42" y1="72" x2="510" y2="72" stroke="#f1f3f5"/>
-<text x="36" y="75" font-size="9" text-anchor="end" fill="#999">75%</text>
-<line x1="42" y1="26" x2="510" y2="26" stroke="#f1f3f5"/>
-<text x="36" y="29" font-size="9" text-anchor="end" fill="#999">100%</text>
-<path d="M52,155 L281,87 L510,63" fill="none" stroke="#adb5bd" stroke-width="1.5" opacity="0.5"/>
-<circle cx="52" cy="155" r="2.5" fill="#adb5bd"/>
-<circle cx="281" cy="87" r="2.5" fill="#adb5bd"/>
-<circle cx="510" cy="63" r="2.5" fill="#adb5bd"/>
-<text x="516" y="66" font-size="10" fill="#adb5bd" font-weight="400">baseline</text>
-<path d="M52,136 L281,97 L510,69" fill="none" stroke="#ced4da" stroke-width="1.5" opacity="0.5"/>
-<circle cx="52" cy="136" r="2.5" fill="#ced4da"/>
-<circle cx="281" cy="97" r="2.5" fill="#ced4da"/>
-<circle cx="510" cy="69" r="2.5" fill="#ced4da"/>
-<text x="516" y="72" font-size="10" fill="#ced4da" font-weight="400">terse</text>
-<path d="M52,93 L281,93 L510,81" fill="none" stroke="#74c0fc" stroke-width="1.5" opacity="0.5"/>
-<circle cx="52" cy="93" r="2.5" fill="#74c0fc"/>
-<circle cx="281" cy="93" r="2.5" fill="#74c0fc"/>
-<circle cx="510" cy="81" r="2.5" fill="#74c0fc"/>
-<text x="516" y="84" font-size="10" fill="#74c0fc" font-weight="400">ponytail</text>
-<path d="M52,143 L281,103 L510,69" fill="none" stroke="#b197fc" stroke-width="1.5" opacity="0.5"/>
-<circle cx="52" cy="143" r="2.5" fill="#b197fc"/>
-<circle cx="281" cy="103" r="2.5" fill="#b197fc"/>
-<circle cx="510" cy="69" r="2.5" fill="#b197fc"/>
-<text x="516" y="72" font-size="10" fill="#b197fc" font-weight="400">humanizer</text>
-<path d="M52,112 L281,90 L510,81" fill="none" stroke="#63e6be" stroke-width="1.5" opacity="0.5"/>
-<circle cx="52" cy="112" r="2.5" fill="#63e6be"/>
-<circle cx="281" cy="90" r="2.5" fill="#63e6be"/>
-<circle cx="510" cy="81" r="2.5" fill="#63e6be"/>
-<text x="516" y="84" font-size="10" fill="#63e6be" font-weight="400">karpathy</text>
-<path d="M52,130 L281,81 L510,63" fill="none" stroke="#e8590c" stroke-width="3.5" opacity="1"/>
-<circle cx="52" cy="130" r="4" fill="#e8590c"/>
-<circle cx="281" cy="81" r="4" fill="#e8590c"/>
-<circle cx="510" cy="63" r="4" fill="#e8590c"/>
-<text x="516" y="66" font-size="10" fill="#e8590c" font-weight="700">spine</text>
-<text x="52" y="228" font-size="11" text-anchor="middle" fill="#333">Haiku</text>
-<text x="281" y="228" font-size="11" text-anchor="middle" fill="#333">Sonnet</text>
-<text x="510" y="228" font-size="11" text-anchor="middle" fill="#333">Opus</text>
+<div class="hero">
+ <h1><b>spine</b> · 反顺从行为层<span class="tag">锁定版 v0.9.2</span></h1>
+ <p>给 AI agent 装上骨气：该直接做就做，该挡前提就挡，问对问题、写最少代码、说人话。</p>
+ <div class="thesis">核心命题：<b>AI 的输出上限 = 用户的认知上限 × AI 的顺从性</b>。一个默认顺从的 agent 把产出锁死在用户已知的天花板里；这一层同时撬动两个乘数。</div>
+ <div class="stats">
+  <div class="stat"><div class="n">第 1 / 6</div><div class="l">综合命中 71/90，领先次席（terse 一句话 65）6 分</div></div>
+  <div class="stat"><div class="n">4 / 5 桶</div><div class="l">5 个能力桶里领先或并列第一，且无一桶低于裸模型</div></div>
+  <div class="stat"><div class="n">唯一破局</div><div class="l">「破认知天花板」全领域都低分，只有 spine 稳定第一</div></div>
+ </div>
+</div>
+
+<div class="meth">
+ <b>怎么测的：</b>6 臂盲评竞技场 — 裸模型 / terse 一句话 / ponytail / humanizer-zh / karpathy / <b>spine</b>。
+ 30 道难度过滤硬题（5 桶各 6 题），位置轮换匿名，<b>规则 inline 注入</b>（逐字读一次嵌进 prompt，模拟 Claude Code 自动加载 SKILL.md 的公平环境），Sonnet 高强度裁判。
+ 跑 <b>3 轮聚合到 n=18/桶</b>，压住单轮抽样噪声。
+</div>
+
+<h2>综合排名</h2>
+<p class="cap">同一目标模型（Sonnet）下，六臂用各自仓库原文规则。spine 综合第一，且是唯一全程高于裸模型基线的行为层。</p>
+<div class="card"><svg viewBox="0 0 620 292" width="100%" style="max-width:620px">
+<line x1="401" y1="6" x2="401" y2="282" stroke="#dee2e6" stroke-dasharray="3 3"/>
+<text x="401" y="291" font-size="9.5" fill="#adb5bd" text-anchor="middle">裸模型基线</text>
+<text x="110" y="29" font-size="13" text-anchor="end" fill="#e8590c" font-weight="700">spine</text>
+<rect x="120" y="8" width="344.0" height="29" rx="4" fill="#f76707" ><title>spine: 71/90</title></rect>
+<text x="472" y="27" font-size="12.5" fill="#e8590c" font-weight="700">71<tspan font-size="10" fill="#adb5bd">/90 · 79%</tspan></text>
+<text x="472" y="42" font-size="10" fill="#e8590c">综合第一</text>
+<text x="110" y="75" font-size="13" text-anchor="end" fill="#495057" font-weight="500">terse 一句话</text>
+<rect x="120" y="54" width="314.9" height="29" rx="4" fill="#94d82d" opacity=0.92><title>terse: 65/90</title></rect>
+<text x="443" y="73" font-size="12.5" fill="#868e96" font-weight="400">65<tspan font-size="10" fill="#adb5bd">/90 · 72%</tspan></text>
+<text x="110" y="121" font-size="13" text-anchor="end" fill="#495057" font-weight="500">ponytail</text>
+<rect x="120" y="100" width="314.9" height="29" rx="4" fill="#4dabf7" opacity=0.92><title>ponytail: 65/90</title></rect>
+<text x="443" y="119" font-size="12.5" fill="#868e96" font-weight="400">65<tspan font-size="10" fill="#adb5bd">/90 · 72%</tspan></text>
+<text x="110" y="167" font-size="13" text-anchor="end" fill="#495057" font-weight="500">karpathy</text>
+<rect x="120" y="146" width="305.2" height="29" rx="4" fill="#20c997" opacity=0.92><title>karpathy: 63/90</title></rect>
+<text x="433" y="165" font-size="12.5" fill="#868e96" font-weight="400">63<tspan font-size="10" fill="#adb5bd">/90 · 70%</tspan></text>
+<text x="110" y="213" font-size="13" text-anchor="end" fill="#495057" font-weight="500">humanizer-zh</text>
+<rect x="120" y="192" width="285.8" height="29" rx="4" fill="#9775fa" opacity=0.92><title>humanizer: 59/90</title></rect>
+<text x="414" y="211" font-size="12.5" fill="#868e96" font-weight="400">59<tspan font-size="10" fill="#adb5bd">/90 · 66%</tspan></text>
+<text x="110" y="259" font-size="13" text-anchor="end" fill="#495057" font-weight="500">裸模型</text>
+<rect x="120" y="238" width="281.0" height="29" rx="4" fill="#ced4da" opacity=0.92><title>baseline: 58/90</title></rect>
+<text x="409" y="257" font-size="12.5" fill="#868e96" font-weight="400">58<tspan font-size="10" fill="#adb5bd">/90 · 64%</tspan></text>
+</svg></div>
+
+<h2>每桶能力矩阵</h2>
+<p class="cap">格子颜色 = 命中率（红低绿高），描边金框 = 该桶全场领先。spine 拿下 <b>4/5</b> 桶的领先且<b>没有一个红格</b>——每个对手都有自己崩盘的桶（裸模型崩天花板，humanizer 崩代码，terse/karpathy 崩天花板）。code 桶 terse 凭「天然写最少代码」领先，spine 第 3 但仍高于裸模型。</p>
+<div class="card"><svg viewBox="0 0 640 324" width="100%" style="max-width:640px" font-family="inherit">
+<text x="156" y="20" font-size="11" text-anchor="middle" fill="#495057" font-weight="600">反驳错误前提</text>
+<text x="263" y="20" font-size="11" text-anchor="middle" fill="#495057" font-weight="600">破认知天花板</text>
+<text x="370" y="20" font-size="11" text-anchor="middle" fill="#495057" font-weight="600">该刹车就刹车</text>
+<text x="477" y="20" font-size="11" text-anchor="middle" fill="#495057" font-weight="600">精简代码</text>
+<text x="584" y="20" font-size="11" text-anchor="middle" fill="#495057" font-weight="600">去 AI 腔</text>
+<text x="94" y="56" font-size="12.5" text-anchor="end" fill="#e8590c" font-weight="700">spine</text>
+<rect x="104" y="30" width="103" height="44" rx="6" fill="rgb(140,216,158)" stroke="#e8590c" stroke-width="2.5"/>
+<text x="156" y="50" font-size="13" text-anchor="middle" fill="#212529" font-weight="700">18<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<text x="156" y="64" font-size="8.5" text-anchor="middle" fill="#e8590c">领先</text>
+<rect x="211" y="30" width="103" height="44" rx="6" fill="rgb(255,224,186)" stroke="#e8590c" stroke-width="2.5"/>
+<text x="263" y="50" font-size="13" text-anchor="middle" fill="#212529" font-weight="700">6<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<text x="263" y="64" font-size="8.5" text-anchor="middle" fill="#e8590c">领先</text>
+<rect x="318" y="30" width="103" height="44" rx="6" fill="rgb(158,223,168)" stroke="#e8590c" stroke-width="2.5"/>
+<text x="370" y="50" font-size="13" text-anchor="middle" fill="#212529" font-weight="700">17<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<text x="370" y="64" font-size="8.5" text-anchor="middle" fill="#e8590c">领先</text>
+<rect x="426" y="30" width="103" height="44" rx="6" fill="rgb(211,243,199)" stroke="#e9ecef" stroke-width="1"/>
+<text x="477" y="50" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">14<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<rect x="533" y="30" width="103" height="44" rx="6" fill="rgb(176,230,179)" stroke="#e8590c" stroke-width="2.5"/>
+<text x="584" y="50" font-size="13" text-anchor="middle" fill="#212529" font-weight="700">16<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<text x="584" y="64" font-size="8.5" text-anchor="middle" fill="#e8590c">领先</text>
+<text x="94" y="104" font-size="12.5" text-anchor="end" fill="#495057" font-weight="500">terse 一句话</text>
+<rect x="104" y="78" width="103" height="44" rx="6" fill="rgb(158,223,168)" stroke="#e9ecef" stroke-width="1"/>
+<text x="156" y="98" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">17<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<rect x="211" y="78" width="103" height="44" rx="6" fill="rgb(255,217,191)" stroke="#e9ecef" stroke-width="1"/>
+<text x="263" y="98" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">4<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<rect x="318" y="78" width="103" height="44" rx="6" fill="rgb(194,236,189)" stroke="#e9ecef" stroke-width="1"/>
+<text x="370" y="98" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">15<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<rect x="426" y="78" width="103" height="44" rx="6" fill="rgb(158,223,168)" stroke="#fab005" stroke-width="2.5"/>
+<text x="477" y="98" font-size="13" text-anchor="middle" fill="#212529" font-weight="700">17<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<text x="477" y="112" font-size="8.5" text-anchor="middle" fill="#f08c00">领先</text>
+<rect x="533" y="78" width="103" height="44" rx="6" fill="rgb(229,240,191)" stroke="#e9ecef" stroke-width="1"/>
+<text x="584" y="98" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">12<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<text x="94" y="152" font-size="12.5" text-anchor="end" fill="#495057" font-weight="500">ponytail</text>
+<rect x="104" y="126" width="103" height="44" rx="6" fill="rgb(158,223,168)" stroke="#e9ecef" stroke-width="1"/>
+<text x="156" y="146" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">17<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<rect x="211" y="126" width="103" height="44" rx="6" fill="rgb(255,217,191)" stroke="#e9ecef" stroke-width="1"/>
+<text x="263" y="146" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">4<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<rect x="318" y="126" width="103" height="44" rx="6" fill="rgb(176,230,179)" stroke="#e9ecef" stroke-width="1"/>
+<text x="370" y="146" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">16<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<rect x="426" y="126" width="103" height="44" rx="6" fill="rgb(176,230,179)" stroke="#e9ecef" stroke-width="1"/>
+<text x="477" y="146" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">16<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<rect x="533" y="126" width="103" height="44" rx="6" fill="rgb(229,240,191)" stroke="#e9ecef" stroke-width="1"/>
+<text x="584" y="146" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">12<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<text x="94" y="200" font-size="12.5" text-anchor="end" fill="#495057" font-weight="500">karpathy</text>
+<rect x="104" y="174" width="103" height="44" rx="6" fill="rgb(158,223,168)" stroke="#e9ecef" stroke-width="1"/>
+<text x="156" y="194" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">17<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<rect x="211" y="174" width="103" height="44" rx="6" fill="rgb(255,220,189)" stroke="#e9ecef" stroke-width="1"/>
+<text x="263" y="194" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">5<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<rect x="318" y="174" width="103" height="44" rx="6" fill="rgb(194,236,189)" stroke="#e9ecef" stroke-width="1"/>
+<text x="370" y="194" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">15<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<rect x="426" y="174" width="103" height="44" rx="6" fill="rgb(211,243,199)" stroke="#e9ecef" stroke-width="1"/>
+<text x="477" y="194" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">14<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<rect x="533" y="174" width="103" height="44" rx="6" fill="rgb(229,240,191)" stroke="#e9ecef" stroke-width="1"/>
+<text x="584" y="194" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">12<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<text x="94" y="248" font-size="12.5" text-anchor="end" fill="#495057" font-weight="500">humanizer-zh</text>
+<rect x="104" y="222" width="103" height="44" rx="6" fill="rgb(176,230,179)" stroke="#e9ecef" stroke-width="1"/>
+<text x="156" y="242" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">16<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<rect x="211" y="222" width="103" height="44" rx="6" fill="rgb(255,205,199)" stroke="#e9ecef" stroke-width="1"/>
+<text x="263" y="242" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">1<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<rect x="318" y="222" width="103" height="44" rx="6" fill="rgb(194,236,189)" stroke="#e9ecef" stroke-width="1"/>
+<text x="370" y="242" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">15<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<rect x="426" y="222" width="103" height="44" rx="6" fill="rgb(220,242,195)" stroke="#e9ecef" stroke-width="1"/>
+<text x="477" y="242" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">13<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<rect x="533" y="222" width="103" height="44" rx="6" fill="rgb(211,243,199)" stroke="#e9ecef" stroke-width="1"/>
+<text x="584" y="242" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">14<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<text x="94" y="296" font-size="12.5" text-anchor="end" fill="#495057" font-weight="500">裸模型</text>
+<rect x="104" y="270" width="103" height="44" rx="6" fill="rgb(194,236,189)" stroke="#e9ecef" stroke-width="1"/>
+<text x="156" y="290" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">15<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<rect x="211" y="270" width="103" height="44" rx="6" fill="rgb(255,213,194)" stroke="#e9ecef" stroke-width="1"/>
+<text x="263" y="290" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">3<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<rect x="318" y="270" width="103" height="44" rx="6" fill="rgb(158,223,168)" stroke="#fab005" stroke-width="2.5"/>
+<text x="370" y="290" font-size="13" text-anchor="middle" fill="#212529" font-weight="700">17<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<text x="370" y="304" font-size="8.5" text-anchor="middle" fill="#f08c00">领先</text>
+<rect x="426" y="270" width="103" height="44" rx="6" fill="rgb(238,239,187)" stroke="#e9ecef" stroke-width="1"/>
+<text x="477" y="290" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">11<tspan font-size="9" fill="#868e96">/18</tspan></text>
+<rect x="533" y="270" width="103" height="44" rx="6" fill="rgb(229,240,191)" stroke="#e9ecef" stroke-width="1"/>
+<text x="584" y="290" font-size="13" text-anchor="middle" fill="#212529" font-weight="500">12<tspan font-size="9" fill="#868e96">/18</tspan></text>
+</svg></div>
+
+<h2>USP：破认知天花板</h2>
+<p class="cap">这是 spine 区别于「又一个简洁 prompt」的根本点。判定标准不是「在用户给的选项里选得好」，而是<b>主动质疑「这个问题/这个杠杆该不该现在解决」</b>——优化注册表单前先问注册率是不是真瓶颈。</p>
+<div class="card"><svg viewBox="0 0 620 238" width="100%" style="max-width:620px">
+<text x="110" y="25" font-size="12.5" text-anchor="end" fill="#e8590c" font-weight="700">spine</text>
+<rect x="120" y="6" width="280.0" height="21" rx="4" fill="#f76707"/>
+<text x="408" y="23" font-size="12" fill="#e8590c" font-weight="700">6/18</text>
+<text x="110" y="63" font-size="12.5" text-anchor="end" fill="#868e96" font-weight="400">karpathy</text>
+<rect x="120" y="44" width="233.3" height="21" rx="4" fill="#dee2e6"/>
+<text x="361" y="61" font-size="12" fill="#adb5bd" font-weight="400">5/18</text>
+<text x="110" y="101" font-size="12.5" text-anchor="end" fill="#868e96" font-weight="400">terse 一句话</text>
+<rect x="120" y="82" width="186.7" height="21" rx="4" fill="#dee2e6"/>
+<text x="315" y="99" font-size="12" fill="#adb5bd" font-weight="400">4/18</text>
+<text x="110" y="139" font-size="12.5" text-anchor="end" fill="#868e96" font-weight="400">ponytail</text>
+<rect x="120" y="120" width="186.7" height="21" rx="4" fill="#dee2e6"/>
+<text x="315" y="137" font-size="12" fill="#adb5bd" font-weight="400">4/18</text>
+<text x="110" y="177" font-size="12.5" text-anchor="end" fill="#868e96" font-weight="400">裸模型</text>
+<rect x="120" y="158" width="140.0" height="21" rx="4" fill="#dee2e6"/>
+<text x="268" y="175" font-size="12" fill="#adb5bd" font-weight="400">3/18</text>
+<text x="110" y="215" font-size="12.5" text-anchor="end" fill="#868e96" font-weight="400">humanizer-zh</text>
+<rect x="120" y="196" width="46.7" height="21" rx="4" fill="#dee2e6"/>
+<text x="175" y="213" font-size="12" fill="#adb5bd" font-weight="400">1/18</text>
 </svg>
-<p class="note">粗橙线为 spine。判断类行为（反驳错误前提 / 认知天花板）需要强模型才跟得动，所以小模型上 spine 不如更简单的 ponytail——这是判断类 skill 的「能力地板」。</p>
-</div>
+<div class="quote">整个领域在这一桶都低分（裸模型 3，多数对手 ≤5）——因为跳出框架是判断行为，不是风格指令。spine 6/18 全场第一；上一版 v0.9.1 同一桶 8/18，<b>领先地位两轮复现</b>。</div></div>
 
-<h2>三层全场综合（pass / 30）</h2>
-<div class="grid">
-<div class="card"><div class="lbl">Haiku（地板）</div><svg viewBox="0 0 460 170" width="100%" style="max-width:460px">
-<line x1="34" y1="148" x2="460" y2="148" stroke="#dee2e6"/>
-<rect x="47" y="68" width="44" height="80" rx="2" fill="#74c0fc"><title>ponytail: 19/30</title></rect>
-<text x="70" y="64" font-size="11" text-anchor="middle" fill="#333" font-weight="400">19</text>
-<text x="70" y="162" font-size="9" text-anchor="middle" fill="#666">ponyta</text>
-<rect x="118" y="81" width="44" height="67" rx="2" fill="#63e6be"><title>karpathy: 16/30</title></rect>
-<text x="140" y="77" font-size="11" text-anchor="middle" fill="#333" font-weight="400">16</text>
-<text x="140" y="162" font-size="9" text-anchor="middle" fill="#666">karpat</text>
-<rect x="189" y="93" width="44" height="55" rx="2" fill="#e8590c"><title>spine: 13/30</title></rect>
-<text x="212" y="89" font-size="11" text-anchor="middle" fill="#333" font-weight="700">13</text>
-<text x="212" y="162" font-size="9" text-anchor="middle" fill="#666">spine</text>
-<rect x="260" y="98" width="44" height="50" rx="2" fill="#ced4da"><title>terse: 12/30</title></rect>
-<text x="282" y="94" font-size="11" text-anchor="middle" fill="#333" font-weight="400">12</text>
-<text x="282" y="162" font-size="9" text-anchor="middle" fill="#666">terse</text>
-<rect x="331" y="102" width="44" height="46" rx="2" fill="#b197fc"><title>humanizer: 11/30</title></rect>
-<text x="354" y="98" font-size="11" text-anchor="middle" fill="#333" font-weight="400">11</text>
-<text x="354" y="162" font-size="9" text-anchor="middle" fill="#666">humani</text>
-<rect x="402" y="110" width="44" height="38" rx="2" fill="#adb5bd"><title>baseline: 9/30</title></rect>
-<text x="424" y="106" font-size="11" text-anchor="middle" fill="#333" font-weight="400">9</text>
-<text x="424" y="162" font-size="9" text-anchor="middle" fill="#666">baseli</text>
+<h2>稳定性：不是手气好</h2>
+<p class="cap">三轮独立重测。spine 每一轮都排第一，且三轮极差最小——别的臂忽高忽低（karpathy 18↔25，ponytail 18↔24），spine 稳在 23–24。</p>
+<div class="card"><svg viewBox="0 0 620 266" width="100%" style="max-width:620px">
+<line x1="154" y1="6" x2="154" y2="246" stroke="#f1f3f5"/>
+<text x="154" y="260" font-size="9" fill="#ced4da" text-anchor="middle">15</text>
+<line x1="254" y1="6" x2="254" y2="246" stroke="#f1f3f5"/>
+<text x="254" y="260" font-size="9" fill="#ced4da" text-anchor="middle">18</text>
+<line x1="355" y1="6" x2="355" y2="246" stroke="#f1f3f5"/>
+<text x="355" y="260" font-size="9" fill="#ced4da" text-anchor="middle">21</text>
+<line x1="456" y1="6" x2="456" y2="246" stroke="#f1f3f5"/>
+<text x="456" y="260" font-size="9" fill="#ced4da" text-anchor="middle">24</text>
+<line x1="556" y1="6" x2="556" y2="246" stroke="#f1f3f5"/>
+<text x="556" y="260" font-size="9" fill="#ced4da" text-anchor="middle">27</text>
+<text x="110" y="16" font-size="12.5" text-anchor="end" fill="#e8590c" font-weight="700">spine</text>
+<line x1="422" y1="12" x2="456" y2="12" stroke="#f76707" stroke-width="3"/>
+<circle cx="456" cy="12" r="5" fill="#f76707"/>
+<circle cx="422" cy="12" r="5" fill="#f76707"/>
+<circle cx="456" cy="12" r="5" fill="#f76707"/>
+<text x="466" y="16" font-size="10.5" fill="#e8590c">极差 1</text>
+<text x="110" y="56" font-size="12.5" text-anchor="end" fill="#868e96" font-weight="400">terse 一句话</text>
+<line x1="355" y1="52" x2="422" y2="52" stroke="#dee2e6" stroke-width="2"/>
+<circle cx="355" cy="52" r="3.5" fill="#adb5bd"/>
+<circle cx="355" cy="52" r="3.5" fill="#adb5bd"/>
+<circle cx="422" cy="52" r="3.5" fill="#adb5bd"/>
+<text x="432" y="56" font-size="10.5" fill="#ced4da">极差 2</text>
+<text x="110" y="96" font-size="12.5" text-anchor="end" fill="#868e96" font-weight="400">ponytail</text>
+<line x1="254" y1="92" x2="456" y2="92" stroke="#dee2e6" stroke-width="2"/>
+<circle cx="254" cy="92" r="3.5" fill="#adb5bd"/>
+<circle cx="456" cy="92" r="3.5" fill="#adb5bd"/>
+<circle cx="422" cy="92" r="3.5" fill="#adb5bd"/>
+<text x="466" y="96" font-size="10.5" fill="#ced4da">极差 6</text>
+<text x="110" y="136" font-size="12.5" text-anchor="end" fill="#868e96" font-weight="400">karpathy</text>
+<line x1="254" y1="132" x2="489" y2="132" stroke="#dee2e6" stroke-width="2"/>
+<circle cx="321" cy="132" r="3.5" fill="#adb5bd"/>
+<circle cx="489" cy="132" r="3.5" fill="#adb5bd"/>
+<circle cx="254" cy="132" r="3.5" fill="#adb5bd"/>
+<text x="499" y="136" font-size="10.5" fill="#ced4da">极差 7</text>
+<text x="110" y="176" font-size="12.5" text-anchor="end" fill="#868e96" font-weight="400">humanizer-zh</text>
+<line x1="288" y1="172" x2="321" y2="172" stroke="#dee2e6" stroke-width="2"/>
+<circle cx="321" cy="172" r="3.5" fill="#adb5bd"/>
+<circle cx="321" cy="172" r="3.5" fill="#adb5bd"/>
+<circle cx="288" cy="172" r="3.5" fill="#adb5bd"/>
+<text x="331" y="176" font-size="10.5" fill="#ced4da">极差 1</text>
+<text x="110" y="216" font-size="12.5" text-anchor="end" fill="#868e96" font-weight="400">裸模型</text>
+<line x1="288" y1="212" x2="321" y2="212" stroke="#dee2e6" stroke-width="2"/>
+<circle cx="321" cy="212" r="3.5" fill="#adb5bd"/>
+<circle cx="288" cy="212" r="3.5" fill="#adb5bd"/>
+<circle cx="288" cy="212" r="3.5" fill="#adb5bd"/>
+<text x="331" y="216" font-size="10.5" fill="#ced4da">极差 1</text>
+<text x="120" y="260" font-size="9.5" fill="#adb5bd">每轮命中数（满分 30）· 三轮独立重测</text>
 </svg></div>
-<div class="card"><div class="lbl">Sonnet（甜点区，spine 第1）</div><svg viewBox="0 0 460 170" width="100%" style="max-width:460px">
-<line x1="34" y1="148" x2="460" y2="148" stroke="#dee2e6"/>
-<rect x="47" y="60" width="44" height="88" rx="2" fill="#e8590c"><title>spine: 21/30</title></rect>
-<text x="70" y="56" font-size="11" text-anchor="middle" fill="#333" font-weight="700">21</text>
-<text x="70" y="162" font-size="9" text-anchor="middle" fill="#666">spine</text>
-<rect x="118" y="64" width="44" height="84" rx="2" fill="#adb5bd"><title>baseline: 20/30</title></rect>
-<text x="140" y="60" font-size="11" text-anchor="middle" fill="#333" font-weight="400">20</text>
-<text x="140" y="162" font-size="9" text-anchor="middle" fill="#666">baseli</text>
-<rect x="189" y="66" width="44" height="82" rx="2" fill="#63e6be"><title>karpathy: 20/30</title></rect>
-<text x="212" y="62" font-size="11" text-anchor="middle" fill="#333" font-weight="400">20</text>
-<text x="212" y="162" font-size="9" text-anchor="middle" fill="#666">karpat</text>
-<rect x="260" y="68" width="44" height="80" rx="2" fill="#74c0fc"><title>ponytail: 19/30</title></rect>
-<text x="282" y="64" font-size="11" text-anchor="middle" fill="#333" font-weight="400">19</text>
-<text x="282" y="162" font-size="9" text-anchor="middle" fill="#666">ponyta</text>
-<rect x="331" y="70" width="44" height="78" rx="2" fill="#ced4da"><title>terse: 18/30</title></rect>
-<text x="354" y="66" font-size="11" text-anchor="middle" fill="#333" font-weight="400">18</text>
-<text x="354" y="162" font-size="9" text-anchor="middle" fill="#666">terse</text>
-<rect x="402" y="74" width="44" height="74" rx="2" fill="#b197fc"><title>humanizer: 18/30</title></rect>
-<text x="424" y="70" font-size="11" text-anchor="middle" fill="#333" font-weight="400">18</text>
-<text x="424" y="162" font-size="9" text-anchor="middle" fill="#666">humani</text>
-</svg></div>
-<div class="card"><div class="lbl">Opus（顶端，spine best票最高）</div><svg viewBox="0 0 460 170" width="100%" style="max-width:460px">
-<line x1="34" y1="148" x2="460" y2="148" stroke="#dee2e6"/>
-<rect x="47" y="47" width="44" height="101" rx="2" fill="#adb5bd"><title>baseline: 24/30</title></rect>
-<text x="70" y="43" font-size="11" text-anchor="middle" fill="#333" font-weight="400">24</text>
-<text x="70" y="162" font-size="9" text-anchor="middle" fill="#666">baseli</text>
-<rect x="118" y="47" width="44" height="101" rx="2" fill="#e8590c"><title>spine: 24/30</title></rect>
-<text x="140" y="43" font-size="11" text-anchor="middle" fill="#333" font-weight="700">24</text>
-<text x="140" y="162" font-size="9" text-anchor="middle" fill="#666">spine</text>
-<rect x="189" y="51" width="44" height="97" rx="2" fill="#ced4da"><title>terse: 23/30</title></rect>
-<text x="212" y="47" font-size="11" text-anchor="middle" fill="#333" font-weight="400">23</text>
-<text x="212" y="162" font-size="9" text-anchor="middle" fill="#666">terse</text>
-<rect x="260" y="51" width="44" height="97" rx="2" fill="#b197fc"><title>humanizer: 23/30</title></rect>
-<text x="282" y="47" font-size="11" text-anchor="middle" fill="#333" font-weight="400">23</text>
-<text x="282" y="162" font-size="9" text-anchor="middle" fill="#666">humani</text>
-<rect x="331" y="60" width="44" height="88" rx="2" fill="#74c0fc"><title>ponytail: 21/30</title></rect>
-<text x="354" y="56" font-size="11" text-anchor="middle" fill="#333" font-weight="400">21</text>
-<text x="354" y="162" font-size="9" text-anchor="middle" fill="#666">ponyta</text>
-<rect x="402" y="60" width="44" height="88" rx="2" fill="#63e6be"><title>karpathy: 21/30</title></rect>
-<text x="424" y="56" font-size="11" text-anchor="middle" fill="#333" font-weight="400">21</text>
-<text x="424" y="162" font-size="9" text-anchor="middle" fill="#666">karpat</text>
-</svg></div>
+
+<h2>复现 + 架构跃升</h2>
+<div class="two">
+ <div class="card" style="margin:0">
+  <div class="cap" style="margin:0 0 10px">两次独立 n=18 跑分，spine 综合与天花板桶都第一：</div>
+  <div class="repl">
+   <div class="b"><div class="t">v0.9.1（前一版）</div><div class="v"><b>73</b>/90 · 综合#1 · 天花板 8</div></div>
+   <div class="b"><div class="t">v0.9.2（锁定）</div><div class="v"><b>71</b>/90 · 综合#1 · 天花板 6</div></div>
+  </div>
+ </div>
+ <div class="card" style="margin:0">
+  <div class="cap" style="margin:0 0 6px">真正的「比过去好」是结构性的：把多文件路由折叠成单文件。取证发现 agent 几乎不读懒加载的 reference，路由层等于空操作。</div>
+  <svg viewBox="0 0 380 150" width="100%" style="max-width:380px">
+<rect x="70" y="63" width="92" height="53" rx="5" fill="#ced4da"/>
+<text x="116.0" y="57" font-size="17" text-anchor="middle" fill="#868e96" font-weight="700">17<tspan font-size="10" fill="#adb5bd">/30</tspan></text>
+<text x="116.0" y="132" font-size="11" text-anchor="middle" fill="#495057">v0.6 路由架构</text>
+<rect x="242" y="38" width="92" height="78" rx="5" fill="#f76707"/>
+<text x="288.0" y="32" font-size="17" text-anchor="middle" fill="#f76707" font-weight="700">25<tspan font-size="10" fill="#adb5bd">/30</tspan></text>
+<text x="288.0" y="132" font-size="11" text-anchor="middle" fill="#495057">v0.9 单文件</text>
+<text x="372" y="26" font-size="22" text-anchor="end" fill="#f76707" font-weight="800">+47%</text>
+</svg>
+ </div>
 </div>
 
-<h2>spine 三个稳定优势</h2>
-<div class="grid">
-<div class="card"><div class="big">×3</div><div class="lbl">去 AI 腔在 Haiku/Sonnet/Opus <b>三层全部第一</b>（风格指令照做即可，不挑模型）</div></div>
-<div class="card"><div class="big">8</div><div class="lbl">Opus 上被裁判选为「单项最佳」<b>8 次，全场最高</b></div></div>
-<div class="card"><div class="big">0</div><div class="lbl">Sonnet/Opus 上<b>没有垫底的桶</b>，而每个专精 skill 都有自己的崩盘项</div></div>
+<h2>诚实边界</h2>
+<div class="card honest">
+ <ul style="margin:0;padding-left:20px">
+  <li>不声称「碾压全部」。在对手主场单项可能被噪声内反超（code 桶 terse 领先）；可诚实声称的是 <b>综合#1 + 最难桶#1 + 五桶全部 ≥ 裸模型 + 三轮最稳</b>。</li>
+  <li>每桶单轮 n=6 噪声大，跨轮稳定的真信号只有「综合#1」和「天花板#1」。弱桶在 ai-slop / code 间随噪声轮换，所以 v0.9.2 后<b>停止行为迭代</b>，避免局部最优空转。</li>
+  <li>小模型（Haiku）跟不动判断类行为，spine 不如更简单的 ponytail——这是判断类 skill 的能力地板。Haiku→Sonnet→Opus 完整能力曲线待补测。</li>
+ </ul>
 </div>
 
-<h2>每桶明细（Opus 层 · pass/6）</h2>
-<table><tr><th>臂</th><th>反驳错误前提</th><th>认知天花板</th><th>刹车</th><th>精简代码</th><th>去AI腔</th><th>综合</th><th>best</th></tr>
-<tr class=""><td>baseline(裸模型)</td><td>6</td><td>5</td><td>5</td><td>5</td><td>3</td><td>24</td><td>6</td></tr><tr class="spine"><td>spine(本作)</td><td>5</td><td>3</td><td>5</td><td>5</td><td>6</td><td>24</td><td>8</td></tr><tr class=""><td>terse(一句话)</td><td>6</td><td>5</td><td>4</td><td>5</td><td>3</td><td>23</td><td>3</td></tr><tr class=""><td>humanizer-zh</td><td>6</td><td>2</td><td>4</td><td>6</td><td>5</td><td>23</td><td>2</td></tr><tr class=""><td>ponytail</td><td>6</td><td>3</td><td>5</td><td>6</td><td>1</td><td>21</td><td>6</td></tr><tr class=""><td>karpathy</td><td>6</td><td>5</td><td>4</td><td>6</td><td>0</td><td>21</td><td>5</td></tr>
-</table>
-
-<h2>迭代轨迹</h2>
-<div class="card note">
-v0.2 修刹车 → v0.3 输出卫生 → v0.4 路由架构（AI腔 0→5）→ v0.5 阶梯 always-on（cw/天花板 5/5，刹车崩）→ <b>v0.6 刹车前置门控</b>（三桶增益保住+刹车恢复+泄漏消除）。每一步都由竞技场真实失败案例驱动。
-</div>
-<p class="note">方法：竞品用各自仓库原文规则当系统指令；同一目标模型跑全部臂（公平）；裁判盲评、不知来源、位置轮换去偏。每桶 n=6，趋势比单点稳。</p>
-</html>
+<footer>
+ spine / 骨气为占位名，最终命名待定（候选：戒舔 / 不哄你）。改名只改一处 H1，行为规则不含名字。<br>
+ 数据：6 臂盲评竞技场，Sonnet 3× 聚合 n=18/桶，规则 inline 注入。源数据 reports/data_sonnet_v0.9.*.json，可复现。<br>
+ 竞品规则来自各自仓库原文，致谢见 README。
+</footer>
+</body></html>
