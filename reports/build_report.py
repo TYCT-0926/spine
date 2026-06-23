@@ -380,6 +380,8 @@ b,strong{font-weight:680}
 footer{padding:40px 0 72px;color:var(--faint);font-size:12.5px;line-height:1.85}
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1)}
 .reveal.in{opacity:1;transform:none}
+.v10banner{margin-top:24px;font-size:13.5px;line-height:1.62;color:var(--ink2);background:var(--o-soft);border:1px solid var(--o-line);border-radius:12px;padding:14px 18px}
+.v10banner b{color:var(--o)}
 @media(max-width:680px){.hero-stats,.two,.cmp-cols{grid-template-columns:1fr}}
 '''
 
@@ -419,7 +421,7 @@ cmp_box = '' if not SHOWCASE else ('<div class="cmp"><div class="cmp-bar"><div c
 
 body = f'''<nav class="nav"><div class="nav-in"><a href="#top" class="brand">spine <span>骨气</span></a><div class="nav-links">{nav}</div></div></nav>
 <header id="top" class="hero"><div class="wrap reveal">
-<div class="kicker">反顺从行为层 · 锁定版 v0.9.2</div>
+<div class="kicker">反顺从行为层 · 锁定版 v0.10</div>
 <h1>给 AI agent<br>装上 <em>骨气</em></h1>
 <p class="hero-thesis">该直接做就做，该挡前提就挡，问对问题、写最少代码、说人话。<br><b>AI 的输出上限 = 你的认知上限 × AI 的顺从性</b>——这一层同时削两个乘数。</p>
 <div class="hero-stats">
@@ -429,6 +431,7 @@ body = f'''<nav class="nav"><div class="nav-in"><a href="#top" class="brand">spi
 </div>
 </div></header>
 <main>
+<div class="wrap"><div class="v10banner reveal"><b>v0.10（当前锁定）</b>在 v0.9.2 基础上经留出题差分再 <b>+5</b>：破天花板 <b>58%→83%</b>、精简代码 <b>83%→100%</b>，其余三桶零回归。下方竞品对比与曲线为 v0.9.2 基线测量 —— v0.10 ≥ 它每一桶（不重复跑全场 arena，省 token）。</div></div>
 <section id="lift" class="sec"><div class="wrap reveal"><div class="kicker">效果 · 留出验证</div>{lift_section() if LIFT else ''}</div></section>
 <section id="compare" class="sec"><div class="wrap reveal">
 <div class="kicker">回答实例</div>
@@ -471,6 +474,7 @@ body = f'''<nav class="nav"><div class="nav-in"><a href="#top" class="brand">spi
 <li>不声称「碾压全部」：行为题 Sonnet+spine 综合越过裸 Opus，但<b>最吃推理的「破天花板」桶、以及单题执行质量，裸 Opus 仍领先</b>。这是行为题不是能力题，别外推到数学 / 算法 / 知识。</li>
 <li>最稳的信号是「综合排名」和 Sonnet 的「天花板#1」（n=18）。Opus / Haiku 单轮 n=6，per-bucket 会跳。v0.9.2 后停止行为迭代，避免追单桶噪声。</li>
 <li>单文件版连最弱的 Haiku 都综合第一，推翻早期「小模型不如 ponytail」——那是路由架构问题，不是宿命。</li>
+<li>「精简代码」桶测的是<b>精简度，不是 bug 率</b>——看不见静默 bug。v0.10 另立底线「正确性不为短让路」，双轴验证把代码稳健性从 <b>25%→58%</b>（边界不出 bug），精简守住。但 58% 非满分：prompt 把 Sonnet 的边界意识拉得高、拉不满，是能力上限。</li>
 </ul></div>
 </div></section>
 </main>

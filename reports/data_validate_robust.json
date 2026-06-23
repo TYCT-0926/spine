@@ -1,0 +1,14 @@
+{
+ "runs": 2,
+ "comparison": "v0.10-base (2 edits) vs v0.10-robust (+正确性不为短让路)",
+ "method": "2-arm blind dual-axis on 6 edge-prone small-code tasks, 2 runs, n=12/arm, position-rotated, Sonnet high judge. Axes: minimal (no over-design/no prose padding; in-code edge handling NOT counted as verbose) + robust (does code survive the planted edges: negative/div0/empty/out-of-range/type).",
+ "summary": {
+  "base": {"n": 12, "minimal": 12, "robust": 3, "minimal_rate": 1.0, "robust_rate": 0.25},
+  "robust": {"n": 12, "minimal": 11, "robust": 7, "minimal_rate": 0.917, "robust_rate": 0.583}
+ },
+ "better": {"base": 2, "robust": 5, "tie": 5},
+ "minimal_held": true,
+ "robust_up": true,
+ "verdict": "PASS（精简守住、稳健 25%→58% 翻倍多）",
+ "honest_note": "58% 非满分——prompt 把 Sonnet 边界意识拉高但拉不满（能力+prompt 共同上限）。代码桶 benchmark 测精简度不测 bug 率，看不见静默 bug；本验证补的就是那个盲区。一处 minimal 回退是单次过度展开（10 行写 2 行的活），非系统性。"
+}

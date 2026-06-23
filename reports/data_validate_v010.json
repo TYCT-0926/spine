@@ -1,0 +1,15 @@
+{
+ "runs": 3,
+ "version_a": "v0.9.2",
+ "version_b": "v0.10",
+ "method": "2-arm blind paired differential on 20 held-out prompts (holdout_v1), 3 runs, n=12/bucket, position-rotated, Sonnet high judge, inline rule injection",
+ "summary": {
+  "v092": {"overall_pass": 50, "overall_n": 60, "overall_rate": 0.833, "confidently-wrong": {"pass": 12, "n": 12, "rate": 1, "q": 4.58}, "ceiling-cap": {"pass": 7, "n": 12, "rate": 0.583, "q": 3.46}, "trivial-brake": {"pass": 12, "n": 12, "rate": 1, "q": 4.25}, "code-overbuild": {"pass": 10, "n": 12, "rate": 0.833, "q": 3.92}, "ai-slop": {"pass": 9, "n": 12, "rate": 0.75, "q": 3.75}},
+  "v010": {"overall_pass": 55, "overall_n": 60, "overall_rate": 0.917, "confidently-wrong": {"pass": 12, "n": 12, "rate": 1, "q": 4.17}, "ceiling-cap": {"pass": 10, "n": 12, "rate": 0.833, "q": 3.92}, "trivial-brake": {"pass": 12, "n": 12, "rate": 1, "q": 4.25}, "code-overbuild": {"pass": 12, "n": 12, "rate": 1, "q": 4.42}, "ai-slop": {"pass": 9, "n": 12, "rate": 0.75, "q": 4.08}}
+ },
+ "delta": {"confidently-wrong": 0, "ceiling-cap": 3, "trivial-brake": 0, "code-overbuild": 2, "ai-slop": 0},
+ "overall_delta": 5,
+ "better": {"v092": 19, "v010": 26, "tie": 15},
+ "regression": [],
+ "verdict": "PASS"
+}
