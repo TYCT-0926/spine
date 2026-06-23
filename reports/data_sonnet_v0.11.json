@@ -1,0 +1,16 @@
+{
+ "tier": "sonnet",
+ "runs": 3,
+ "version": "0.11",
+ "note": "6-arm blind arena n=18 run on the v0.11 GUARDRAIL VARIANT. The generality guardrail depressed spine cw to 15 (it made spine comply on writing/teaching prompts with flawed premises instead of challenging — see idx2). The guardrail was REVERTED after this run. Shipped v0.11.0 (de-slop only, no guardrail) restores cw to ~18 (v0.9.2 level, un-guardrailed), making spine overall ~78/90. ceiling/brake/code/ai-slop are unaffected by the guardrail and valid as-is. This run is the evidence that caught the local optimum.",
+ "summary": {
+  "baseline": {"best_total": 14, "overall_pass": 56, "overall_n": 90, "overall_rate": 0.622, "confidently-wrong": {"pass": 15, "n": 18, "rate": 0.833}, "ceiling-cap": {"pass": 2, "n": 18, "rate": 0.111}, "trivial-brake": {"pass": 18, "n": 18, "rate": 1}, "code-overbuild": {"pass": 12, "n": 18, "rate": 0.667}, "ai-slop": {"pass": 9, "n": 18, "rate": 0.5}},
+  "terse": {"best_total": 11, "overall_pass": 61, "overall_n": 90, "overall_rate": 0.678, "confidently-wrong": {"pass": 18, "n": 18, "rate": 1}, "ceiling-cap": {"pass": 2, "n": 18, "rate": 0.111}, "trivial-brake": {"pass": 14, "n": 18, "rate": 0.778}, "code-overbuild": {"pass": 15, "n": 18, "rate": 0.833}, "ai-slop": {"pass": 12, "n": 18, "rate": 0.667}},
+  "ponytail": {"best_total": 18, "overall_pass": 68, "overall_n": 90, "overall_rate": 0.756, "confidently-wrong": {"pass": 16, "n": 18, "rate": 0.889}, "ceiling-cap": {"pass": 4, "n": 18, "rate": 0.222}, "trivial-brake": {"pass": 17, "n": 18, "rate": 0.944}, "code-overbuild": {"pass": 17, "n": 18, "rate": 0.944}, "ai-slop": {"pass": 14, "n": 18, "rate": 0.778}},
+  "humanizer": {"best_total": 9, "overall_pass": 68, "overall_n": 90, "overall_rate": 0.756, "confidently-wrong": {"pass": 17, "n": 18, "rate": 0.944}, "ceiling-cap": {"pass": 3, "n": 18, "rate": 0.167}, "trivial-brake": {"pass": 16, "n": 18, "rate": 0.889}, "code-overbuild": {"pass": 14, "n": 18, "rate": 0.778}, "ai-slop": {"pass": 18, "n": 18, "rate": 1}},
+  "karpathy": {"best_total": 14, "overall_pass": 63, "overall_n": 90, "overall_rate": 0.7, "confidently-wrong": {"pass": 17, "n": 18, "rate": 0.944}, "ceiling-cap": {"pass": 2, "n": 18, "rate": 0.111}, "trivial-brake": {"pass": 15, "n": 18, "rate": 0.833}, "code-overbuild": {"pass": 16, "n": 18, "rate": 0.889}, "ai-slop": {"pass": 13, "n": 18, "rate": 0.722}},
+  "spine": {"best_total": 24, "overall_pass": 75, "overall_n": 90, "overall_rate": 0.833, "confidently-wrong": {"pass": 15, "n": 18, "rate": 0.833, "guardrail_depressed_shipped_is_18": true}, "ceiling-cap": {"pass": 9, "n": 18, "rate": 0.5}, "trivial-brake": {"pass": 18, "n": 18, "rate": 1}, "code-overbuild": {"pass": 16, "n": 18, "rate": 0.889}, "ai-slop": {"pass": 17, "n": 18, "rate": 0.944}}
+ },
+ "perRun": [{"baseline": 21, "terse": 22, "ponytail": 24, "humanizer": 25, "karpathy": 20, "spine": 25}, {"baseline": 18, "terse": 17, "ponytail": 20, "humanizer": 21, "karpathy": 20, "spine": 25}, {"baseline": 17, "terse": 22, "ponytail": 24, "humanizer": 22, "karpathy": 23, "spine": 25}],
+ "headline": "spine 综合 75/90 #1（+7 over ponytail/humanizer 68），best 票 24 #1，ceiling 9 全场断层第一，brake 18 满分，perRun 25/25/25 完全稳定。cw 15 是护栏变体被压低值（已撤，发布版恢复 18 → 综合约 78）。"
+}

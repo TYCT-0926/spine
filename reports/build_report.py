@@ -421,7 +421,7 @@ cmp_box = '' if not SHOWCASE else ('<div class="cmp"><div class="cmp-bar"><div c
 
 body = f'''<nav class="nav"><div class="nav-in"><a href="#top" class="brand">spine <span>骨气</span></a><div class="nav-links">{nav}</div></div></nav>
 <header id="top" class="hero"><div class="wrap reveal">
-<div class="kicker">反顺从行为层 · 锁定版 v0.10</div>
+<div class="kicker">反顺从行为层 · 锁定版 v0.11</div>
 <h1>给 AI agent<br>装上 <em>骨气</em></h1>
 <p class="hero-thesis">该直接做就做，该挡前提就挡，问对问题、写最少代码、说人话。<br><b>AI 的输出上限 = 你的认知上限 × AI 的顺从性</b>——这一层同时削两个乘数。</p>
 <div class="hero-stats">
@@ -431,7 +431,7 @@ body = f'''<nav class="nav"><div class="nav-in"><a href="#top" class="brand">spi
 </div>
 </div></header>
 <main>
-<div class="wrap"><div class="v10banner reveal"><b>v0.10（当前锁定）</b>在 v0.9.2 基础上经留出题差分再 <b>+5</b>：破天花板 <b>58%→83%</b>、精简代码 <b>83%→100%</b>，其余三桶零回归。下方竞品对比与曲线为 v0.9.2 基线测量 —— v0.10 ≥ 它每一桶（不重复跑全场 arena，省 token）。</div></div>
+<div class="wrap"><div class="v10banner reveal"><b>v0.11（当前锁定）</b>最新 6 臂 n=18 复测：spine <b>综合 75/90 全场第一</b>（领先次席 7 分）、best 票 24、<b>破天花板 9 全场断层第一</b>、刹车满分、三轮 25/25/25 完全稳定；去 AI 腔 16→17 近满分。一个「通用性护栏」被本轮实测抓出会连带伤 cw（判断↔普适的根本矛盾），已撤回——详见 CHANGELOG。下方明细图为 v0.9.2 基线（cw 干净），v0.11 在其上再 +。</div></div>
 <section id="lift" class="sec"><div class="wrap reveal"><div class="kicker">效果 · 留出验证</div>{lift_section() if LIFT else ''}</div></section>
 <section id="compare" class="sec"><div class="wrap reveal">
 <div class="kicker">回答实例</div>
@@ -475,6 +475,7 @@ body = f'''<nav class="nav"><div class="nav-in"><a href="#top" class="brand">spi
 <li>最稳的信号是「综合排名」和 Sonnet 的「天花板#1」（n=18）。Opus / Haiku 单轮 n=6，per-bucket 会跳。v0.9.2 后停止行为迭代，避免追单桶噪声。</li>
 <li>单文件版连最弱的 Haiku 都综合第一，推翻早期「小模型不如 ponytail」——那是路由架构问题，不是宿命。</li>
 <li>「精简代码」桶测的是<b>精简度，不是 bug 率</b>——看不见静默 bug。v0.10 另立底线「正确性不为短让路」，双轴验证把代码稳健性从 <b>25%→58%</b>（边界不出 bug），精简守住。但 58% 非满分：prompt 把 Sonnet 的边界意识拉得高、拉不满，是能力上限。</li>
+<li>spine 是<b>判断类专精</b>：决策 / 代码 / 写作实测领先全场；纯闲聊 / 社交它会略端着（通用性探针 misfire ~3/14 vs 裸模型 0）。v0.11 试过「通用性护栏」让它在通用场景收手，但全场 arena 实测它会<b>连带把 cw 从 18 砸到 15</b>（判断↔普适的根本矛盾），已撤——该把 spine 用在它擅长的活上，不当全局闲聊层。</li>
 </ul></div>
 </div></section>
 </main>
