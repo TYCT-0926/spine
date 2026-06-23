@@ -300,121 +300,189 @@ lead = sorted((S[a]['overall_pass'] for a in arms if a != 'spine'), reverse=True
 nlead = [a for a in arms if a != 'spine' and S[a]['overall_pass'] == lead][0]
 win_buckets = sum(1 for b in buckets if S['spine'][b]['pass'] == max(S[a][b]['pass'] for a in arms))
 
-html = f"""<!doctype html><html lang="zh"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>spine · 反顺从行为层 — 评测仪表盘</title>
-<style>
- :root{{--o:#e8590c;--o2:#f76707;--ink:#212529;--mut:#868e96;--line:#edf0f2}}
- *{{box-sizing:border-box}}
- body{{font:15px/1.7 -apple-system,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;
-   color:var(--ink);max-width:880px;margin:0 auto;padding:0 18px 70px;background:#fff}}
- .hero{{background:linear-gradient(135deg,#fff4e6,#ffe8cc 55%,#ffd8a8);border-radius:20px;
-   padding:34px 30px;margin:26px 0 8px;border:1px solid #ffd8a8}}
- .hero h1{{font-size:30px;margin:0 0 6px;letter-spacing:-.5px}}
- .hero h1 b{{color:var(--o)}}
- .hero p{{margin:0;color:#a14d12;font-size:15px}}
- .thesis{{font-size:13.5px;color:#b35a14;margin-top:14px;padding-top:14px;border-top:1px dashed #ffc078}}
- .stats{{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0 4px}}
- .stat{{flex:1;min-width:150px;background:#fff;border:1px solid #ffe0b8;border-radius:14px;padding:15px 16px}}
- .stat .n{{font-size:27px;font-weight:800;color:var(--o);line-height:1.1}}
- .stat .l{{font-size:12px;color:var(--mut);margin-top:5px}}
- h2{{font-size:19px;margin:40px 0 4px;display:flex;align-items:center;gap:9px}}
- h2::before{{content:"";width:5px;height:19px;background:var(--o2);border-radius:3px;display:inline-block}}
- .cap{{color:var(--mut);font-size:13px;margin:2px 0 14px;line-height:1.6}}
- .card{{border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin:12px 0;
-   background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.03)}}
- .meth{{font-size:12.5px;color:var(--mut);background:#f8f9fa;border-radius:10px;padding:10px 14px;margin:10px 0}}
- .meth b{{color:#495057}}
- .note{{color:#adb5bd;font-size:12px;margin:12px 0 0;line-height:1.65}}
- .legend{{display:flex;flex-wrap:wrap;gap:9px 16px;margin-top:14px;font-size:12.5px;color:var(--mut)}}
- .legend .lg{{display:flex;align-items:center;gap:6px}}
- .legend i{{width:11px;height:11px;border-radius:3px;display:inline-block}}
- .legend b{{color:#495057}}
- .two{{display:flex;gap:14px;flex-wrap:wrap;align-items:center}} .two>div{{flex:1;min-width:240px}}
- .quote{{font-size:14px;color:#495057;background:#fff9f5;border-left:3px solid var(--o2);
-   border-radius:0 10px 10px 0;padding:11px 16px;margin:12px 0}}
- .honest li{{margin:6px 0;color:#5c6770;font-size:13.5px}}
- .repl{{display:flex;gap:10px;flex-wrap:wrap}}
- .repl .b{{flex:1;min-width:200px;border:1px solid var(--line);border-radius:12px;padding:13px 16px}}
- .repl .b .t{{font-size:12px;color:var(--mut)}} .repl .b .v{{font-size:16px;font-weight:700;margin-top:3px}}
- .repl .b .v b{{color:var(--o)}}
- footer{{margin-top:34px;color:#adb5bd;font-size:12px;border-top:1px solid var(--line);padding-top:16px;line-height:1.7}}
- .tag{{display:inline-block;background:#fff0e6;color:var(--o);font-size:11px;font-weight:600;
-   padding:2px 9px;border-radius:20px;vertical-align:middle;margin-left:8px}}
-</style></head><body>
+CSS = '''
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--ink:#18181b;--ink2:#3f3f46;--mut:#71717a;--faint:#a1a1aa;--o:#ea580c;--o2:#f97316;
+ --o-soft:#fff7ed;--o-line:#fed7aa;--bg:#fff;--bg2:#fafaf9;--line:#eeedeb;--line2:#e4e4e7;
+ --ok:#16a34a;--no:#dc2626;--rad:16px;--shadow:0 1px 2px rgba(0,0,0,.04),0 10px 30px -16px rgba(0,0,0,.12);--maxw:940px}
+html{scroll-behavior:smooth;scroll-padding-top:74px}
+body{font:16px/1.72 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;
+ color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+em{font-style:normal;color:var(--o)}
+b,strong{font-weight:680}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+.nav{position:sticky;top:0;z-index:50;backdrop-filter:saturate(1.7) blur(12px);background:rgba(255,255,255,.8);border-bottom:1px solid var(--line)}
+.nav-in{max-width:var(--maxw);margin:0 auto;padding:0 22px;height:56px;display:flex;align-items:center;gap:18px}
+.brand{font-weight:820;font-size:18px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
+.brand span{font-size:11.5px;font-weight:600;color:var(--mut);background:var(--bg2);border:1px solid var(--line2);padding:2px 8px;border-radius:20px}
+.nav-links{display:flex;gap:2px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links a{font-size:13.5px;color:var(--mut);padding:6px 11px;border-radius:8px;white-space:nowrap;transition:.15s}
+.nav-links a:hover{color:var(--ink);background:var(--bg2)}
+.nav-links a.on{color:var(--o);background:var(--o-soft)}
+.hero{padding:74px 0 46px;border-bottom:1px solid var(--line);background:radial-gradient(1100px 420px at 78% -12%,var(--o-soft),transparent 62%)}
+.kicker{font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--o)}
+.hero h1{font-size:clamp(40px,7.2vw,64px);line-height:1.02;letter-spacing:-.035em;font-weight:830;margin:16px 0 0}
+.hero-thesis{font-size:18px;color:var(--ink2);max-width:610px;margin:22px 0 0;line-height:1.62}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px}
+.hs{background:var(--bg);border:1px solid var(--line2);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+.hs-n{font-size:30px;font-weight:830;color:var(--o);letter-spacing:-.02em;line-height:1}
+.hs-n s{text-decoration:none;color:var(--faint);font-weight:600;font-size:21px;margin:0 3px}
+.hs-l{font-size:12.5px;color:var(--mut);margin-top:10px;line-height:1.5}
+.sec{padding:58px 0;border-bottom:1px solid var(--line)}
+.sec h2{font-size:clamp(25px,4vw,33px);letter-spacing:-.022em;font-weight:790;margin:11px 0 0}
+.sub{font-size:21px;font-weight:740;letter-spacing:-.01em;margin:44px 0 0}
+.lead{font-size:15px;color:var(--mut);max-width:700px;margin:15px 0 0;line-height:1.66}
+.lead b{color:var(--ink2)}
+.card{border:1px solid var(--line2);border-radius:var(--rad);padding:24px;margin-top:22px;background:var(--bg);box-shadow:var(--shadow)}
+.card.flat{box-shadow:none}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:center}
+.cap{color:var(--mut);font-size:13.5px;line-height:1.62;margin:14px 0 0}
+.note{color:var(--faint);font-size:12.5px;margin:14px 0 0;line-height:1.62}
+.legend{display:flex;flex-wrap:wrap;gap:9px 16px;margin-top:15px;font-size:12.5px;color:var(--mut)}
+.legend .lg{display:flex;align-items:center;gap:6px}.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}.legend b{color:var(--ink2)}
+.quote{font-size:14.5px;color:var(--ink2);background:var(--o-soft);border:1px solid var(--o-line);border-radius:12px;padding:15px 18px;margin-top:18px;line-height:1.62}
+.cmp{margin-top:24px}
+.cmp-bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.cmp-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.cmp-tabs button{font-size:13.5px;font-weight:600;color:var(--mut);background:var(--bg2);border:1px solid var(--line2);padding:7px 13px;border-radius:9px;cursor:pointer;transition:.15s}
+.cmp-tabs button:hover{color:var(--ink)}
+.cmp-tabs button.on{color:#fff;background:var(--o);border-color:var(--o)}
+.cmp-toggle{display:inline-flex;background:var(--bg2);border:1px solid var(--line2);border-radius:11px;padding:3px}
+.cmp-toggle button{font-size:12.5px;font-weight:600;color:var(--mut);background:none;border:none;padding:7px 13px;border-radius:8px;cursor:pointer;transition:.15s}
+.cmp-toggle button.on{color:var(--ink);background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.09)}
+.cmp-q{margin-top:18px;font-size:15px;color:var(--ink2);background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;line-height:1.6}
+.cmp-q .ql{display:inline-block;font-size:11px;font-weight:700;color:var(--o);background:var(--o-soft);padding:2px 8px;border-radius:6px;margin-right:8px}
+.cmp-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.ans{border:1px solid var(--line2);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;background:var(--bg)}
+.ans.spine{border-color:var(--o-line);box-shadow:0 0 0 1px var(--o-line)}
+.ans-h{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 15px;border-bottom:1px solid var(--line);background:var(--bg2)}
+.ans.spine .ans-h{background:var(--o-soft)}
+.ans-m{font-size:13.5px;font-weight:700}
+.chip{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.chip.ok{color:var(--ok);background:#f0fdf4;border:1px solid #bbf7d0}
+.chip.no{color:var(--no);background:#fef2f2;border:1px solid #fecaca}
+.ans-b{padding:14px 16px;font-size:13px;line-height:1.64;color:var(--ink2);white-space:pre-wrap;word-break:break-word;overflow:hidden;transition:max-height .35s ease}
+.ans-b[data-c="1"]{max-height:250px;-webkit-mask-image:linear-gradient(180deg,#000 74%,transparent);mask-image:linear-gradient(180deg,#000 74%,transparent)}
+.ans-b[data-c="0"]{max-height:6000px}
+.ans-b code{font-family:'SF Mono',Consolas,monospace;font-size:12px;background:var(--bg2);border-radius:4px;padding:1px 4px}
+.ans-b pre{font-family:'SF Mono',Consolas,monospace;font-size:11.5px;line-height:1.5;background:#1e1e22;color:#e4e4e7;border-radius:8px;padding:11px 13px;margin:8px 0;white-space:pre;overflow-x:auto}
+.ans-x{font-size:12px;color:var(--o);background:none;border:none;border-top:1px solid var(--line);padding:9px;cursor:pointer;font-weight:600}
+.ans-x:hover{background:var(--o-soft)}
+.cmp-diff{margin-top:16px;font-size:14px;line-height:1.62;color:var(--ink2);background:var(--o-soft);border:1px solid var(--o-line);border-radius:12px;padding:14px 18px}
+.cmp-diff b{color:var(--o);margin-right:8px}
+.meth{font-size:13px;color:var(--ink2);background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:16px 18px;line-height:1.72}
+.honest li{margin:9px 0;color:var(--ink2);font-size:14px;line-height:1.6}
+.repl{display:flex;gap:12px;flex-wrap:wrap}
+.repl .b{flex:1;min-width:200px;border:1px solid var(--line2);border-radius:12px;padding:14px 16px}
+.repl .b .t{font-size:12px;color:var(--mut)}.repl .b .v{font-size:16px;font-weight:700;margin-top:3px}.repl .b .v b{color:var(--o)}
+footer{padding:40px 0 72px;color:var(--faint);font-size:12.5px;line-height:1.85}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+@media(max-width:680px){.hero-stats,.two,.cmp-cols{grid-template-columns:1fr}}
+'''
 
-<div class="hero">
- <h1><b>spine</b> · 反顺从行为层<span class="tag">锁定版 v0.9.2</span></h1>
- <p>给 AI agent 装上骨气：该直接做就做，该挡前提就挡，问对问题、写最少代码、说人话。</p>
- <div class="thesis">核心命题：<b>AI 的输出上限 = 用户的认知上限 × AI 的顺从性</b>。一个默认顺从的 agent 把产出锁死在用户已知的天花板里；这一层同时撬动两个乘数。</div>
- <div class="stats">
-  <div class="stat"><div class="n">+50%</div><div class="l">留出新题上 spine 让 Sonnet 行为命中率 57%→85%（同模型纯增益）</div></div>
-  <div class="stat"><div class="n">85% &gt; 70%</div><div class="l">Sonnet+spine 行为综合越过裸 Opus（留出题盲评，非过拟合）</div></div>
-  <div class="stat"><div class="n">三层全 #1</div><div class="l">对比 5 个对手 skill，Haiku / Sonnet / Opus 综合命中率都第一</div></div>
-  <div class="stat"><div class="n">0 垫底桶</div><div class="l">五个能力桶全部 ≥ 裸模型，每个对手都有自己崩盘的桶</div></div>
- </div>
+JS = r'''
+var links=[].slice.call(document.querySelectorAll('.nav-links a'));
+var spy=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(l){l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id)})}})},{rootMargin:'-45% 0px -50% 0px'});
+[].slice.call(document.querySelectorAll('section[id]')).forEach(function(s){spy.observe(s)});
+var rev=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');rev.unobserve(e.target)}})},{rootMargin:'0px 0px -6% 0px'});
+[].slice.call(document.querySelectorAll('.reveal')).forEach(function(x){rev.observe(x)});
+var LBL={sBare:'裸 Sonnet',sSpine:'Sonnet + spine',oBare:'裸 Opus'};
+var ci=0,cm='lift';
+function $(id){return document.getElementById(id)}
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function fmt(s){s=esc(s);s=s.replace(/```[a-z]*\n([\s\S]*?)```/g,function(m,c){return '<pre>'+c.replace(/\n$/,'')+'</pre>'});s=s.replace(/`([^`]+)`/g,'<code>$1</code>');s=s.replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');return s}
+function ansCard(it,k){var ok=it.pass[k];return '<div class="ans'+(k==='sSpine'?' spine':'')+'"><div class="ans-h"><span class="ans-m">'+LBL[k]+'</span><span class="chip '+(ok?'ok':'no')+'">'+(ok?'✓ 做对了':'✗ 没做到')+'</span></div><div class="ans-b" data-c="1">'+fmt(it.ans[k])+'</div><button class="ans-x">展开全文</button></div>'}
+function renderCmp(){if(!window.SHOWCASE||!SHOWCASE.length)return;var it=SHOWCASE[ci];
+$('cmpTabs').innerHTML=SHOWCASE.map(function(x,i){return '<button class="'+(i===ci?'on':'')+'" data-i="'+i+'">'+x.bucketCn+'</button>'}).join('');
+[].slice.call($('cmpTabs').querySelectorAll('button')).forEach(function(b){b.onclick=function(){ci=+b.dataset.i;renderCmp()}});
+[].slice.call(document.querySelectorAll('#cmpToggle button')).forEach(function(b){b.classList.toggle('on',b.dataset.m===cm)});
+$('cmpQ').innerHTML='<span class="ql">用户问</span>'+esc(it.prompt);
+var p=cm==='lift'?['sBare','sSpine']:['sSpine','oBare'];
+$('cmpCols').innerHTML=ansCard(it,p[0])+ansCard(it,p[1]);
+[].slice.call($('cmpCols').querySelectorAll('.ans-x')).forEach(function(btn){btn.onclick=function(){var b=btn.previousElementSibling;var c=b.dataset.c==='1';b.dataset.c=c?'0':'1';btn.textContent=c?'收起':'展开全文'}});
+$('cmpDiff').innerHTML='<b>关键差异</b>'+esc(it.note[cm])}
+[].slice.call(document.querySelectorAll('#cmpToggle button')).forEach(function(b){b.onclick=function(){cm=b.dataset.m;renderCmp()}});
+renderCmp();
+'''
+
+SHOWCASE_FILE = R / 'data_showcase.json'
+SHOWCASE = json.load(open(SHOWCASE_FILE, encoding='utf-8')) if SHOWCASE_FILE.exists() else []
+nav = '<a href="#lift">提升越级</a><a href="#compare">回答实例</a><a href="#curve">能力曲线</a><a href="#arena">对手对比</a><a href="#method">方法论</a>'
+curve_leg = ''.join(f'<span class="lg"><i style="background:{COL[a]}"></i>{names[a]} <b>{trate(O,a)*100:.0f}%</b></span>' for a in sorted(arms, key=lambda x: -trate(O, x)))
+cmp_box = '' if not SHOWCASE else ('<div class="cmp"><div class="cmp-bar"><div class="cmp-tabs" id="cmpTabs"></div>'
+    '<div class="cmp-toggle" id="cmpToggle"><button class="on" data-m="lift">提升 · 裸 Sonnet → +spine</button>'
+    '<button data-m="cross">越级 · +spine vs 裸 Opus</button></div></div>'
+    '<div class="cmp-q" id="cmpQ"></div><div class="cmp-cols" id="cmpCols"></div><div class="cmp-diff" id="cmpDiff"></div></div>')
+
+body = f'''<nav class="nav"><div class="nav-in"><a href="#top" class="brand">spine <span>骨气</span></a><div class="nav-links">{nav}</div></div></nav>
+<header id="top" class="hero"><div class="wrap reveal">
+<div class="kicker">反顺从行为层 · 锁定版 v0.9.2</div>
+<h1>给 AI agent<br>装上 <em>骨气</em></h1>
+<p class="hero-thesis">该直接做就做，该挡前提就挡，问对问题、写最少代码、说人话。<br><b>AI 的输出上限 = 你的认知上限 × AI 的顺从性</b>——这一层同时削两个乘数。</p>
+<div class="hero-stats">
+<div class="hs"><div class="hs-n">+50%</div><div class="hs-l">留出新题上，spine 让 Sonnet 行为命中率 57% → 85%（同模型纯增益）</div></div>
+<div class="hs"><div class="hs-n">85% <s>&gt;</s> 70%</div><div class="hs-l">Sonnet + spine 行为综合越过裸 Opus（留出题盲评，非过拟合）</div></div>
+<div class="hs"><div class="hs-n">三层 #1</div><div class="hs-l">对比 5 个对手 skill，Haiku / Sonnet / Opus 综合命中率都第一</div></div>
 </div>
-
-<div class="meth">
- <b>怎么测的：</b>6 臂盲评竞技场 — 裸模型 / terse 一句话 / ponytail / humanizer-zh / karpathy / <b>spine</b>。
- 30 道难度过滤硬题（5 桶各 6 题），位置轮换匿名，<b>规则 inline 注入</b>（逐字读一次嵌进 prompt，模拟 Claude Code 自动加载 SKILL.md 的公平环境），Sonnet 高强度裁判。
- 跑 <b>3 轮聚合到 n=18/桶</b>，压住单轮抽样噪声。
-</div>
-
-{lift_section() if LIFT else ''}
-<h2>能力曲线：模型越强，它越强</h2>
-<p class="cap">同一个 v0.9.2 文件，装到三个强度的模型上。spine 在 <b>Haiku / Sonnet / Opus 三层全部综合第一</b>，命中率随模型能力上行（<b>67% → 79% → 80%</b>）。早期路由版在 Haiku 上跟不动、输给更简单的 ponytail；折叠成单文件后连最弱的 Haiku 都能照着做——这一版 ponytail 反而在 Haiku 崩到 20%。</p>
-<div class="card">{curve_svg()}
-<div class="legend">{''.join(f'<span class="lg"><i style="background:{COL[a]}"></i>{names[a]} <b>{trate(O,a)*100:.0f}%</b></span>' for a in sorted(arms, key=lambda x: -trate(O, x)))}</div>
-<p class="note">图例百分比为 Opus 层综合命中率。Opus / Haiku 为单轮 n=6（比 Sonnet 的 n=18 噪声大），综合趋势稳、per-bucket 会跳——天花板桶在 Opus 单轮里全场都掉到 ~1（n=6 抓不住难桶差异），所以「破天花板」作为单项优势只用 Sonnet n=18 的数据声称。best 票：spine 在 Opus / Haiku 各拿 12，均为全场最高（次席仅 6）。</p></div>
-
-<h2>综合排名（Sonnet · n=18）</h2>
-<p class="cap">放大甜点区那一层看细节：六臂用各自仓库原文规则。spine 综合第一，且是唯一全程高于裸模型基线的行为层。</p>
+</div></header>
+<main>
+<section id="lift" class="sec"><div class="wrap reveal"><div class="kicker">效果 · 留出验证</div>{lift_section() if LIFT else ''}</div></section>
+<section id="compare" class="sec"><div class="wrap reveal">
+<div class="kicker">回答实例</div>
+<h2>同一道题，加了骨气前后</h2>
+<p class="lead">分数是抽象的，回答是具体的。下面是<b>留出题里的真实回答</b>，你自己看差别。切「提升」看同一个 Sonnet 开关 spine 的变化，切「越级」看 Sonnet+spine 对打裸 Opus。<b>没挑好的</b>——「破天花板」那道 Opus 反而更强，照样放上来。</p>
+{cmp_box}
+</div></section>
+<section id="curve" class="sec"><div class="wrap reveal">
+<div class="kicker">能力曲线</div>
+<h2>模型越强，它越强</h2>
+<p class="lead">同一个 v0.9.2 文件装到三个强度的模型上。spine 在 <b>Haiku / Sonnet / Opus 三层全部综合第一</b>，命中率随能力上行（67% → 79% → 80%）。早期路由版在 Haiku 上跟不动、输给更简单的 ponytail；折叠成单文件后连最弱的 Haiku 都能照着做（ponytail 反而在 Haiku 崩到 20%）。</p>
+<div class="card">{curve_svg()}<div class="legend">{curve_leg}</div>
+<p class="note">图例为 Opus 层综合命中率。Opus / Haiku 为单轮 n=6（比 Sonnet 的 n=18 噪声大），看综合趋势稳；破天花板桶在 Opus 单轮全场掉到 ~1，该单项优势只用 Sonnet n=18 声称。</p></div>
+</div></section>
+<section id="arena" class="sec"><div class="wrap reveal">
+<div class="kicker">对手对比 · Sonnet n=18</div>
+<h2>对比 5 个专精 skill</h2>
+<p class="lead">6 臂盲评（裸模型 / terse / ponytail / humanizer-zh / karpathy / spine），各用其仓库原文规则。spine 综合第一，且是唯一全程高于裸模型基线的行为层。</p>
 <div class="card">{rank_bars()}</div>
-
-<h2>每桶能力矩阵</h2>
-<p class="cap">格子颜色 = 命中率（红低绿高），描边金框 = 该桶全场领先。spine 拿下 <b>{win_buckets}/5</b> 桶的领先且<b>没有一个红格</b>——每个对手都有自己崩盘的桶（裸模型崩天花板，humanizer 崩代码，terse/karpathy 崩天花板）。code 桶 terse 凭「天然写最少代码」领先，spine 第 3 但仍高于裸模型。</p>
+<div class="sub">每桶能力矩阵</div>
+<p class="lead">格子颜色 = 命中率（红低绿高），金框 = 该桶全场领先。spine 拿下 <b>{win_buckets}/5</b> 桶领先且<b>没有一个红格</b>——每个对手都有崩盘桶。code 桶 terse 凭「天然写最少代码」领先，spine 第 3 但仍高于裸模型。</p>
 <div class="card">{heatmap()}</div>
-
-<h2>USP：破认知天花板</h2>
-<p class="cap">这是 spine 区别于「又一个简洁 prompt」的根本点。判定标准不是「在用户给的选项里选得好」，而是<b>主动质疑「这个问题/这个杠杆该不该现在解决」</b>——优化注册表单前先问注册率是不是真瓶颈。</p>
-<div class="card">{ceiling_spot()}
-<div class="quote">整个领域在这一桶都低分（裸模型 3，多数对手 ≤5）——因为跳出框架是判断行为，不是风格指令。spine 6/18 全场第一；上一版 v0.9.1 同一桶 8/18，<b>领先地位两轮复现</b>。</div></div>
-
-<h2>稳定性：不是手气好</h2>
-<p class="cap">三轮独立重测。spine 每一轮都排第一，且三轮极差最小——别的臂忽高忽低（karpathy 18↔25，ponytail 18↔24），spine 稳在 23–24。</p>
+<div class="sub">USP：破认知天花板</div>
+<p class="lead">spine 区别于「又一个简洁 prompt」的根本点：不是「在选项里选得好」，而是<b>主动质疑「这个问题该不该现在解决」</b>。</p>
+<div class="card">{ceiling_spot()}<div class="quote">整个领域在这一桶都低分——跳出框架是判断行为，不是风格指令。spine 6/18 全场第一；v0.9.1 同桶 8/18，<b>领先两轮复现</b>。</div></div>
+<div class="sub">稳定性：不是手气好</div>
+<p class="lead">三轮独立重测。spine 每轮都第一、三轮极差最小——别的臂忽高忽低，spine 稳在 23–24。</p>
 <div class="card">{stability()}</div>
-
-<h2>复现 + 架构跃升</h2>
-<div class="two">
- <div class="card" style="margin:0">
-  <div class="cap" style="margin:0 0 10px">两次独立 n=18 跑分，spine 综合与天花板桶都第一：</div>
-  <div class="repl">
-   <div class="b"><div class="t">v0.9.1（前一版）</div><div class="v"><b>73</b>/90 · 综合#1 · 天花板 8</div></div>
-   <div class="b"><div class="t">v0.9.2（锁定）</div><div class="v"><b>71</b>/90 · 综合#1 · 天花板 6</div></div>
-  </div>
- </div>
- <div class="card" style="margin:0">
-  <div class="cap" style="margin:0 0 6px">真正的「比过去好」是结构性的：把多文件路由折叠成单文件。取证发现 agent 几乎不读懒加载的 reference，路由层等于空操作。</div>
-  {arch_jump()}
- </div>
+</div></section>
+<section id="method" class="sec"><div class="wrap reveal">
+<div class="kicker">方法论与边界</div>
+<h2>为什么可信</h2>
+<div class="meth" style="margin-top:18px">盲评 + 位置轮换（裁判不知答案来自哪个模型/skill，位置每轮转）· <b>留出题</b>（越级实验那 20 道 spine 没见过，杜绝过拟合）· 同场对比（四组合同一次运行、同一裁判）· 3 轮聚合 n=12~18/桶 · <b>规则 inline 注入</b>（原文逐字读一次嵌进 prompt，模拟自动加载 SKILL.md）· 诚实边界写在脸上。裁判：Sonnet high。</div>
+<div class="two" style="margin-top:18px">
+ <div class="card flat" style="margin:0"><div class="lead" style="margin:0 0 10px">两次独立 n=18，spine 综合与天花板桶都第一：</div><div class="repl"><div class="b"><div class="t">v0.9.1（前一版）</div><div class="v"><b>73</b>/90 · 综合#1 · 天花板 8</div></div><div class="b"><div class="t">v0.9.2（锁定）</div><div class="v"><b>71</b>/90 · 综合#1 · 天花板 6</div></div></div></div>
+ <div class="card flat" style="margin:0"><div class="lead" style="margin:0 0 6px">真正的「比过去好」是结构性的：多文件路由折叠成单文件，agent 几乎不读懒加载 reference，路由层等于空操作。</div>{arch_jump()}</div>
 </div>
+<div class="sub">诚实边界</div>
+<div class="card honest" style="margin-top:14px"><ul style="margin:0;padding-left:20px">
+<li>不声称「碾压全部」：行为题 Sonnet+spine 综合越过裸 Opus，但<b>最吃推理的「破天花板」桶、以及单题执行质量，裸 Opus 仍领先</b>。这是行为题不是能力题，别外推到数学 / 算法 / 知识。</li>
+<li>最稳的信号是「综合排名」和 Sonnet 的「天花板#1」（n=18）。Opus / Haiku 单轮 n=6，per-bucket 会跳。v0.9.2 后停止行为迭代，避免追单桶噪声。</li>
+<li>单文件版连最弱的 Haiku 都综合第一，推翻早期「小模型不如 ponytail」——那是路由架构问题，不是宿命。</li>
+</ul></div>
+</div></section>
+</main>
+<footer><div class="wrap">spine / 骨气 — 给 agent 装上骨气。行为规则不含名字。<br>
+数据：6 臂盲评竞技场，Sonnet 3× 聚合 n=18/桶（主结果）；Haiku / Opus 单轮 n=6（曲线端点）；留出越级 4 臂 n=12/桶。规则 inline 注入，源数据 reports/data_*.json，可复现。<br>
+竞品规则来自各自仓库原文，致谢见 README。</div></footer>'''
 
-<h2>诚实边界</h2>
-<div class="card honest">
- <ul style="margin:0;padding-left:20px">
-  <li>不声称「碾压全部」。对手主场单项可能被噪声反超（Sonnet 的 code 桶 terse 领先）；可诚实声称的是 <b>三层全部综合#1 + Sonnet 最难桶#1 + 五桶全 ≥ 裸模型 + 三轮最稳</b>。</li>
-  <li>最稳的信号是「综合排名」（n=30/层）和 Sonnet 的「天花板#1」（n=18）。Opus / Haiku 是单轮 n=6，per-bucket 会跳——天花板桶在 Opus 单轮里全场都掉到 ~1，<b>n=6 抓不住难桶差异</b>，所以看综合趋势比看单桶可靠。v0.9.2 后<b>停止行为迭代</b>，避免追单桶噪声陷入局部最优。</li>
-  <li>能力曲线已补齐并推翻一个旧判断：单文件版连最弱的 Haiku 都综合第一，早期「小模型上不如 ponytail」是<b>路由架构</b>的问题，不是判断类 skill 的宿命。</li>
- </ul>
-</div>
-
-<footer>
- spine / 骨气 — 给 agent 装上骨气。行为规则不含名字，改名只动 H1。<br>
- 数据：6 臂盲评竞技场。Sonnet 3× 聚合 n=18/桶（主结果）；Haiku / Opus 单轮 n=6（能力曲线端点）。规则 inline 注入。源数据 reports/data_*_v0.9.*.json，可复现。<br>
- 竞品规则来自各自仓库原文，致谢见 README。
-</footer>
-</body></html>"""
+html = ('<!doctype html><html lang="zh"><head><meta charset="utf-8">'
+        '<meta name="viewport" content="width=device-width,initial-scale=1">'
+        '<title>spine（骨气）· 反顺从行为层</title><style>' + CSS + '</style>'
+        '<noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript></head><body>'
+        + body + '<script>window.SHOWCASE=' + json.dumps(SHOWCASE, ensure_ascii=False) + ';\n' + JS + '</script></body></html>')
 (R / 'scorecard.html').write_text(html, encoding='utf-8')
 
 # ---------- 精简 md（给不开浏览器的人） ----------
