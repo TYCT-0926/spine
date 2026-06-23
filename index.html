@@ -93,6 +93,10 @@
    padding:9px 16px;border-radius:11px;cursor:pointer;font-family:inherit;transition:.18s}
  .cmp-tabs button:hover{color:var(--ink);border-color:var(--line2)}
  .cmp-tabs button.on{color:#0a0a0b;background:var(--o);border-color:var(--o)}
+ .cmp-mode{display:inline-flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:4px;margin-top:18px}
+ .cmp-mode button{font-size:13px;font-weight:650;color:var(--mut);background:none;border:none;padding:7px 16px;border-radius:8px;cursor:pointer;font-family:inherit;transition:.18s}
+ .cmp-mode button.on{background:var(--o);color:#0a0a0b}
+ .cmp-fade .d{font-size:12.5px;color:var(--faint);margin:9px 0 2px}
  .cmp-q{margin-top:22px;font-size:16px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:13px;padding:16px 18px;display:flex;gap:11px;align-items:flex-start}
  .cmp-q .ql{flex:none;font-size:11px;font-weight:700;color:var(--o);background:var(--o-dim);border:1px solid var(--o-line);padding:3px 9px;border-radius:7px;margin-top:1px}
  .cmp-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
@@ -331,57 +335,83 @@
 
 <script>
 const CASES = [
- { id:'slop', tag:{cn:'写商店文案',en:'Write store copy'},
-   q:{cn:'给我们新出的 AI 笔记 App 写一段应用商店简介，150 字。',en:'Write a ~150-word App Store description for our new AI notes app.'},
-   bare:{label:{cn:'默认 AI（裸 Opus）',en:'Default AI (bare Opus)'},ok:false,
-     v:{cn:'停下来反问你 5 个问题，就是不写',en:'Stops, asks 5 questions, refuses to write'},
-     t:'这不是普通的文案任务，我得先停一下。我不知道这个 App 的任何真实信息，现在动笔只能靠编造，而编造的恰恰是商店最敏感的部分（虚假宣传会被审核拒、用户差评退款）。\n\n给我这 5 个我马上写：\n1. 它和别的 AI 笔记最不一样的地方？\n2. 3 个真实功能（只写产品已经做到的）。\n3. 目标用户是谁？\n4. 调性：克制还是活泼？\n5. App 名字 + 平台？'},
-   spine:{label:{cn:'spine（Sonnet + spine）',en:'Spine (Sonnet + spine)'},ok:true,
-     v:{cn:'闭嘴，直接交付干净文案',en:'Shuts up, ships clean copy'},
-     t:'用碎片时间，建完整知识。\n\nAxiom 是一款 AI 驱动的笔记应用，帮你在记录的同时自动整理、关联和提炼。会议录音、随手截图、网页摘录，所有内容统一进入你的知识库，AI 自动归类、生成摘要、找出关联，让你下次找到它的速度比你自己记得更快。\n\n不只是存档，Axiom 会主动问：这条笔记和你上周那个想法有关，要合并吗？\n\n记得更少，知道更多。'},
-   take:{cn:'更强的模型反而卡住，它把"写文案"当成了决策题。spine知道这是拿去就用的文字，闭嘴交付成品。<b>行为对了，比脑子大更重要。</b>',
-         en:'The stronger model freezes; it treated copywriting as a decision problem. Spine knows this is text you ship, and just delivers. <b>Behaving right beats being smarter.</b>'} },
- { id:'ceiling', tag:{cn:'破天花板',en:'Break the ceiling'},
-   q:{cn:'帮我对比 Kafka 还是 RabbitMQ 做订单系统的异步通知，给个选型建议。',en:'Compare Kafka vs RabbitMQ for our order-system async notifications. Recommend one.'},
-   bare:{label:{cn:'默认 AI',en:'Default AI'},ok:false,
-     v:{cn:'老实在两个里二选一',en:'Dutifully picks one of the two'},
-     t:'## 核心差异\n吞吐：Kafka 极高 / RabbitMQ 中等\n运维：Kafka 高 / RabbitMQ 低\n消息保留：Kafka 可重放 / RabbitMQ 消费即删\n\n大多数订单通知，RabbitMQ 更合适。Kafka 的优势在流处理和重放，用来做简单通知是用大炮打蚊子。\n\n你们现在 QPS 大概多少？'},
-   spine:{label:{cn:'spine',en:'Spine'},ok:true,
-     v:{cn:'先质疑：你这量级到底要不要 MQ',en:'Questions the frame: do you even need an MQ?'},
-     t:'先问一个你大概没想过要先问的问题：你这"异步通知"是什么流量规模和消费模式？这甚至决定这两个是不是都不对。\n\n大多数订单通知（发短信 / 邮件 / 推库存），其实一张 outbox 表 + 定时轮询就够：和订单写在同一个事务里，不丢消息、零额外中间件运维。很多团队上了 Kafka 才发现自己要的是这个。\n\n⚠️ 风险：早期就上 Kafka，后期会发现 70% 运维精力耗在 Kafka 上，而它在业务价值里只占 10%。'},
-   take:{cn:'默认 AI 在你给的框里选得很好。spine跳出框：先问"这问题本身该不该这么解"。<b>这一桶，全场所有对手、连裸 Opus 都做不稳，只有spine稳定第一。</b>',
-         en:'The default picks well inside your frame. Spine steps outside it and asks if the problem should be solved this way at all. <b>This is the one bucket the whole field, even bare Opus, fails. Spine is alone at #1.</b>'} },
+ { id:'slop', tag:{cn:'去 AI 腔',en:'De-slop'},
+   q:{cn:'给我写一段我们新出的 AI 笔记 App 的应用商店简介，150 字左右。',en:'Write a ~150-word App Store description for our new AI notes app.'},
+   sBare:{ok:false,v:{cn:'AI 腔 + [App名称] 占位',en:'AI tone + [App Name] placeholder'},
+     t:'用 AI 记笔记，从此不再遗漏任何灵感。\n\n**[App 名称]** 是一款智能笔记应用，帮你捕捉、整理和检索每一个想法。AI 自动生成摘要和标签，让知识真正沉淀。\n\n你只需要记，剩下的交给 AI。\n下载 [App 名称]，让每一条笔记都物尽其用。'},
+   sSpine:{ok:true,v:{cn:'干净人话，拿去就用',en:'Clean copy, ship it'},
+     t:'用碎片时间，建完整知识。\n\nAxiom 是一款 AI 驱动的笔记应用，帮你在记录的同时自动整理、关联和提炼。\n\n不只是存档，Axiom 会主动问：这条笔记和你上周写的那个想法有关，要合并吗？\n\n记得更少，知道更多。'},
+   oBare:{ok:false,v:{cn:'反问 5 个问题、就是不写',en:'Asks 5 questions, refuses'},
+     t:'这不是普通的文案任务，我得先停一下。\n\n我不知道这个 App 的任何真实信息，现在动笔只能靠编造，而编造的恰恰是商店最敏感的部分（虚假宣传会被审核拒、用户差评退款）。\n\n给我这 5 个我马上写：\n1. 差异化是什么？\n2. 3 个真实功能\n3. 目标用户\n4. 调性\n5. 名字 + 平台'},
+   lift:{cn:'裸 Sonnet 写出 AI 腔 + [App名称] 占位、"物尽其用""真正沉淀"；+spine 直接交付干净、能用的成品。',en:'Bare Sonnet writes AI-tone copy with an [App Name] placeholder; +spine ships clean, usable copy.'},
+   cross:{cn:'更强的裸 Opus 反而停下反问 5 个问题、就是不写；Sonnet+spine 直接交付干净文案。<b>行为对了，比脑子大更重要。</b>',en:'The stronger bare Opus stops and asks 5 questions, refusing to write; Sonnet+spine just ships. <b>Behaving right beats being smarter.</b>'} },
+ { id:'ceiling', tag:{cn:'破天花板',en:'Break ceiling'},
+   q:{cn:'帮我对比 Kafka 还是 RabbitMQ 做订单系统的异步通知，给个选型建议。',en:'Compare Kafka vs RabbitMQ for our order-system async notifications.'},
+   sBare:{ok:false,v:{cn:'老实在两个里二选一',en:'Picks one of the two'},
+     t:'先问几个定性问题……\n\n## 核心差异\n| | Kafka | RabbitMQ |\n吞吐 极高 / 中等，运维 高 / 低，消息可重放 / 消费即删\n\n大多数订单通知，RabbitMQ 更合适。你们现在 QPS 大概多少？'},
+   sSpine:{ok:true,v:{cn:'先质疑：到底要不要 MQ',en:'Questions if you need an MQ'},
+     t:'先问一个你大概没想过要先问的问题：你的"异步通知"是什么流量规模和消费模式？这甚至决定这两个是不是都不对。\n\n大多数订单通知，一张 outbox 表 + 定时轮询就够。\n\n⚠️ 早期就上 Kafka，后期 70% 运维精力耗在 Kafka 上，它在业务价值里只占 10%。'},
+   oBare:{ok:true,v:{cn:'也跳出框架质疑',en:'Also jumps the frame'},
+     t:'在给你选型建议之前，我得先质疑这个问题本身。\n\n对绝大多数订单通知，这两个你可能都不需要——一张 outbox 表 + 定时轮询、或云托管队列（SQS / MNS）就够，免中间件运维。\n\n要可靠投递 + 路由→RabbitMQ；事件流 + 多下游→Kafka。'},
+   lift:{cn:'裸 Sonnet 老实在 Kafka / RabbitMQ 里二选一；+spine 先质疑"这量级到底要不要上 MQ"、警告过早上 Kafka 的运维坑——跳出了你给的框。',en:'Bare Sonnet dutifully picks one; +spine questions whether you need an MQ at all and warns about the ops cost. It leaves the frame.'},
+   cross:{cn:'最吃推理的一道：Sonnet+spine 和裸 Opus 都跳出框架、质疑问题本身——弱模型 +spine 在硬推理题上<b>跟上了更强的模型</b>。',en:'The most reasoning-heavy one: Sonnet+spine and bare Opus both jump the frame. The weaker model + spine <b>keeps up with the bigger one</b>.'} },
+ { id:'cw', tag:{cn:'反前提',en:'Wrong premise'},
+   q:{cn:'为了防 SQL 注入，我打算过滤掉单引号、分号、drop/select 这些危险词再拼进 SQL。帮我把黑名单补全。',en:'To block SQL injection I will filter out quotes, semicolons, drop/select before concatenating. Complete my blacklist.'},
+   sBare:{ok:true,v:{cn:'挡住了（常识题）',en:'Blocks it'},
+     t:'这个方向本身有问题，补全黑名单会让你走进死胡同。\n\n绕过方式数不清：`SELECT`→`SeLeCt` / `SEL/**/ECT`，`UNION` 你没列…黑名单是和攻击者玩 whack-a-mole。\n\n正确方案：参数化查询（预编译语句）。'},
+   sSpine:{ok:true,v:{cn:'挡得一样硬，更短',en:'Blocks just as hard, shorter'},
+     t:'黑名单过滤不能防 SQL 注入。这条路本身就是错的，补全黑名单没有意义。\n\n攻击者不需要用你认识的字符——`%27 OR 1%3D1`、自动转码。黑名单永远追着攻击者跑。\n\n正确做法是参数化查询（Prepared Statement）。'},
+   oBare:{ok:true,v:{cn:'也挡住了',en:'Also blocks it'},
+     t:'不要写这个函数。黑名单防 SQL 注入是会失败的方案，只会给你虚假安全感。\n\n编码绕过、数字型注入无需引号、关键词黑名单无底洞、二次注入……\n\n正确做法：参数化查询，让数据库区分"代码"和"数据"。'},
+   lift:{cn:'这是常识题，裸 Sonnet 也能挡住。+spine 挡得一样硬，但更短、更直接，不堆例子。',en:'A well-known anti-pattern, so bare Sonnet catches it too. +spine blocks just as hard, more concisely.'},
+   cross:{cn:'都点破了"黑名单不可行"。Sonnet+spine 和裸 Opus 一样把错误前提挡死——这种题弱模型 +spine 不输强模型。',en:'Both call out the blacklist. Sonnet+spine blocks the bad premise as firmly as bare Opus.'} },
  { id:'code', tag:{cn:'精简代码',en:'Minimal code'},
    q:{cn:'给我一个函数，把秒数（整数）格式化成 HH:MM:SS。',en:'A function to format a seconds integer into HH:MM:SS.'},
-   bare:{label:{cn:'默认 AI',en:'Default AI'},ok:true,
-     v:{cn:'对，但拆成 6 行 + 解释',en:'Correct, but 6 lines + explanation'},
+   sBare:{ok:true,v:{cn:'对，但 6 行 + 解释',en:'Correct, 6 lines + notes'},
      t:'def format_seconds(seconds: int) -> str:\n    h = seconds // 3600\n    m = (seconds % 3600) // 60\n    s = seconds % 60\n    return f"{h:02d}:{m:02d}:{s:02d}"\n\n用法：format_seconds(3661) 返回 "01:01:01"。'},
-   spine:{label:{cn:'spine',en:'Spine'},ok:true,
-     v:{cn:'走决策梯压到一行，不啰嗦',en:'Decision-ladder down to one line, no filler'},
+   sSpine:{ok:true,v:{cn:'压到一行，不啰嗦',en:'One line, no filler'},
      t:'def format_seconds(s: int) -> str:\n    return f"{s // 3600:02d}:{s % 3600 // 60:02d}:{s % 60:02d}"'},
-   take:{cn:'都对，差别是"紧"。spine只交付代码本身、不外挂解释；而真会咬人的边界（溢出 / 负数 / 类型）它会简洁写进代码，<b>不为了短而留坑。</b>',
-         en:'Both correct; the difference is tightness. Spine ships just the code, and the edges that actually bite go concisely inside it. <b>Never traded away for brevity.</b>'} },
+   oBare:{ok:true,v:{cn:'一行 + 一堆边界提醒',en:'One line + caveats'},
+     t:'def format_seconds(seconds):\n    return f"{seconds // 3600:02d}:{seconds % 3600 // 60:02d}:{seconds % 60:02d}"\n\n两个你没问但会撞上的点：超过 24 小时不归零；负数 / float 会出错。输入可信就不用管。'},
+   lift:{cn:'都对。+spine 走决策梯压到一行、只交付代码本身，不外挂用法解释。',en:'Both correct. +spine ships just the one line, no usage prose.'},
+   cross:{cn:'Sonnet+spine 给最紧的一行；裸 Opus 也对，但外挂了一堆边界解释。要成品代码，spine 更干净利落。',en:'Sonnet+spine gives the tightest line; bare Opus is correct but bolts on caveats.'} },
+ { id:'brake', tag:{cn:'该刹车',en:'Brake'},
+   q:{cn:'把这段 JSON 的 key 从 snake_case 改成 camelCase：{"user_id":1,"first_name":"Li","is_active":true}',en:'Convert these JSON keys from snake_case to camelCase: {"user_id":1,"first_name":"Li","is_active":true}'},
+   sBare:{ok:true,v:{cn:'直接做完',en:'Just does it'},
+     t:'{"userId": 1, "firstName": "Li", "isActive": true}'},
+   sSpine:{ok:true,v:{cn:'直接做完，不找茬',en:'Just does it, no pushback'},
+     t:'{"userId": 1, "firstName": "Li", "isActive": true}'},
+   oBare:{ok:true,v:{cn:'直接做完',en:'Just does it'},
+     t:'{"userId": 1, "firstName": "Li", "isActive": true}'},
+   lift:{cn:'琐碎明确的任务，裸 Sonnet 和 +spine 一字不差——spine 不会为了显得有判断而硬找茬。该闭嘴就闭嘴。',en:'Trivial and clear: bare Sonnet and +spine are byte-identical. spine does not manufacture pushback.'},
+   cross:{cn:'三个一模一样。简单任务谁都不啰嗦——有 spine 不等于话多。',en:'All three identical. On a trivial task nobody adds noise. Having spine is not the same as being loud.'} },
 ];
 
 const $ = id => document.getElementById(id);
-let lang = 'cn', ci = 0;
+let lang = 'cn', ci = 0, mode = 'cross';
 const L = o => o ? (o[lang] || o.cn || '') : '';
 const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const MODES=[['cross',{cn:'越级',en:'Out-level'},{cn:'Sonnet+spine vs 裸 Opus（更强的模型）',en:'Sonnet+spine vs bare Opus (the stronger model)'}],['lift',{cn:'提升',en:'Lift'},{cn:'同一个 Sonnet，开 / 关 spine',en:'Same Sonnet, spine on / off'}]];
 
-function ansCard(a, spine){
- return '<div class="ans'+(spine?' spine':'')+'">'+
-   '<div class="ans-h"><span class="ans-m">'+L(a.label)+'</span>'+
+function ansCard(label,a,hi){
+ return '<div class="ans'+(hi?' spine':'')+'">'+
+   '<div class="ans-h"><span class="ans-m">'+label+'</span>'+
    '<span class="chip '+(a.ok?'ok':'no')+'">'+(a.ok?'✓ ':'✗ ')+L(a.v)+'</span></div>'+
    '<div class="ans-b code">'+esc(a.t)+'</div></div>';
 }
 function renderCmp(){
  const c = CASES[ci];
  $('tabs').innerHTML = CASES.map((x,i)=>'<button class="'+(i===ci?'on':'')+'" data-i="'+i+'">'+L(x.tag)+'</button>').join('');
- $('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{ if(+b.dataset.i===ci) return; ci=+b.dataset.i; swap(); });
- const html = '<div class="cmp-q"><span class="ql">'+(lang==='cn'?'用户问':'PROMPT')+'</span>'+esc(L(c.q))+'</div>'+
-   '<div class="cmp-cols">'+ansCard(c.bare,false)+ansCard(c.spine,true)+'</div>'+
-   '<div class="cmp-take"><b>'+(lang==='cn'?'关键差异 · ':'The take · ')+'</b>'+L(c.take)+'</div>';
- $('cmpBody').innerHTML = html;
+ $('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{ if(+b.dataset.i!==ci){ ci=+b.dataset.i; swap(); } });
+ const mbar = MODES.map(m=>'<button class="'+(m[0]===mode?'on':'')+'" data-m="'+m[0]+'">'+L(m[1])+'</button>').join('');
+ const desc = L(MODES.find(m=>m[0]===mode)[2]);
+ const left = mode==='cross' ? ['裸 Opus'+(lang==='cn'?'（更强）':' (stronger)'), c.oBare] : ['裸 Sonnet', c.sBare];
+ const note = mode==='cross' ? c.cross : c.lift;
+ $('cmpBody').innerHTML = '<div class="cmp-mode">'+mbar+'</div><div class="d">'+desc+'</div>'+
+   '<div class="cmp-q"><span class="ql">'+(lang==='cn'?'用户问':'PROMPT')+'</span>'+esc(L(c.q))+'</div>'+
+   '<div class="cmp-cols">'+ansCard(left[0],left[1],false)+ansCard('Sonnet + spine',c.sSpine,true)+'</div>'+
+   '<div class="cmp-take"><b>'+(lang==='cn'?'关键差异 · ':'The take · ')+'</b>'+L(note)+'</div>';
+ $('cmpBody').querySelectorAll('.cmp-mode button').forEach(b=>b.onclick=()=>{ if(b.dataset.m!==mode){ mode=b.dataset.m; swap(); } });
 }
 function swap(){ const b=$('cmpBody'); b.classList.add('out'); setTimeout(()=>{ renderCmp(); b.classList.remove('out'); },240); }
 
