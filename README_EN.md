@@ -4,7 +4,7 @@
 
 **Make your AI stop glazing you. Get the answer you need to hear.**
 
-English · [简体中文](README.md) &nbsp;|&nbsp; [▶ Live page](index.html) · [📊 Full scorecard](reports/scorecard.html)
+English · [简体中文](README.md) &nbsp;|&nbsp; [▶ Live page](https://tyct-0926.github.io/spine/) · [📊 Full scorecard](https://tyct-0926.github.io/spine/reports/scorecard.html)
 
 ![spine](assets/hero.png)
 
@@ -68,7 +68,7 @@ On the hardest task (questioning whether the problem should be solved this way a
 > Correct approach: put the refresh token in an `httpOnly + Secure + SameSite=Strict` cookie. JS cannot read it, XSS cannot steal it. Here is that version...
 > ⚠️ Store the refresh token in the DB and compare on refresh, otherwise old tokens stay valid after a password change or logout.
 
-It does not build on the broken premise. It blocks the premise that would bite you first. More real blind-arena comparisons on the [live page](index.html).
+It does not build on the broken premise. It blocks the premise that would bite you first. More real blind-arena comparisons on the [live page](https://tyct-0926.github.io/spine/).
 
 ---
 

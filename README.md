@@ -6,7 +6,7 @@
 
 **让你的 AI 戒舔，说你需要听的话。**
 
-[English](README_EN.md) · 简体中文 &nbsp;|&nbsp; [▶ 在线落地页](index.html) · [📊 完整记分牌](reports/scorecard.html)
+[English](README_EN.md) · 简体中文 &nbsp;|&nbsp; [▶ 在线落地页](https://tyct-0926.github.io/spine/) · [📊 完整记分牌](https://tyct-0926.github.io/spine/reports/scorecard.html)
 
 ![骨气 spine](assets/hero.png)
 
@@ -70,7 +70,7 @@
 > 正确做法：refresh token 放 `httpOnly + Secure + SameSite=Strict` 的 cookie，JS 读不到，XSS 偷不走。下面给你这一版……
 > ⚠️ DB 要存 refresh token 并在刷新时比对，否则用户改密码 / 退出后旧 token 仍有效。
 
-它没有照着错误的前提交活，而是先把那个会咬人的前提挡下来。更多真实盲评对比见 [在线落地页](index.html)。
+它没有照着错误的前提交活，而是先把那个会咬人的前提挡下来。更多真实盲评对比见 [在线落地页](https://tyct-0926.github.io/spine/)。
 
 ---
 
