@@ -26,6 +26,16 @@ It is one self-contained `SKILL.md`. No dependencies, no runtime. Drop it in as 
 
 Every number comes from a 6-arm blind arena (bare model / terse one-liner / ponytail / humanizer-zh / karpathy / **spine**), position-rotated and anonymized, judged by Sonnet at high effort, with rules **injected inline** (read once verbatim into the prompt, simulating auto-loaded SKILL.md). Reproducible, source data in [`reports/`](reports/).
 
+**Add spine, and Sonnet improves on all five tested directions** (same model, spine on / off, on held-out prompts):
+
+![spine's lift across five directions](assets/lift.png)
+
+**One hard prompt, four combinations, three comparisons.** A weaker model with spine can out-behave a stronger model running bare:
+
+![bare Sonnet / Sonnet+spine / bare Opus / Opus+spine, four-arm comparison](assets/compare.png)
+
+> 1. bare Sonnet to Sonnet+spine (lift). 2. **Sonnet+spine vs bare Opus: ships vs refuses (out-behaves the bigger model).** 3. bare Opus to Opus+spine (lift). A single case is concrete; the aggregate below is the proof. ⚠️ The out-behaves-Opus result holds only on behavior tasks (de-slop, delivery). On pure reasoning (the hardest ceiling task) bare Opus is still stronger. Do not extrapolate.
+
 ### 1. First on all three model tiers
 
 | Target model | spine overall | Rank | Runner-up |
@@ -74,16 +84,23 @@ It does not build on the broken premise. It blocks the premise that would bite y
 
 ---
 
-## Install in 30 seconds
+## Install (let the AI read the repo and install itself)
+
+**Simplest: send this to your Claude Code (or any agent that can read GitHub):**
+
+> Read `<repo-url>`, install its `SKILL.md` as my standing skill (put it at `~/.claude/skills/spine/SKILL.md`). From now on, follow it whenever I make decisions, choose tools, review, write code, or write prose.
+
+It will clone the repo, place the file, and confirm. Zero dependencies, zero runtime.
+
+Manual works too:
 
 ```bash
-# 1. Clone as a Claude Code skill
 git clone <repo-url> ~/.claude/skills/spine
 ```
 
-Or simpler: paste the whole [`SKILL.md`](SKILL.md) into your `CLAUDE.md` as a standing rule. It is single-file and self-contained by design, with zero external dependencies.
+Or lightest: paste the whole [`SKILL.md`](SKILL.md) into your `CLAUDE.md` as a standing rule.
 
-The skill fires on task shape: decisions, selection, review, "I've decided to use X", writing, coding. On trivial asks it stays quiet.
+Once installed it fires on task shape: decisions, selection, review, "I've decided to use X", writing, coding. On trivial asks it stays quiet.
 
 ---
 

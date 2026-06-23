@@ -28,6 +28,16 @@
 
 所有数字来自 6 臂盲评竞技场（裸模型 / terse 一句话 / ponytail / humanizer-zh / karpathy / **骨气**），位置轮换匿名，Sonnet 高强度裁判，规则 **inline 注入**（逐字读一次嵌进 prompt，模拟自动加载 SKILL.md 的公平环境）。可复现，源数据在 [`reports/`](reports/)。
 
+**装上骨气，Sonnet 在测试的 5 个方向上全部提升**（同一个模型开 / 关骨气，留出新题实测）：
+
+![骨气在 5 个方向的提升](assets/lift.png)
+
+**同一道难题，4 个组合，3 个对比**——弱模型 + 骨气，能在行为上打赢强模型裸跑：
+
+![裸 Sonnet / Sonnet+骨气 / 裸 Opus / Opus+骨气 四臂对比](assets/compare.png)
+
+> ① 裸 Sonnet → Sonnet+骨气（提升）· ② **Sonnet+骨气 vs 裸 Opus：交付 vs 不写（越级）** · ③ 裸 Opus → Opus+骨气（提升）。单道是具体，下面的聚合数据是底气。⚠️ 越级只在去 AI 腔 / 交付这类**行为题**上成立；纯推理题（如最难的破天花板单项）裸 Opus 仍更强，不外推。
+
 ### 1. 三层模型全部第一
 
 | 目标模型 | 骨气综合 | 排名 | 全场次席 |
@@ -76,16 +86,23 @@
 
 ---
 
-## 三十秒装上
+## 装上（让 AI 自己读仓库装）
+
+**最简单：把这句话发给你的 Claude Code（或任何能读 GitHub 的 agent）：**
+
+> 读取 `<repo-url>`，把它的 `SKILL.md` 装成我的常驻 skill（放到 `~/.claude/skills/spine/SKILL.md`）。以后我做决策、选型、评审、写代码、写作时自动遵守它。
+
+它会自己 clone 仓库、放好文件、确认装上。零依赖、零运行时。
+
+手动也行：
 
 ```bash
-# 1. 克隆为 Claude Code skill
 git clone <repo-url> ~/.claude/skills/spine
 ```
 
-或者更简单：把整个 [`SKILL.md`](SKILL.md) 直接粘进你的 `CLAUDE.md` 当常驻规则——它本来就是单文件、自包含的，没有任何外部依赖。
+或者最轻：把整个 [`SKILL.md`](SKILL.md) 直接粘进你的 `CLAUDE.md` 当常驻规则。
 
-skill 按任务形状自动触发：决策 / 选型 / 评审 / "我决定用 X" / 写作 / 写代码。琐碎请求它会自己闭嘴。
+装好后按任务形状自动触发：决策 / 选型 / 评审 / "我决定用 X" / 写作 / 写代码。琐碎请求它会自己闭嘴。
 
 ---
 

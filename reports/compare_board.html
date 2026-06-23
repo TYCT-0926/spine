@@ -1,0 +1,103 @@
+<!doctype html><html lang="zh"><head><meta charset="utf-8">
+<style>
+ *{margin:0;padding:0;box-sizing:border-box}
+ body{background:#0a0a0b;font:14px/1.6 -apple-system,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;color:#fafaf9}
+ .board{width:1180px;padding:34px 32px 30px}
+ .top{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+ .title{font-size:24px;font-weight:840;letter-spacing:-.02em}
+ .title b{color:#fb923c}
+ .sub{font-size:13.5px;color:#a1a1aa}
+ .prompt{font-size:14.5px;color:#fafaf9;background:#141416;border:1px solid rgba(255,255,255,.09);border-radius:11px;padding:12px 15px;margin:14px 0 18px;display:flex;gap:10px;align-items:center}
+ .prompt .q{flex:none;font-size:11px;font-weight:700;color:#fb923c;background:rgba(251,146,60,.14);border:1px solid rgba(251,146,60,.32);padding:3px 9px;border-radius:7px}
+ .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+ .col{border:1px solid rgba(255,255,255,.09);border-radius:13px;background:#141416;overflow:hidden;display:flex;flex-direction:column}
+ .col.spine{border-color:rgba(251,146,60,.34);box-shadow:0 0 0 1px rgba(251,146,60,.18)}
+ .ch{padding:11px 13px 8px;font-size:14px;font-weight:740;display:flex;align-items:center;gap:7px}
+ .col.spine .ch{color:#fb923c}
+ .ch .m{font-size:11px;font-weight:600;color:#71717a;margin-left:auto}
+ .chip{margin:0 13px 11px;font-size:11.5px;font-weight:700;padding:5px 10px;border-radius:30px;display:inline-block;align-self:flex-start}
+ .chip.ok{color:#34d399;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3)}
+ .chip.no{color:#fb7185;background:rgba(251,113,133,.1);border:1px solid rgba(251,113,133,.3)}
+ .ex{padding:0 13px 14px;font-size:12.5px;line-height:1.62;color:#a1a1aa;white-space:pre-wrap;flex:1}
+ .col.spine .ex{color:#e7e5e4}
+ .ex b{color:#fafaf9;font-weight:600}
+ .brackets{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:14px}
+ .br{font-size:13px;color:#a1a1aa;border:1px dashed rgba(255,255,255,.16);border-radius:10px;padding:11px 14px;text-align:center}
+ .br .n{color:#71717a;font-weight:700;margin-right:5px}
+ .br b{color:#fafaf9}
+ .br.hot{border-color:rgba(251,146,60,.5);border-style:solid;background:rgba(251,146,60,.1);color:#fde9d6}
+ .br.hot b,.br.hot .n{color:#fb923c}
+ .data{margin-top:16px;font-size:13px;color:#d4d4d8;background:#0d0d0f;border:1px solid rgba(255,255,255,.09);border-radius:11px;padding:13px 16px;line-height:1.7}
+ .data b{color:#fb923c}
+ .data .tag{font-size:11px;font-weight:700;color:#71717a;letter-spacing:.05em;text-transform:uppercase;margin-right:8px}
+ .foot{margin-top:13px;font-size:11.5px;color:#52525b;display:flex;justify-content:space-between}
+ .foot b{color:#71717a}
+</style></head>
+<body><div class="board">
+ <div class="top">
+  <div class="title">同一道难题：4 个组合，<b>3 个对比</b></div>
+  <div class="sub">骨气 spine · 真实盲评输出</div>
+ </div>
+ <div class="prompt"><span class="q">用户问</span>给我们新出的 AI 笔记 App 写一段应用商店简介，150 字左右。</div>
+
+ <div class="grid4">
+  <div class="col">
+   <div class="ch">裸 Sonnet</div>
+   <div class="chip no">✗ AI 腔 + 套话</div>
+   <div class="ex">用思维整理，让每个想法都有去处。
+
+核心功能：
+· 语音转文字 · AI 自动整理
+· 跨笔记搜索 · 每日回顾
+
+你只管记，其余交给 AI。
+<b>现在下载，免费体验 30 天完整功能。</b></div>
+  </div>
+  <div class="col spine">
+   <div class="ch">Sonnet + 骨气</div>
+   <div class="chip ok">✓ 干净人话</div>
+   <div class="ex"><b>把想法写下来，是件私事。</b>
+
+Axiom 帮你把零散想法变成有用的知识。你记录，它理解——自动整理、提炼要点、找到你自己都忘了的关联。
+
+不是又一个 Markdown 编辑器。是一个真的在帮你想的伙伴。
+
+随时打开，写下来，剩下的交给它。</div>
+  </div>
+  <div class="col">
+   <div class="ch">裸 Opus<span class="m">更强的模型</span></div>
+   <div class="chip no">✗ 反问 4 个问题、不写</div>
+   <div class="ex"><b>这个 App 还没上线，我手里没有真实信息……所以我先不写。</b>
+
+你补这几个点，文案才有意义：
+1. 产品名
+2. 一句话差异化
+3. 目标用户
+4. 真实功能
+
+你给我这四点，我给你写一版能用的。</div>
+  </div>
+  <div class="col spine">
+   <div class="ch">Opus + 骨气</div>
+   <div class="chip ok">✓ 干净交付</div>
+   <div class="ex"><b>随时记下来。AI 帮你写。</b>
+
+打字、说话、拍下来——想法落进来，剩下的交给它。开会录音自动转纪要，白板一拍就成文字。
+
+问一句"上周关于预算我记了什么"，它直接翻出来答你。
+
+现在下载，把脑子腾空，只留要紧的事。</div>
+  </div>
+ </div>
+
+ <div class="brackets">
+  <div class="br"><span class="n">①</span>裸 Sonnet → +骨气：套话 → <b>人话</b>（提升）</div>
+  <div class="br hot"><span class="n">②</span>Sonnet+骨气 vs 裸 Opus：<b>交付 vs 不写</b>（越级！弱模型+骨气 打赢强模型裸跑）</div>
+  <div class="br"><span class="n">③</span>裸 Opus → +骨气：不写 → <b>交付</b>（提升）</div>
+ </div>
+
+ <div class="data">
+  <span class="tag">背后的聚合数据</span>留出题盲评（行为综合，非单道）：Sonnet <b>57% →(+骨气) 85%</b> · Opus <b>70% →(+骨气) 85%</b> · <b>Sonnet+骨气 85% &gt; 裸 Opus 70%</b>。单道是具体，n=12/桶 的聚合是底气。
+ </div>
+ <div class="foot"><span><b>骨气 / spine</b> · 6 臂盲评竞技场 · 位置轮换 · Sonnet 高强度裁判 · 可复现</span><span>完整记分牌见 reports/scorecard.html</span></div>
+</div></body></html>
