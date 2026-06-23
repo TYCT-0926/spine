@@ -10,5 +10,5 @@
     "exemplars": "references/exemplars.md"
   },
   "core_insight": "输出上限 = 用户认知上限 × AI 顺从性；本 skill 打破这个乘法。",
-  "note": "v0.8→v0.9 把 router 折叠成单文件：实测 agent 几乎不读 lazy reference（think/code.md 读取率 ~3%），承载行为的指令必须在常驻入口。名字为占位（spine/骨气），最终命名待定。来源致谢见 README。"
+  "note": "v0.8→v0.9 把 router 折叠成单文件：实测 agent 几乎不读 lazy reference（think/code.md 读取率 ~3%），承载行为的指令必须在常驻入口。正式名 spine / 骨气。来源致谢见 README。"
 }

@@ -12,7 +12,7 @@ compatibility:
     # 注意：不靠"不要迎合我"这类用户主动求质疑的短语——那样恰好抓不到自信犯错的场景
     route_by: "description"
   degradation:
-    no_skill_loader: "把 SKILL.md 的四级阶梯+输出契约粘进系统提示"
-    minimal: "只用四级阶梯"
+    no_skill_loader: "把整个 SKILL.md 粘进系统提示（它本就是单文件、自包含）"
+    minimal: "至少保留：输出卫生 + 刹车(琐碎直接做) + 挡错前提 + 问对问题"
 
-mode_map_source: "SKILL.md 的路由表是唯一真相，本文件不重列"
+mode_map_source: "SKILL.md 是行为的唯一真相，本文件不重列"

@@ -1,4 +1,4 @@
-<!-- 名字 spine / 骨气 为占位，最终命名待定。改名只需替换本文件、SKILL.md 的 H1、manifest.name、interface。 -->
+<!-- 名字 spine / 骨气。行为规则不含名字；改名只需替换本文件 H1、SKILL.md 的 H1、manifest.name、interface。 -->
 
 # spine（骨气）— 给 AI agent 装上骨气
 
@@ -107,4 +107,4 @@ spine 没有发明新的单点，它把这些跨切成一个"有骨气"的整体
 
 ## 命名
 
-`spine / 骨气` 为占位名。最终命名待定——候选还有 `anti-glaze / 戒舔`、`no-yesman / 不哄你`。改名只动 4 处带名字的地方，行为规则零改动。
+正式名 **`spine / 骨气`** — 给 agent 装上骨气。曾考虑 `戒舔 / anti-glaze`、`不哄你 / no-yesman`，最终选了语义最宽、最好做品牌的「骨气」：它同时盖住"不顺从"和"给你未问的更优解"，都是有骨气。行为规则里不含名字，改名只动 4 处（本文件 H1、SKILL.md H1、manifest.name、interface）。
