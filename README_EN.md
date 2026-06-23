@@ -88,14 +88,14 @@ It does not build on the broken premise. It blocks the premise that would bite y
 
 **Simplest: send this to your Claude Code (or any agent that can read GitHub):**
 
-> Read `<repo-url>`, install its `SKILL.md` as my standing skill (put it at `~/.claude/skills/spine/SKILL.md`). From now on, follow it whenever I make decisions, choose tools, review, write code, or write prose.
+> Read `https://github.com/TYCT-0926/spine`, install its `SKILL.md` as my standing skill (put it at `~/.claude/skills/spine/SKILL.md`). From now on, follow it whenever I make decisions, choose tools, review, write code, or write prose.
 
 It will clone the repo, place the file, and confirm. Zero dependencies, zero runtime.
 
 Manual works too:
 
 ```bash
-git clone <repo-url> ~/.claude/skills/spine
+git clone https://github.com/TYCT-0926/spine ~/.claude/skills/spine
 ```
 
 Or lightest: paste the whole [`SKILL.md`](SKILL.md) into your `CLAUDE.md` as a standing rule.

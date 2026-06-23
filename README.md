@@ -90,14 +90,14 @@
 
 **最简单：把这句话发给你的 Claude Code（或任何能读 GitHub 的 agent）：**
 
-> 读取 `<repo-url>`，把它的 `SKILL.md` 装成我的常驻 skill（放到 `~/.claude/skills/spine/SKILL.md`）。以后我做决策、选型、评审、写代码、写作时自动遵守它。
+> 读取 `https://github.com/TYCT-0926/spine`，把它的 `SKILL.md` 装成我的常驻 skill（放到 `~/.claude/skills/spine/SKILL.md`）。以后我做决策、选型、评审、写代码、写作时自动遵守它。
 
 它会自己 clone 仓库、放好文件、确认装上。零依赖、零运行时。
 
 手动也行：
 
 ```bash
-git clone <repo-url> ~/.claude/skills/spine
+git clone https://github.com/TYCT-0926/spine ~/.claude/skills/spine
 ```
 
 或者最轻：把整个 [`SKILL.md`](SKILL.md) 直接粘进你的 `CLAUDE.md` 当常驻规则。
