@@ -245,6 +245,14 @@
    <h2><span class="cn">模型越强，它越强</span><span class="en blk">The stronger the model, the stronger it gets</span></h2>
    <p class="lead2"><span class="cn">同一个文件装到三个强度的模型上，spine综合命中率<b>三层全部第一</b>。下面右边是它在 6 臂竞技场里把每个对手 skill 甩开多少。</span><span class="en blk">One file on three model tiers. Spine is <b>first on all three</b>. On the right: how far it beats every rival skill in the 6-arm arena.</span></p>
   </div>
+  <div class="grid2 reveal" style="margin-top:30px;align-items:center">
+   <div class="card"><svg id="radar" viewBox="0 0 380 330" width="100%" style="max-width:430px;display:block;margin:0 auto"></svg></div>
+   <div>
+    <h3 style="font-size:23px;font-weight:780;letter-spacing:-.015em"><span class="cn">每个维度，spine 都覆盖最大</span><span class="en blk">spine covers the most on every axis</span></h3>
+    <p class="lead2" style="margin-top:12px"><span class="cn">5 个测试方向，spine（橙）的轮廓把<b>裸 Sonnet</b> 和<b>所有对手 skill 的平均</b>整个包在里面，没有一个维度被对手反超。差距最狠的是「破天花板」——<b>50% vs 全场平均 14%</b>。</span><span class="en blk">Across all 5 directions, spine (orange) encloses both bare Sonnet and the average of every rival skill, with no axis where a rival leads. The widest gap is "break the ceiling": <b>50% vs the field average of 14%</b>.</span></p>
+    <div class="legend" id="radarLeg" style="margin-top:16px"></div>
+   </div>
+  </div>
   <img class="shot reveal cn" src="assets/lift.png" alt="spine 在 5 个方向的提升"><img class="shot reveal en" src="assets/lift_en.png" alt="spine lift across 5 directions">
   <div class="grid2 reveal" style="margin-top:30px">
    <div class="card">
@@ -384,6 +392,8 @@ $('lang').onclick = () => {
  document.documentElement.lang = lang==='cn'?'zh':'en';
  $('lang').textContent = lang==='cn'?'EN':'中';
  renderCmp();
+ if($('radar') && $('radar').dataset.done) drawRadar();
+ if($('winrow') && $('winrow').children.length) fillWins();
 };
 
 // copy
@@ -398,6 +408,7 @@ const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.
   e.target.querySelectorAll && e.target.querySelectorAll('[data-count]').forEach(countUp);
   if(e.target.querySelector && e.target.querySelector('#curve')) drawCurve();
   if(e.target.querySelector && e.target.querySelector('#winrow')) fillWins();
+  if(e.target.querySelector && e.target.querySelector('#radar')) drawRadar();
 }}),{rootMargin:'0px 0px -8% 0px'});
 document.querySelectorAll('.reveal,.stagger').forEach(x=>io.observe(x));
 
@@ -436,7 +447,23 @@ function drawCurve(){
   if(sp)pts.forEach((p,i)=>s+='<text x="'+p[0]+'" y="'+(p[1]-13)+'" fill="#fb923c" font-size="12.5" font-weight="800" text-anchor="'+(i===0?'start':i===2?'end':'middle')+'" opacity="0">'+Math.round(CURVE.spine[i]*100)+'%<animate attributeName="opacity" to="1" dur=".4s" begin="1.2s" fill="freeze"/></text>');
  });
  svg.innerHTML=s;
- $('curveLeg').innerHTML=order.slice().reverse().map(k=>'<span><i style="background:'+CCOL[k]+'"></i>'+(k==='spine'?'spine spine':k)+'</span>').join('');
+ $('curveLeg').innerHTML=order.slice().reverse().map(k=>'<span><i style="background:'+CCOL[k]+'"></i>'+(k==='spine'?'spine':k)+'</span>').join('');
+}
+
+// radar: spine vs field-average vs bare, across the 5 tested directions (real per-bucket rates)
+const RDIM=[['反前提','Block'],['破天花板','Ceiling'],['刹车','Brake'],['精简代码','Code'],['去AI腔','De-slop']];
+const RSER=[['裸 Sonnet','bare Sonnet','#52525b',[83,11,100,67,50],0],['对手平均','field avg','#a78bfa',[92,14,89,82,73],0],['Sonnet + spine','Sonnet + spine','#fb923c',[100,50,100,89,94],1]];
+function drawRadar(){
+ const svg=$('radar'); if(!svg) return; svg.dataset.done=1;
+ const cx=190,cy=158,R=104,N=5, ang=i=>-Math.PI/2+i*2*Math.PI/N, pt=(v,i)=>[cx+R*(v/100)*Math.cos(ang(i)),cy+R*(v/100)*Math.sin(ang(i))];
+ const P=a=>a.map(x=>x[0].toFixed(1)+','+x[1].toFixed(1)).join(' ');
+ let s='';
+ for(let r=25;r<=100;r+=25){let p=[];for(let i=0;i<N;i++)p.push(pt(r,i));s+='<polygon points="'+P(p)+'" fill="none" stroke="rgba(255,255,255,.06)"/>';}
+ for(let i=0;i<N;i++){const e=pt(100,i);s+='<line x1="'+cx+'" y1="'+cy+'" x2="'+e[0].toFixed(1)+'" y2="'+e[1].toFixed(1)+'" stroke="rgba(255,255,255,.06)"/>';}
+ RSER.forEach(ser=>{const p=ser[3].map((v,i)=>pt(v,i));s+='<polygon points="'+P(p)+'" fill="'+(ser[4]?'rgba(251,146,60,.18)':'none')+'" stroke="'+ser[2]+'" stroke-width="'+(ser[4]?2.5:1.4)+'" stroke-linejoin="round" opacity="'+(ser[4]?1:.75)+'"/>';if(ser[4])p.forEach(x=>s+='<circle cx="'+x[0].toFixed(1)+'" cy="'+x[1].toFixed(1)+'" r="3.2" fill="'+ser[2]+'"/>');});
+ for(let i=0;i<N;i++){const l=pt(122,i),c=Math.cos(ang(i)),anc=Math.abs(c)<0.35?'middle':(c>0?'start':'end');s+='<text x="'+l[0].toFixed(1)+'" y="'+(l[1]+4).toFixed(1)+'" font-size="11" font-weight="600" fill="#a1a1aa" text-anchor="'+anc+'">'+RDIM[i][lang==='cn'?0:1]+'</text>';}
+ svg.innerHTML=s;
+ $('radarLeg').innerHTML=RSER.map(ser=>'<span><i style="background:'+ser[2]+'"></i>'+(lang==='cn'?ser[0]:ser[1])+'</span>').join('');
 }
 
 renderCmp();
