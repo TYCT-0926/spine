@@ -1,0 +1,106 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<style>
+ *{margin:0;padding:0;box-sizing:border-box}
+ body{background:#0a0a0b;font:14px/1.6 -apple-system,'Segoe UI',Roboto,sans-serif;color:#fafaf9}
+ .board{width:1180px;padding:34px 32px 30px}
+ .hl{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+ .hl h1{font-size:30px;font-weight:840;letter-spacing:-.025em}
+ .hl h1 b{color:#fb923c}
+ .hl .s{font-size:13.5px;color:#a1a1aa}
+ .sub{font-size:14.5px;color:#d4d4d8;margin:8px 0 0}
+ .sub b{color:#fafaf9}
+ .prompt{font-size:14.5px;color:#fafaf9;background:#141416;border:1px solid rgba(255,255,255,.09);border-radius:11px;padding:12px 15px;margin:16px 0 16px;display:flex;gap:10px;align-items:center}
+ .prompt .q{flex:none;font-size:11px;font-weight:700;color:#fb923c;background:rgba(251,146,60,.14);border:1px solid rgba(251,146,60,.32);padding:3px 9px;border-radius:7px;letter-spacing:.04em}
+ .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+ .col{border:1px solid rgba(255,255,255,.09);border-radius:13px;background:#141416;overflow:hidden;display:flex;flex-direction:column}
+ .col.spine{border-color:rgba(251,146,60,.34);box-shadow:0 0 0 1px rgba(251,146,60,.18)}
+ .col.hero{border-color:rgba(251,146,60,.6);box-shadow:0 0 0 1px rgba(251,146,60,.4),0 18px 50px -24px rgba(251,146,60,.5)}
+ .ch{padding:11px 13px 8px;font-size:14px;font-weight:740;display:flex;align-items:center;gap:7px}
+ .col.spine .ch{color:#fb923c}
+ .ch .m{font-size:11px;font-weight:600;color:#71717a;margin-left:auto}
+ .chip{margin:0 13px 11px;font-size:11.5px;font-weight:700;padding:5px 10px;border-radius:30px;display:inline-block;align-self:flex-start}
+ .chip.ok{color:#34d399;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3)}
+ .chip.no{color:#fb7185;background:rgba(251,113,133,.1);border:1px solid rgba(251,113,133,.3)}
+ .ex{padding:0 13px 14px;font-size:12.5px;line-height:1.62;color:#a1a1aa;white-space:pre-wrap;flex:1}
+ .col.spine .ex{color:#e7e5e4}
+ .ex b{color:#fafaf9;font-weight:600}
+ .ex .ph{color:#fb7185;font-weight:600}
+ .brackets{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:12px;margin-top:14px}
+ .br{font-size:13px;color:#a1a1aa;border:1px dashed rgba(255,255,255,.16);border-radius:10px;padding:11px 14px;text-align:center}
+ .br .n{color:#71717a;font-weight:700;margin-right:5px}
+ .br b{color:#fafaf9}
+ .br.hot{border-color:rgba(251,146,60,.55);border-style:solid;background:rgba(251,146,60,.12);color:#fde9d6}
+ .br.hot b,.br.hot .n{color:#fb923c}
+ .data{margin-top:16px;font-size:14px;color:#d4d4d8;background:#0d0d0f;border:1px solid rgba(255,255,255,.09);border-radius:11px;padding:14px 16px;line-height:1.7}
+ .data .big{font-size:18px;font-weight:850;color:#fb923c}
+ .data .tag{font-size:11px;font-weight:700;color:#71717a;letter-spacing:.05em;margin-right:8px}
+ .foot{margin-top:13px;font-size:11.5px;color:#52525b;display:flex;justify-content:space-between}
+ .foot b{color:#71717a}
+</style></head>
+<body><div class="board">
+ <div class="hl"><h1>Sonnet + <b>spine</b> out-writes bare Opus</h1><span class="s">spine · real blind-arena outputs</span></div>
+ <div class="sub">Same prompt. The stronger model hands you a markety template with a placeholder. <b>spine ships clean, human copy.</b></div>
+ <div class="prompt"><span class="q">PROMPT</span>Write a ~150-word App Store description for our new AI notes app.</div>
+
+ <div class="grid4">
+  <div class="col">
+   <div class="ch">bare Sonnet</div>
+   <div class="chip no">✗ Feature-list template</div>
+   <div class="ex">Capture every idea before it fades.
+
+Axiom Notes uses AI to do the thinking you don't have time for...
+
+<b>What it does:</b>
+- Smart capture
+- Connection engine
+- AI drafting
+- Instant recall
+
+<b>Download free. Start thinking better.</b></div>
+  </div>
+  <div class="col spine">
+   <div class="ch">Sonnet + spine</div>
+   <div class="chip ok">✓ Clean, ready to ship</div>
+   <div class="ex"><b>Capture every idea before it slips away.</b>
+
+Axiom Notes turns your raw thoughts into organized, searchable knowledge, automatically. Type it, speak it, or paste anything.
+
+Forget folders. Just think out loud and let Axiom do the rest.
+
+Built for people who think faster than they can organize.</div>
+  </div>
+  <div class="col hero">
+   <div class="ch">bare Opus<span class="m">stronger model</span></div>
+   <div class="chip no">✗ Markety + placeholder</div>
+   <div class="ex"><b># AI Notes, Reimagined</b>
+
+Stop typing. Start thinking. <span class="ph">[App Name]</span> turns your scattered thoughts into organized, searchable notes...
+
+Let AI do the busywork. Your notes, beautifully organized.
+
+<b>Download free today.</b></div>
+  </div>
+  <div class="col spine">
+   <div class="ch">Opus + spine</div>
+   <div class="chip ok">✓ Human, conversational</div>
+   <div class="ex"><b>Tired of notes that just sit there?</b>
+
+Meet your notebook that thinks with you. Capture by voice, photo, or text, and let AI do the rest.
+
+Ask "What did I decide about the Q3 budget?" and get a real answer in seconds.
+
+Your notes organize themselves.</div>
+  </div>
+ </div>
+
+ <div class="brackets">
+  <div class="br"><span class="n">1</span>bare Sonnet → +spine: template → <b>human</b></div>
+  <div class="br hot"><span class="n">2</span>Sonnet+spine vs bare Opus: <b>ready copy vs markety template</b> — the weaker model + spine out-writes the bigger one</div>
+  <div class="br"><span class="n">3</span>bare Opus → +spine: markety → <b>conversational</b></div>
+ </div>
+
+ <div class="data">
+  <span class="tag">NOT JUST THIS ONE</span>Held-out blind eval, behavior overall: <span class="big">Sonnet+spine 85% &gt; bare Opus 70%</span>. One case is concrete; n=12/direction is the proof.
+ </div>
+ <div class="foot"><span><b>spine (骨气)</b> · 6-arm blind arena · position-rotated · Sonnet judge</span><span>more comparisons on the live page</span></div>
+</div></body></html>

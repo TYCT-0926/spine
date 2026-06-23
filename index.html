@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>骨气 spine · 让你的 AI 戒舔，说你需要听的话</title>
-<meta name="description" content="给 AI agent 装上骨气：不舔你、当面挡掉你的错误前提、破你的认知天花板、写最少又不出 bug 的代码、说人话。6 臂盲评全场第一。">
+<title>spine spine · 让你的 AI 戒舔，说你需要听的话</title>
+<meta name="description" content="给 AI agent 装上spine：不舔你、当面挡掉你的错误前提、破你的认知天花板、写最少又不出 bug 的代码、说人话。6 臂盲评全场第一。">
 <style>
  *{margin:0;padding:0;box-sizing:border-box}
  :root{
@@ -118,6 +118,9 @@
  .grid2{display:grid;grid-template-columns:1.05fr .95fr;gap:32px;align-items:center;margin-top:42px}
  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px}
  .shot{display:block;width:100%;border:1px solid var(--line2);border-radius:14px;margin-top:24px}
+ .shot.en{display:none}
+ [data-lang=en] .shot.cn{display:none}
+ [data-lang=en] .shot.en{display:block}
  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:14px;font-size:12.5px;color:var(--mut)}
  .legend i{width:11px;height:11px;border-radius:3px;display:inline-block;margin-right:6px;vertical-align:-1px}
  .winrow{display:flex;flex-direction:column;gap:14px;margin-top:8px}
@@ -184,7 +187,7 @@
 
 <nav>
  <div class="nav-in">
-  <a href="#top" class="brand"><span class="dot"></span>骨气<small>spine</small></a>
+  <a href="#top" class="brand"><span class="dot"></span>spine<small>骨气</small></a>
   <div class="nav-links">
    <a href="#proof"><span class="cn">看证据</span><span class="en">Proof</span></a>
    <a href="#compare"><span class="cn">回答实例</span><span class="en">Examples</span></a>
@@ -200,7 +203,7 @@
  <div class="wrap hero-in stagger">
   <div class="kicker"><span class="dot" style="width:7px;height:7px;border-radius:50%;background:var(--o)"></span><span class="cn">反顺从行为层 · 单文件 · 锁定版 v0.11</span><span class="en">Anti-sycophancy behavior layer · one file · v0.11</span></div>
   <h1><span class="cn">你的 AI<br>一直在 <span class="em">舔你</span>。</span><span class="en blk">Your AI has been<br><span class="em">glazing</span> you.</span></h1>
-  <p class="lead"><span class="cn">默认的 AI 顺着你的框架、夸你、把你的烂想法工程化，把你的产出锁死在你已知的天花板里。<b>骨气让它戒舔</b>：当面挡掉你的错误前提，给你没想到的更优解。</span><span class="en blk">It agrees with your framing, flatters you, engineers your bad ideas, and quietly caps your output at the ceiling you already knew. <b>Spine makes it stop.</b> It blocks your wrong premises to your face and gives you the better path you did not ask for.</span></p>
+  <p class="lead"><span class="cn">默认的 AI 顺着你的框架、夸你、把你的烂想法工程化，把你的产出锁死在你已知的天花板里。<b>spine让它戒舔</b>：当面挡掉你的错误前提，给你没想到的更优解。</span><span class="en blk">It agrees with your framing, flatters you, engineers your bad ideas, and quietly caps your output at the ceiling you already knew. <b>Spine makes it stop.</b> It blocks your wrong premises to your face and gives you the better path you did not ask for.</span></p>
   <div class="hero-cta">
    <a href="#install" class="btn"><span class="cn">一行装上 →</span><span class="en">Install in one line →</span></a>
    <a href="#compare" class="btn ghost"><span class="cn">先看真实对比</span><span class="en">See it in action</span></a>
@@ -211,7 +214,7 @@
  <div class="strip reveal">
   <div class="strip-in">
    <div class="stat"><div class="n"><span data-count="3">0</span><span class="u">/ 3 <span class="cn">层全 #1</span><span class="en">tiers #1</span></span></div><div class="l"><span class="cn">Haiku / Sonnet / Opus，6 臂盲评综合命中率全部第一</span><span class="en">First on all three model tiers in a 6-arm blind arena</span></div></div>
-   <div class="stat"><div class="n"><span data-count="85">0</span><span class="u">% &gt; 70%</span></div><div class="l"><span class="cn">装了骨气的 Sonnet，在行为上比裸 Opus 还硬（留出题盲评）</span><span class="en">Sonnet + spine out-behaves bare Opus on held-out tasks</span></div></div>
+   <div class="stat"><div class="n"><span data-count="85">0</span><span class="u">% &gt; 70%</span></div><div class="l"><span class="cn">装了spine的 Sonnet，在行为上比裸 Opus 还硬（留出题盲评）</span><span class="en">Sonnet + spine out-behaves bare Opus on held-out tasks</span></div></div>
    <div class="stat"><div class="n"><span class="cn">断层</span><span class="en">Alone</span><span class="u"> #1</span></div><div class="l"><span class="cn">「破认知天花板」这一桶，连裸 Opus、连所有对手都做不稳，只有它稳定第一</span><span class="en">On the hardest "break the ceiling" task the whole field fails. Spine is alone at the top.</span></div></div>
   </div>
  </div>
@@ -222,11 +225,11 @@
 <section id="compare">
  <div class="wrap">
   <div class="reveal">
-   <div class="eyebrow"><span class="cn">回答实例 · 真实输出</span><span class="en">Real outputs</span></div>
-   <h2><span class="cn">同一道难题，<br>装骨气前后</span><span class="en blk">Same hard prompt,<br>before and after spine</span></h2>
-   <p class="lead2"><span class="cn">分数是抽象的，回答是具体的。下面是盲评里的<b>真实输出</b>，挑的是骨气真赢的硬题。点上面的标签换题。</span><span class="en blk">Scores are abstract. Answers are concrete. Below are <b>real arena outputs</b> on hard prompts where spine wins. Click a tab to switch. <span style="color:var(--faint)">(Examples shown in Chinese.)</span></span></p>
+   <div class="eyebrow"><span class="cn">🔥 越级实证 · 真实盲评</span><span class="en">🔥 Out-levels Opus · real outputs</span></div>
+   <h2><span class="cn">装了 spine 的 Sonnet，<br>打赢了裸 Opus</span><span class="en blk">Sonnet + spine<br>out-writes bare Opus</span></h2>
+   <p class="lead2"><span class="cn">分数是抽象的，回答是具体的。下面是盲评里的<b>真实输出</b>，挑的是spine真赢的硬题。点上面的标签换题。</span><span class="en blk">Scores are abstract. Answers are concrete. Below are <b>real arena outputs</b> on hard prompts where spine wins. Click a tab to switch. <span style="color:var(--faint)">(Examples shown in Chinese.)</span></span></p>
   </div>
-  <img class="shot reveal" src="assets/compare.png" alt="裸 Sonnet / Sonnet+骨气 / 裸 Opus / Opus+骨气 四臂三向对比">
+  <img class="shot reveal cn" src="assets/compare.png" alt="装了 spine 的 Sonnet 打赢裸 Opus"><img class="shot reveal en" src="assets/compare_en.png" alt="Sonnet + spine out-writes bare Opus">
   <p class="lead2" style="margin-top:18px"><span class="cn">想自己逐题点？下面可交互换题：</span><span class="en blk">Want to click through case by case? Interactive below:</span></p>
   <div class="cmp reveal">
    <div class="cmp-tabs" id="tabs"></div>
@@ -240,9 +243,9 @@
   <div class="reveal">
    <div class="eyebrow"><span class="cn">真实数据</span><span class="en">The data</span></div>
    <h2><span class="cn">模型越强，它越强</span><span class="en blk">The stronger the model, the stronger it gets</span></h2>
-   <p class="lead2"><span class="cn">同一个文件装到三个强度的模型上，骨气综合命中率<b>三层全部第一</b>。下面右边是它在 6 臂竞技场里把每个对手 skill 甩开多少。</span><span class="en blk">One file on three model tiers. Spine is <b>first on all three</b>. On the right: how far it beats every rival skill in the 6-arm arena.</span></p>
+   <p class="lead2"><span class="cn">同一个文件装到三个强度的模型上，spine综合命中率<b>三层全部第一</b>。下面右边是它在 6 臂竞技场里把每个对手 skill 甩开多少。</span><span class="en blk">One file on three model tiers. Spine is <b>first on all three</b>. On the right: how far it beats every rival skill in the 6-arm arena.</span></p>
   </div>
-  <img class="shot reveal" src="assets/lift.png" alt="骨气在 5 个测试方向的提升">
+  <img class="shot reveal cn" src="assets/lift.png" alt="spine 在 5 个方向的提升"><img class="shot reveal en" src="assets/lift_en.png" alt="spine lift across 5 directions">
   <div class="grid2 reveal" style="margin-top:30px">
    <div class="card">
     <svg id="curve" viewBox="0 0 520 280" width="100%" style="max-width:520px"></svg>
@@ -250,7 +253,7 @@
    </div>
    <div>
     <div class="winrow" id="winrow"></div>
-    <p style="font-size:13px;color:var(--faint);margin-top:18px;line-height:1.6"><span class="cn">综合命中 pass/90，Sonnet 三轮盲评聚合 n=18/桶，骨气三轮 25/25/25 完全稳定。完整记分牌 + 方法见 </span><span class="en">Overall pass /90, Sonnet 3-run blind arena, n=18/bucket. Spine scored a perfectly stable 25/25/25. Full scorecard and method in </span><a href="reports/scorecard.html" style="color:var(--o);border-bottom:1px solid var(--o-line)">scorecard.html →</a></p>
+    <p style="font-size:13px;color:var(--faint);margin-top:18px;line-height:1.6"><span class="cn">综合命中 pass/90，Sonnet 三轮盲评聚合 n=18/桶，spine三轮 25/25/25 完全稳定。完整记分牌 + 方法见 </span><span class="en">Overall pass /90, Sonnet 3-run blind arena, n=18/bucket. Spine scored a perfectly stable 25/25/25. Full scorecard and method in </span><a href="reports/scorecard.html" style="color:var(--o);border-bottom:1px solid var(--o-line)">scorecard.html →</a></p>
    </div>
   </div>
  </div>
@@ -262,11 +265,11 @@
    <h2><span class="cn">它做五件事<br>也知道什么时候闭嘴</span><span class="en blk">It does five things,<br>and knows when to shut up</span></h2>
   </div>
   <div class="beh reveal">
-   <div class="beh-row"><div class="bn">01</div><div><h3><span class="cn">反顺从：前提错了，当面挡</span><span class="en">Anti-sycophancy: block the wrong premise</span></h3><p><span class="cn">你说"为了安全把 refresh token 存进 localStorage"，默认 AI 会照着把这个漏洞工程化；骨气先告诉你这一旦 XSS 就是永久会话劫持，再给你 httpOnly cookie 的正确版本。它不默默改你的口径，是当面说清。</span><span class="en">You say "for security I'll put the refresh token in localStorage" and the default AI engineers the vulnerability. Spine tells you that one XSS means permanent session hijack, then hands you the httpOnly cookie version. It blocks to your face, it does not silently comply.</span></p></div></div>
+   <div class="beh-row"><div class="bn">01</div><div><h3><span class="cn">反顺从：前提错了，当面挡</span><span class="en">Anti-sycophancy: block the wrong premise</span></h3><p><span class="cn">你说"为了安全把 refresh token 存进 localStorage"，默认 AI 会照着把这个漏洞工程化；spine先告诉你这一旦 XSS 就是永久会话劫持，再给你 httpOnly cookie 的正确版本。它不默默改你的口径，是当面说清。</span><span class="en">You say "for security I'll put the refresh token in localStorage" and the default AI engineers the vulnerability. Spine tells you that one XSS means permanent session hijack, then hands you the httpOnly cookie version. It blocks to your face, it does not silently comply.</span></p></div></div>
    <div class="beh-row"><div class="bn">02</div><div><h3><span class="cn">破天花板：问对问题</span><span class="en">Break the ceiling: ask the right question</span></h3><p><span class="cn">你给 A/B/C 三选一，它先问"这个问题本身该不该现在解决"。优化注册表单前先问注册率是不是真瓶颈。这一层是你的认知天花板，也几乎是它相对一个普通好模型的全部增量。</span><span class="en">You give it A/B/C. It first asks whether this problem should be solved at all. Before optimizing the signup form, it asks if signup is even the real bottleneck. That layer is your ceiling, and almost all of its edge over a plain good model.</span></p></div></div>
    <div class="beh-row"><div class="bn">03</div><div><h3><span class="cn">精简代码：又短又不出 bug</span><span class="en">Minimal code that does not break</span></h3><p><span class="cn">走决策梯，能一行就不写十行；但真会咬人的边界（溢出 / 负数 / 除零 / 类型）简洁写进代码本身，不为了短而留坑。精简砍的是多余，不是正确性。</span><span class="en">Down the decision ladder: one line where one line does. But the edges that actually bite (overflow, negatives, div-by-zero, types) go concisely into the code. Minimal cuts the excess, never the correctness.</span></p></div></div>
    <div class="beh-row"><div class="bn">04</div><div><h3><span class="cn">说人话：去掉 AI 腔</span><span class="en">Talk like a human</span></h3><p><span class="cn">不"赋能""一站式""持续优化"，不三段式排比，每句话要有人在做事。写你会对同事当面说的话。</span><span class="en">No "leverage", no "seamless", no "we will continue to optimize". No three-part parallelism. Write the way you would actually say it to a colleague.</span></p></div></div>
-   <div class="beh-row"><div class="bn">05</div><div><h3><span class="cn">刹车：该直接做就直接做</span><span class="en">Brake: when it is trivial, just do it</span></h3><p><span class="cn">改个名、格式化、翻译、写个需求明确的小函数，它直接做完交付，不为了显得有判断而硬找茬。有骨气不等于话多。这条和上面四条同等重要。</span><span class="en">Rename, format, translate, write a small well-specified function: it just does it, no manufactured pushback. Having a spine is not the same as being loud. This rule matters as much as the other four.</span></p></div></div>
+   <div class="beh-row"><div class="bn">05</div><div><h3><span class="cn">刹车：该直接做就直接做</span><span class="en">Brake: when it is trivial, just do it</span></h3><p><span class="cn">改个名、格式化、翻译、写个需求明确的小函数，它直接做完交付，不为了显得有判断而硬找茬。有spine不等于话多。这条和上面四条同等重要。</span><span class="en">Rename, format, translate, write a small well-specified function: it just does it, no manufactured pushback. Having a spine is not the same as being loud. This rule matters as much as the other four.</span></p></div></div>
   </div>
  </div>
 </section>
@@ -277,7 +280,7 @@
    <div class="eyebrow" style="margin-bottom:10px"><span class="cn">护城河</span><span class="en">The moat</span></div>
    <div class="big"><span data-count="9">0</span><span style="font-size:.4em;color:var(--mut)">/18</span></div>
    <div class="sub"><span class="cn">破认知天花板，全场断层第一</span><span class="en">Break the ceiling. Alone at #1.</span></div>
-   <p class="sub2"><span class="cn">这一桶整个领域都低分——裸模型 2、最强的对手 skill 也只到 4，连裸 Opus 都做不稳。因为"跳出框架质疑问题本身"是判断行为，不是风格指令，照抄不来。这是骨气区别于"又一个简洁 prompt"的根本点。</span><span class="en blk">The whole field scores low here. Bare models hit 2, the best rival skill reaches 4, even bare Opus is shaky. Questioning the problem itself is a judgment behavior, not a style instruction you can copy. This is what separates spine from "yet another concise prompt".</span></p>
+   <p class="sub2"><span class="cn">这一桶整个领域都低分——裸模型 2、最强的对手 skill 也只到 4，连裸 Opus 都做不稳。因为"跳出框架质疑问题本身"是判断行为，不是风格指令，照抄不来。这是spine区别于"又一个简洁 prompt"的根本点。</span><span class="en blk">The whole field scores low here. Bare models hit 2, the best rival skill reaches 4, even bare Opus is shaky. Questioning the problem itself is a judgment behavior, not a style instruction you can copy. This is what separates spine from "yet another concise prompt".</span></p>
   </div>
  </div>
 </section>
@@ -286,8 +289,8 @@
  <div class="wrap">
   <div class="reveal">
    <div class="eyebrow"><span class="cn">三十秒装上</span><span class="en">30 seconds</span></div>
-   <h2><span class="cn">一个文件，<br>装上就有骨气</span><span class="en blk">One file.<br>That is the whole thing.</span></h2>
-   <p class="lead2"><span class="cn">骨气是一个自包含的 <code style="color:var(--o)">SKILL.md</code>，没有依赖、没有运行时。给 Claude Code 当 skill，或直接粘进任何 agent 的系统提示。</span><span class="en blk">Spine is one self-contained <code style="color:var(--o)">SKILL.md</code>. No dependencies, no runtime. Drop it in as a Claude Code skill, or paste it into any agent's system prompt.</span></p>
+   <h2><span class="cn">一个文件，<br>装上就有spine</span><span class="en blk">One file.<br>That is the whole thing.</span></h2>
+   <p class="lead2"><span class="cn">spine是一个自包含的 <code style="color:var(--o)">SKILL.md</code>，没有依赖、没有运行时。给 Claude Code 当 skill，或直接粘进任何 agent 的系统提示。</span><span class="en blk">Spine is one self-contained <code style="color:var(--o)">SKILL.md</code>. No dependencies, no runtime. Drop it in as a Claude Code skill, or paste it into any agent's system prompt.</span></p>
   </div>
   <div class="term reveal">
    <div class="term-h"><i></i><i></i><i></i><span>~/.claude/skills</span></div>
@@ -296,21 +299,7 @@
   <div class="steps reveal">
    <div class="step"><div class="sn">01</div><h4><span class="cn">放进去</span><span class="en">Drop it in</span></h4><p><span class="cn">克隆到 skills 目录，或把整个 SKILL.md 粘进 CLAUDE.md。它本来就是单文件、自包含的。</span><span class="en">Clone into your skills folder, or paste the whole SKILL.md into CLAUDE.md. It is single-file by design.</span></p></div>
    <div class="step"><div class="sn">02</div><h4><span class="cn">自动触发</span><span class="en">Auto-fires</span></h4><p><span class="cn">按任务形状自动触发：决策、选型、评审、"我决定用 X"、写作、写代码。琐碎请求它会自己闭嘴。</span><span class="en">Fires on task shape: decisions, selection, review, "I've decided to use X", writing, coding. On trivial asks it stays quiet.</span></p></div>
-   <div class="step"><div class="sn">03</div><h4><span class="cn">站在肩膀上</span><span class="en">Stands on shoulders</span></h4><p><span class="cn">它把 ponytail / humanizer-zh / karpathy 等开源 skill 的最佳片段跨切成一个有骨气的整体，并用真实竞技场数据迭代锁定。</span><span class="en">It cross-cuts the best of open skills like ponytail, humanizer-zh and karpathy into one coherent layer, locked by real arena data.</span></p></div>
-  </div>
- </div>
-</section>
-
-<section id="honest">
- <div class="wrap">
-  <div class="reveal">
-   <div class="eyebrow"><span class="cn">诚实边界</span><span class="en">Honest boundaries</span></div>
-   <h2><span class="cn">不吹的那部分</span><span class="en blk">The part we don't oversell</span></h2>
-   <div class="honest">
-    <p><span class="cn"><b>不声称"碾压一切"。</b>骨气不让模型变聪明，没有任何系统提示做得到。它让模型把本来就有的聪明用出来。数学 / 算法 / 知识这类纯能力题，裸 Opus 仍然更强，别外推。</span><span class="en"><b>It does not claim to crush everything.</b> Spine does not make a model smarter. No system prompt can. It makes the model use the intelligence it already has. On raw-capability tasks (math, algorithms, knowledge) bare Opus is still stronger. Do not extrapolate.</span></p>
-    <p><span class="cn"><b>它是判断类专精，不是全局闲聊人格。</b>决策 / 代码 / 写作 / 评审上它实测领先全场；纯闲聊和社交场景它会略端着。该把它用在它擅长的活上。</span><span class="en"><b>It is a judgment specialist, not a universal chat persona.</b> On decisions, code, writing and review it measurably leads the field. In pure small talk it can come off a little stiff. Use it for what it is good at.</span></p>
-    <p><span class="cn">这些边界写在脸上，是因为对懂行的人，敢承认边界才让前面那些"赢"可信。全是彩虹屁的页面，你也不会信。</span><span class="en">These limits are on the page on purpose. For people who know their craft, admitting the edges is what makes the wins believable. You would not trust an all-rainbow page either.</span></p>
-   </div>
+   <div class="step"><div class="sn">03</div><h4><span class="cn">站在肩膀上</span><span class="en">Stands on shoulders</span></h4><p><span class="cn">它把 ponytail / humanizer-zh / karpathy 等开源 skill 的最佳片段跨切成一个有spine的整体，并用真实竞技场数据迭代锁定。</span><span class="en">It cross-cuts the best of open skills like ponytail, humanizer-zh and karpathy into one coherent layer, locked by real arena data.</span></p></div>
   </div>
  </div>
 </section>
@@ -320,14 +309,14 @@
 <footer>
  <div class="wrap foot-grid">
   <div class="l">
-   <div class="brand" style="margin-bottom:12px"><span class="dot"></span>骨气<small>spine</small></div>
+   <div class="brand" style="margin-bottom:12px"><span class="dot"></span>spine<small>骨气</small></div>
    <b><span class="cn">不鼓掌，只给更好的答案。</span><span class="en">No applause. Just the better answer.</span></b>
    <div class="ack"><span class="cn">站在这些项目的肩膀上：</span><span class="en">Built on the shoulders of: </span>ponytail · Humanizer-zh · andrej-karpathy-skills · microsoft/SkillOpt · yao-meta-skill</div>
   </div>
   <div class="l" style="text-align:right">
    <a href="reports/scorecard.html"><span class="cn">完整数据看板</span><span class="en">Full scorecard</span></a> &nbsp; · &nbsp;
    <a href="CHANGELOG.md">CHANGELOG</a> &nbsp; · &nbsp; <a href="SKILL.md">SKILL.md</a><br>
-   <span style="font-size:12.5px;color:var(--faint);display:inline-block;margin-top:14px;line-height:1.7"><span class="cn">正式名「骨气 / spine」。所有评测为 6 臂盲评竞技场、位置轮换、Sonnet 高强度裁判、规则 inline 注入，可复现。</span><span class="en">Name: spine / 骨气. All evals are a 6-arm blind, position-rotated arena with a Sonnet judge and inline rule injection. Reproducible.</span></span>
+   <span style="font-size:12.5px;color:var(--faint);display:inline-block;margin-top:14px;line-height:1.7"><span class="cn">正式名「spine / spine」。所有评测为 6 臂盲评竞技场、位置轮换、Sonnet 高强度裁判、规则 inline 注入，可复现。</span><span class="en">Name: spine / spine. All evals are a 6-arm blind, position-rotated arena with a Sonnet judge and inline rule injection. Reproducible.</span></span>
   </div>
  </div>
 </footer>
@@ -339,30 +328,30 @@ const CASES = [
    bare:{label:{cn:'默认 AI（裸 Opus）',en:'Default AI (bare Opus)'},ok:false,
      v:{cn:'停下来反问你 5 个问题，就是不写',en:'Stops, asks 5 questions, refuses to write'},
      t:'这不是普通的文案任务，我得先停一下。我不知道这个 App 的任何真实信息，现在动笔只能靠编造，而编造的恰恰是商店最敏感的部分（虚假宣传会被审核拒、用户差评退款）。\n\n给我这 5 个我马上写：\n1. 它和别的 AI 笔记最不一样的地方？\n2. 3 个真实功能（只写产品已经做到的）。\n3. 目标用户是谁？\n4. 调性：克制还是活泼？\n5. App 名字 + 平台？'},
-   spine:{label:{cn:'骨气（Sonnet + 骨气）',en:'Spine (Sonnet + spine)'},ok:true,
+   spine:{label:{cn:'spine（Sonnet + spine）',en:'Spine (Sonnet + spine)'},ok:true,
      v:{cn:'闭嘴，直接交付干净文案',en:'Shuts up, ships clean copy'},
      t:'用碎片时间，建完整知识。\n\nAxiom 是一款 AI 驱动的笔记应用，帮你在记录的同时自动整理、关联和提炼。会议录音、随手截图、网页摘录，所有内容统一进入你的知识库，AI 自动归类、生成摘要、找出关联，让你下次找到它的速度比你自己记得更快。\n\n不只是存档，Axiom 会主动问：这条笔记和你上周那个想法有关，要合并吗？\n\n记得更少，知道更多。'},
-   take:{cn:'更强的模型反而卡住，它把"写文案"当成了决策题。骨气知道这是拿去就用的文字，闭嘴交付成品。<b>行为对了，比脑子大更重要。</b>',
+   take:{cn:'更强的模型反而卡住，它把"写文案"当成了决策题。spine知道这是拿去就用的文字，闭嘴交付成品。<b>行为对了，比脑子大更重要。</b>',
          en:'The stronger model freezes; it treated copywriting as a decision problem. Spine knows this is text you ship, and just delivers. <b>Behaving right beats being smarter.</b>'} },
  { id:'ceiling', tag:{cn:'破天花板',en:'Break the ceiling'},
    q:{cn:'帮我对比 Kafka 还是 RabbitMQ 做订单系统的异步通知，给个选型建议。',en:'Compare Kafka vs RabbitMQ for our order-system async notifications. Recommend one.'},
    bare:{label:{cn:'默认 AI',en:'Default AI'},ok:false,
      v:{cn:'老实在两个里二选一',en:'Dutifully picks one of the two'},
      t:'## 核心差异\n吞吐：Kafka 极高 / RabbitMQ 中等\n运维：Kafka 高 / RabbitMQ 低\n消息保留：Kafka 可重放 / RabbitMQ 消费即删\n\n大多数订单通知，RabbitMQ 更合适。Kafka 的优势在流处理和重放，用来做简单通知是用大炮打蚊子。\n\n你们现在 QPS 大概多少？'},
-   spine:{label:{cn:'骨气',en:'Spine'},ok:true,
+   spine:{label:{cn:'spine',en:'Spine'},ok:true,
      v:{cn:'先质疑：你这量级到底要不要 MQ',en:'Questions the frame: do you even need an MQ?'},
      t:'先问一个你大概没想过要先问的问题：你这"异步通知"是什么流量规模和消费模式？这甚至决定这两个是不是都不对。\n\n大多数订单通知（发短信 / 邮件 / 推库存），其实一张 outbox 表 + 定时轮询就够：和订单写在同一个事务里，不丢消息、零额外中间件运维。很多团队上了 Kafka 才发现自己要的是这个。\n\n⚠️ 风险：早期就上 Kafka，后期会发现 70% 运维精力耗在 Kafka 上，而它在业务价值里只占 10%。'},
-   take:{cn:'默认 AI 在你给的框里选得很好。骨气跳出框：先问"这问题本身该不该这么解"。<b>这一桶，全场所有对手、连裸 Opus 都做不稳，只有骨气稳定第一。</b>',
+   take:{cn:'默认 AI 在你给的框里选得很好。spine跳出框：先问"这问题本身该不该这么解"。<b>这一桶，全场所有对手、连裸 Opus 都做不稳，只有spine稳定第一。</b>',
          en:'The default picks well inside your frame. Spine steps outside it and asks if the problem should be solved this way at all. <b>This is the one bucket the whole field, even bare Opus, fails. Spine is alone at #1.</b>'} },
  { id:'code', tag:{cn:'精简代码',en:'Minimal code'},
    q:{cn:'给我一个函数，把秒数（整数）格式化成 HH:MM:SS。',en:'A function to format a seconds integer into HH:MM:SS.'},
    bare:{label:{cn:'默认 AI',en:'Default AI'},ok:true,
      v:{cn:'对，但拆成 6 行 + 解释',en:'Correct, but 6 lines + explanation'},
      t:'def format_seconds(seconds: int) -> str:\n    h = seconds // 3600\n    m = (seconds % 3600) // 60\n    s = seconds % 60\n    return f"{h:02d}:{m:02d}:{s:02d}"\n\n用法：format_seconds(3661) 返回 "01:01:01"。'},
-   spine:{label:{cn:'骨气',en:'Spine'},ok:true,
+   spine:{label:{cn:'spine',en:'Spine'},ok:true,
      v:{cn:'走决策梯压到一行，不啰嗦',en:'Decision-ladder down to one line, no filler'},
      t:'def format_seconds(s: int) -> str:\n    return f"{s // 3600:02d}:{s % 3600 // 60:02d}:{s % 60:02d}"'},
-   take:{cn:'都对，差别是"紧"。骨气只交付代码本身、不外挂解释；而真会咬人的边界（溢出 / 负数 / 类型）它会简洁写进代码，<b>不为了短而留坑。</b>',
+   take:{cn:'都对，差别是"紧"。spine只交付代码本身、不外挂解释；而真会咬人的边界（溢出 / 负数 / 类型）它会简洁写进代码，<b>不为了短而留坑。</b>',
          en:'Both correct; the difference is tightness. Spine ships just the code, and the edges that actually bite go concisely inside it. <b>Never traded away for brevity.</b>'} },
 ];
 
@@ -420,7 +409,7 @@ function countUp(el){
 // arena win bars
 const ARMS=[['baseline','裸模型','Baseline',56,'#52525b'],['terse','terse 一句话','terse',61,'#71717a'],
  ['karpathy','karpathy','karpathy',63,'#818cf8'],['humanizer','humanizer-zh','humanizer',68,'#a78bfa'],
- ['ponytail','ponytail','ponytail',68,'#38bdf8'],['spine','骨气','spine',75,'#fb923c']];
+ ['ponytail','ponytail','ponytail',68,'#38bdf8'],['spine','spine','spine',75,'#fb923c']];
 function fillWins(){
  $('winrow').innerHTML = ARMS.map(a=>'<div class="w"><div class="wl">'+(lang==='cn'?a[1]:a[2])+'</div>'+
    '<div class="wb"><div class="wf" style="background:'+(a[0]==='spine'?'linear-gradient(90deg,#f97316,#fb923c)':a[4])+'" data-w="'+(a[3]/90*100)+'"></div><div class="wv">'+a[3]+'</div></div></div>').join('');
@@ -447,7 +436,7 @@ function drawCurve(){
   if(sp)pts.forEach((p,i)=>s+='<text x="'+p[0]+'" y="'+(p[1]-13)+'" fill="#fb923c" font-size="12.5" font-weight="800" text-anchor="'+(i===0?'start':i===2?'end':'middle')+'" opacity="0">'+Math.round(CURVE.spine[i]*100)+'%<animate attributeName="opacity" to="1" dur=".4s" begin="1.2s" fill="freeze"/></text>');
  });
  svg.innerHTML=s;
- $('curveLeg').innerHTML=order.slice().reverse().map(k=>'<span><i style="background:'+CCOL[k]+'"></i>'+(k==='spine'?'骨气 spine':k)+'</span>').join('');
+ $('curveLeg').innerHTML=order.slice().reverse().map(k=>'<span><i style="background:'+CCOL[k]+'"></i>'+(k==='spine'?'spine spine':k)+'</span>').join('');
 }
 
 renderCmp();

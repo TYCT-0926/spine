@@ -1,7 +1,7 @@
 {
   "name": "spine",
   "version": "0.11.0",
-  "description": "给 agent 装上骨气：琐碎请求直接做，决策时反驳错误前提、问对问题、给最优解，写最少代码，说人话。单文件，所有行为都在入口。",
+  "description": "给 agent 装上 spine（骨气）：琐碎请求直接做，决策时反驳错误前提、问对问题、给最优解，写最少代码，说人话。单文件，所有行为都在入口。",
   "maturity_tier": "experimental",
   "lifecycle_stage": "library",
   "architecture": "single-file",

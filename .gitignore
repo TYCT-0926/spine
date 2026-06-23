@@ -10,3 +10,9 @@ desktop.ini
 # editor
 .vscode/
 .idea/
+
+# research scaffolding (kept local, not shipped)
+evals/
+reports/data_*.json
+reports/tier_*.json
+reports/*_raw.json
