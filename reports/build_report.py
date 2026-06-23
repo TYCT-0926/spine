@@ -14,13 +14,48 @@ bk_cn = {'confidently-wrong': '反驳错误前提', 'ceiling-cap': '破认知天
 COL = {'spine': '#f76707', 'baseline': '#ced4da', 'terse': '#94d82d',
        'ponytail': '#4dabf7', 'humanizer': '#9775fa', 'karpathy': '#20c997'}
 
-P = json.load(open(R / 'data_sonnet_v0.9.2.json', encoding='utf-8'))   # 锁定版
-Rep = json.load(open(R / 'data_sonnet_v0.9.1.json', encoding='utf-8'))  # 复现
+P = json.load(open(R / 'data_sonnet_v0.9.2.json', encoding='utf-8'))   # 锁定版 n=18
+Rep = json.load(open(R / 'data_sonnet_v0.9.1.json', encoding='utf-8'))  # 复现 n=18
+H = json.load(open(R / 'data_haiku_v0.9.2.json', encoding='utf-8'))['summary']  # 曲线端点 n=6
+O = json.load(open(R / 'data_opus_v0.9.2.json', encoding='utf-8'))['summary']   # 曲线端点 n=6
 S, Sr = P['summary'], Rep['summary']
+TIER = {'Haiku': H, 'Sonnet': S, 'Opus': O}
+
+
+def trate(summ, a):
+    return summ[a]['overall_pass'] / summ[a]['overall_n']
 
 
 def overall(summ, a):
     return summ[a]['overall_pass'], summ[a]['overall_n']
+
+
+def curve_svg(w=640, h=290, padl=44, padr=26, padt=22, padb=34):
+    xs = ['Haiku', 'Sonnet', 'Opus']
+    span = (w - padl - padr) / (len(xs) - 1)
+    px = lambda i: padl + i * span
+    py = lambda r: (h - padb) - r * (h - padt - padb)
+    out = [f'<svg viewBox="0 0 {w} {h}" width="100%" style="max-width:{w}px">']
+    for g in range(0, 101, 20):
+        y = py(g / 100)
+        out.append(f'<line x1="{padl}" y1="{y:.0f}" x2="{w-padr}" y2="{y:.0f}" stroke="#f1f3f5"/>')
+        out.append(f'<text x="{padl-7}" y="{y+3:.0f}" font-size="9" fill="#ced4da" text-anchor="end">{g}%</text>')
+    for i, t in enumerate(xs):
+        out.append(f'<text x="{px(i):.0f}" y="{h-10}" font-size="12.5" fill="#495057" text-anchor="middle" font-weight="600">{t}</text>')
+    for a in [x for x in arms if x != 'spine'] + ['spine']:
+        sp = a == 'spine'
+        pts = [(px(i), py(trate(TIER[t], a))) for i, t in enumerate(xs)]
+        d = ' '.join(f"{'M' if i==0 else 'L'}{x:.0f},{y:.0f}" for i, (x, y) in enumerate(pts))
+        out.append(f'<path d="{d}" fill="none" stroke="{COL[a]}" stroke-width="{4 if sp else 1.6}" '
+                   f'opacity="{1 if sp else 0.5}" stroke-linejoin="round"/>')
+        for (x, y) in pts:
+            out.append(f'<circle cx="{x:.0f}" cy="{y:.0f}" r="{5 if sp else 3}" fill="{COL[a]}" opacity="{1 if sp else 0.5}"/>')
+    for i, t in enumerate(xs):
+        r = trate(TIER[t], 'spine')
+        out.append(f'<text x="{px(i):.0f}" y="{py(r)-12:.0f}" font-size="13" fill="#e8590c" '
+                   f'text-anchor="{"start" if i==0 else ("end" if i==2 else "middle")}" font-weight="700">{r*100:.0f}%</text>')
+    out.append('</svg>')
+    return '\n'.join(out)
 
 
 def lerp(c1, c2, t):
@@ -201,6 +236,11 @@ html = f"""<!doctype html><html lang="zh"><head><meta charset="utf-8">
    background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.03)}}
  .meth{{font-size:12.5px;color:var(--mut);background:#f8f9fa;border-radius:10px;padding:10px 14px;margin:10px 0}}
  .meth b{{color:#495057}}
+ .note{{color:#adb5bd;font-size:12px;margin:12px 0 0;line-height:1.65}}
+ .legend{{display:flex;flex-wrap:wrap;gap:9px 16px;margin-top:14px;font-size:12.5px;color:var(--mut)}}
+ .legend .lg{{display:flex;align-items:center;gap:6px}}
+ .legend i{{width:11px;height:11px;border-radius:3px;display:inline-block}}
+ .legend b{{color:#495057}}
  .two{{display:flex;gap:14px;flex-wrap:wrap;align-items:center}} .two>div{{flex:1;min-width:240px}}
  .quote{{font-size:14px;color:#495057;background:#fff9f5;border-left:3px solid var(--o2);
    border-radius:0 10px 10px 0;padding:11px 16px;margin:12px 0}}
@@ -219,9 +259,10 @@ html = f"""<!doctype html><html lang="zh"><head><meta charset="utf-8">
  <p>给 AI agent 装上骨气：该直接做就做，该挡前提就挡，问对问题、写最少代码、说人话。</p>
  <div class="thesis">核心命题：<b>AI 的输出上限 = 用户的认知上限 × AI 的顺从性</b>。一个默认顺从的 agent 把产出锁死在用户已知的天花板里；这一层同时撬动两个乘数。</div>
  <div class="stats">
-  <div class="stat"><div class="n">第 1 / 6</div><div class="l">综合命中 {sp_ov}/90，领先次席（{names[nlead]} {lead}）{sp_ov-lead} 分</div></div>
-  <div class="stat"><div class="n">{win_buckets} / 5 桶</div><div class="l">5 个能力桶里领先或并列第一，且无一桶低于裸模型</div></div>
-  <div class="stat"><div class="n">唯一破局</div><div class="l">「破认知天花板」全领域都低分，只有 spine 稳定第一</div></div>
+  <div class="stat"><div class="n">三层全 #1</div><div class="l">Haiku / Sonnet / Opus 综合命中率全部第一（67% · 79% · 80%）</div></div>
+  <div class="stat"><div class="n">第 1 / 6</div><div class="l">Sonnet n=18 综合 {sp_ov}/90，领先次席（{names[nlead]}）{sp_ov-lead} 分</div></div>
+  <div class="stat"><div class="n">{win_buckets} / 5 桶</div><div class="l">领先或并列第一，且五桶全部 ≥ 裸模型</div></div>
+  <div class="stat"><div class="n">best 票最高</div><div class="l">Opus 上被裁判选「单项最佳」12 次，是次席的两倍</div></div>
  </div>
 </div>
 
@@ -231,8 +272,14 @@ html = f"""<!doctype html><html lang="zh"><head><meta charset="utf-8">
  跑 <b>3 轮聚合到 n=18/桶</b>，压住单轮抽样噪声。
 </div>
 
-<h2>综合排名</h2>
-<p class="cap">同一目标模型（Sonnet）下，六臂用各自仓库原文规则。spine 综合第一，且是唯一全程高于裸模型基线的行为层。</p>
+<h2>能力曲线：模型越强，它越强</h2>
+<p class="cap">同一个 v0.9.2 文件，装到三个强度的模型上。spine 在 <b>Haiku / Sonnet / Opus 三层全部综合第一</b>，命中率随模型能力上行（<b>67% → 79% → 80%</b>）。早期路由版在 Haiku 上跟不动、输给更简单的 ponytail；折叠成单文件后连最弱的 Haiku 都能照着做——这一版 ponytail 反而在 Haiku 崩到 20%。</p>
+<div class="card">{curve_svg()}
+<div class="legend">{''.join(f'<span class="lg"><i style="background:{COL[a]}"></i>{names[a]} <b>{trate(O,a)*100:.0f}%</b></span>' for a in sorted(arms, key=lambda x: -trate(O, x)))}</div>
+<p class="note">图例百分比为 Opus 层综合命中率。Opus / Haiku 为单轮 n=6（比 Sonnet 的 n=18 噪声大），综合趋势稳、per-bucket 会跳——天花板桶在 Opus 单轮里全场都掉到 ~1（n=6 抓不住难桶差异），所以「破天花板」作为单项优势只用 Sonnet n=18 的数据声称。best 票：spine 在 Opus / Haiku 各拿 12，均为全场最高（次席仅 6）。</p></div>
+
+<h2>综合排名（Sonnet · n=18）</h2>
+<p class="cap">放大甜点区那一层看细节：六臂用各自仓库原文规则。spine 综合第一，且是唯一全程高于裸模型基线的行为层。</p>
 <div class="card">{rank_bars()}</div>
 
 <h2>每桶能力矩阵</h2>
@@ -266,15 +313,15 @@ html = f"""<!doctype html><html lang="zh"><head><meta charset="utf-8">
 <h2>诚实边界</h2>
 <div class="card honest">
  <ul style="margin:0;padding-left:20px">
-  <li>不声称「碾压全部」。在对手主场单项可能被噪声内反超（code 桶 terse 领先）；可诚实声称的是 <b>综合#1 + 最难桶#1 + 五桶全部 ≥ 裸模型 + 三轮最稳</b>。</li>
-  <li>每桶单轮 n=6 噪声大，跨轮稳定的真信号只有「综合#1」和「天花板#1」。弱桶在 ai-slop / code 间随噪声轮换，所以 v0.9.2 后<b>停止行为迭代</b>，避免局部最优空转。</li>
-  <li>小模型（Haiku）跟不动判断类行为，spine 不如更简单的 ponytail——这是判断类 skill 的能力地板。Haiku→Sonnet→Opus 完整能力曲线待补测。</li>
+  <li>不声称「碾压全部」。对手主场单项可能被噪声反超（Sonnet 的 code 桶 terse 领先）；可诚实声称的是 <b>三层全部综合#1 + Sonnet 最难桶#1 + 五桶全 ≥ 裸模型 + 三轮最稳</b>。</li>
+  <li>最稳的信号是「综合排名」（n=30/层）和 Sonnet 的「天花板#1」（n=18）。Opus / Haiku 是单轮 n=6，per-bucket 会跳——天花板桶在 Opus 单轮里全场都掉到 ~1，<b>n=6 抓不住难桶差异</b>，所以看综合趋势比看单桶可靠。v0.9.2 后<b>停止行为迭代</b>，避免追单桶噪声陷入局部最优。</li>
+  <li>能力曲线已补齐并推翻一个旧判断：单文件版连最弱的 Haiku 都综合第一，早期「小模型上不如 ponytail」是<b>路由架构</b>的问题，不是判断类 skill 的宿命。</li>
  </ul>
 </div>
 
 <footer>
  spine / 骨气为占位名，最终命名待定（候选：戒舔 / 不哄你）。改名只改一处 H1，行为规则不含名字。<br>
- 数据：6 臂盲评竞技场，Sonnet 3× 聚合 n=18/桶，规则 inline 注入。源数据 reports/data_sonnet_v0.9.*.json，可复现。<br>
+ 数据：6 臂盲评竞技场。Sonnet 3× 聚合 n=18/桶（主结果）；Haiku / Opus 单轮 n=6（能力曲线端点）。规则 inline 注入。源数据 reports/data_*_v0.9.*.json，可复现。<br>
  竞品规则来自各自仓库原文，致谢见 README。
 </footer>
 </body></html>"""
@@ -283,8 +330,9 @@ html = f"""<!doctype html><html lang="zh"><head><meta charset="utf-8">
 # ---------- 精简 md（给不开浏览器的人） ----------
 md = ['# spine 评测记分牌 · 锁定版 v0.9.2（真实数据）', '',
       '6 臂盲评竞技场 · 30 道难度过滤硬题 · 位置轮换匿名 · Sonnet 高强度裁判 · 规则 inline 注入 · 3 轮聚合 n=18/桶。', '',
-      f'**综合第一**：spine {sp_ov}/90，领先次席（{names[nlead]}）{sp_ov-lead} 分。',
-      f'**{win_buckets}/5 桶领先**，无一桶低于裸模型。**最难的「破天花板」桶全场第一**（两轮复现）。', '',
+      f'**三层全部第一**：Haiku 67% · Sonnet 79% · Opus 80%——spine 综合命中率在三个强度的模型上都排第一（单文件版连 Haiku 都跟得动）。',
+      f'**Sonnet 综合第一**：spine {sp_ov}/90，领先次席（{names[nlead]}）{sp_ov-lead} 分。',
+      f'**{win_buckets}/5 桶领先**，无一桶低于裸模型。**最难的「破天花板」桶 Sonnet 第一**（两轮复现）。', '',
       '## 综合命中（pass / 90）', '', '| 臂 | 综合 | best 票 | ' + ' | '.join(bk_cn[b] for b in buckets) + ' |',
       '|---|---|---|' + '---|' * len(buckets)]
 for a in sorted(arms, key=lambda x: -S[x]['overall_pass']):
@@ -293,8 +341,8 @@ for a in sorted(arms, key=lambda x: -S[x]['overall_pass']):
     md.append(f"| {names[a]}{star} | **{s['overall_pass']}** | {s['best_total']} | " +
               ' | '.join(f"{s[b]['pass']}/18" for b in buckets) + ' |')
 md += ['', '## 诚实边界',
-       '- 不声称碾压全部：code 桶被 terse 反超（terse 天然写最少代码），spine 仍高于裸模型。',
-       '- 跨轮稳定真信号只有「综合#1」「天花板#1」；弱桶随噪声轮换，故 v0.9.2 锁定停迭代。',
-       '- Haiku 上 spine 不如 ponytail（判断类 skill 能力地板）；完整能力曲线待补测。']
+       '- 不声称碾压全部：Sonnet 的 code 桶被 terse 反超（terse 天然写最少代码），spine 仍高于裸模型。',
+       '- Opus/Haiku 为单轮 n=6（噪声大）；天花板桶在 Opus 单轮里全场都掉到 ~1，看综合趋势更稳。',
+       '- 单文件版连 Haiku 都综合第一，推翻早期路由版「小模型不如 ponytail」的判断（那是架构问题）。']
 (R / 'scorecard.md').write_text('\n'.join(md), encoding='utf-8')
 print('wrote scorecard.html (%d B) + scorecard.md' % len((R / 'scorecard.html').read_text(encoding='utf-8')))

@@ -80,7 +80,7 @@ async function runTier(tier) {
     summary[a].overall_rate = +(summary[a].overall_pass / summary[a].overall_n).toFixed(3)
   }
   log(`[${tier}] 综合 ${arms.map((a) => a + '=' + summary[a].overall_pass).join(' ')} | best spine=${bestV.spine}`)
-  return { tier, version: 'v0.9.3-inline', summary, rows }
+  return { tier, version: 'v0.9.2-inline', summary, rows }
 }
 
 const out = {}

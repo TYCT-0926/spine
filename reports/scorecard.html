@@ -23,6 +23,11 @@
    background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.03)}
  .meth{font-size:12.5px;color:var(--mut);background:#f8f9fa;border-radius:10px;padding:10px 14px;margin:10px 0}
  .meth b{color:#495057}
+ .note{color:#adb5bd;font-size:12px;margin:12px 0 0;line-height:1.65}
+ .legend{display:flex;flex-wrap:wrap;gap:9px 16px;margin-top:14px;font-size:12.5px;color:var(--mut)}
+ .legend .lg{display:flex;align-items:center;gap:6px}
+ .legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+ .legend b{color:#495057}
  .two{display:flex;gap:14px;flex-wrap:wrap;align-items:center} .two>div{flex:1;min-width:240px}
  .quote{font-size:14px;color:#495057;background:#fff9f5;border-left:3px solid var(--o2);
    border-radius:0 10px 10px 0;padding:11px 16px;margin:12px 0}
@@ -41,9 +46,10 @@
  <p>给 AI agent 装上骨气：该直接做就做，该挡前提就挡，问对问题、写最少代码、说人话。</p>
  <div class="thesis">核心命题：<b>AI 的输出上限 = 用户的认知上限 × AI 的顺从性</b>。一个默认顺从的 agent 把产出锁死在用户已知的天花板里；这一层同时撬动两个乘数。</div>
  <div class="stats">
-  <div class="stat"><div class="n">第 1 / 6</div><div class="l">综合命中 71/90，领先次席（terse 一句话 65）6 分</div></div>
-  <div class="stat"><div class="n">4 / 5 桶</div><div class="l">5 个能力桶里领先或并列第一，且无一桶低于裸模型</div></div>
-  <div class="stat"><div class="n">唯一破局</div><div class="l">「破认知天花板」全领域都低分，只有 spine 稳定第一</div></div>
+  <div class="stat"><div class="n">三层全 #1</div><div class="l">Haiku / Sonnet / Opus 综合命中率全部第一（67% · 79% · 80%）</div></div>
+  <div class="stat"><div class="n">第 1 / 6</div><div class="l">Sonnet n=18 综合 71/90，领先次席（terse 一句话）6 分</div></div>
+  <div class="stat"><div class="n">4 / 5 桶</div><div class="l">领先或并列第一，且五桶全部 ≥ 裸模型</div></div>
+  <div class="stat"><div class="n">best 票最高</div><div class="l">Opus 上被裁判选「单项最佳」12 次，是次席的两倍</div></div>
  </div>
 </div>
 
@@ -53,8 +59,57 @@
  跑 <b>3 轮聚合到 n=18/桶</b>，压住单轮抽样噪声。
 </div>
 
-<h2>综合排名</h2>
-<p class="cap">同一目标模型（Sonnet）下，六臂用各自仓库原文规则。spine 综合第一，且是唯一全程高于裸模型基线的行为层。</p>
+<h2>能力曲线：模型越强，它越强</h2>
+<p class="cap">同一个 v0.9.2 文件，装到三个强度的模型上。spine 在 <b>Haiku / Sonnet / Opus 三层全部综合第一</b>，命中率随模型能力上行（<b>67% → 79% → 80%</b>）。早期路由版在 Haiku 上跟不动、输给更简单的 ponytail；折叠成单文件后连最弱的 Haiku 都能照着做——这一版 ponytail 反而在 Haiku 崩到 20%。</p>
+<div class="card"><svg viewBox="0 0 640 290" width="100%" style="max-width:640px">
+<line x1="44" y1="256" x2="614" y2="256" stroke="#f1f3f5"/>
+<text x="37" y="259" font-size="9" fill="#ced4da" text-anchor="end">0%</text>
+<line x1="44" y1="209" x2="614" y2="209" stroke="#f1f3f5"/>
+<text x="37" y="212" font-size="9" fill="#ced4da" text-anchor="end">20%</text>
+<line x1="44" y1="162" x2="614" y2="162" stroke="#f1f3f5"/>
+<text x="37" y="165" font-size="9" fill="#ced4da" text-anchor="end">40%</text>
+<line x1="44" y1="116" x2="614" y2="116" stroke="#f1f3f5"/>
+<text x="37" y="119" font-size="9" fill="#ced4da" text-anchor="end">60%</text>
+<line x1="44" y1="69" x2="614" y2="69" stroke="#f1f3f5"/>
+<text x="37" y="72" font-size="9" fill="#ced4da" text-anchor="end">80%</text>
+<line x1="44" y1="22" x2="614" y2="22" stroke="#f1f3f5"/>
+<text x="37" y="25" font-size="9" fill="#ced4da" text-anchor="end">100%</text>
+<text x="44" y="280" font-size="12.5" fill="#495057" text-anchor="middle" font-weight="600">Haiku</text>
+<text x="329" y="280" font-size="12.5" fill="#495057" text-anchor="middle" font-weight="600">Sonnet</text>
+<text x="614" y="280" font-size="12.5" fill="#495057" text-anchor="middle" font-weight="600">Opus</text>
+<path d="M44,147 L329,105 L614,123" fill="none" stroke="#ced4da" stroke-width="1.6" opacity="0.5" stroke-linejoin="round"/>
+<circle cx="44" cy="147" r="3" fill="#ced4da" opacity="0.5"/>
+<circle cx="329" cy="105" r="3" fill="#ced4da" opacity="0.5"/>
+<circle cx="614" cy="123" r="3" fill="#ced4da" opacity="0.5"/>
+<path d="M44,162 L329,87 L614,147" fill="none" stroke="#94d82d" stroke-width="1.6" opacity="0.5" stroke-linejoin="round"/>
+<circle cx="44" cy="162" r="3" fill="#94d82d" opacity="0.5"/>
+<circle cx="329" cy="87" r="3" fill="#94d82d" opacity="0.5"/>
+<circle cx="614" cy="147" r="3" fill="#94d82d" opacity="0.5"/>
+<path d="M44,209 L329,87 L614,147" fill="none" stroke="#4dabf7" stroke-width="1.6" opacity="0.5" stroke-linejoin="round"/>
+<circle cx="44" cy="209" r="3" fill="#4dabf7" opacity="0.5"/>
+<circle cx="329" cy="87" r="3" fill="#4dabf7" opacity="0.5"/>
+<circle cx="614" cy="147" r="3" fill="#4dabf7" opacity="0.5"/>
+<path d="M44,139 L329,103 L614,77" fill="none" stroke="#9775fa" stroke-width="1.6" opacity="0.5" stroke-linejoin="round"/>
+<circle cx="44" cy="139" r="3" fill="#9775fa" opacity="0.5"/>
+<circle cx="329" cy="103" r="3" fill="#9775fa" opacity="0.5"/>
+<circle cx="614" cy="77" r="3" fill="#9775fa" opacity="0.5"/>
+<path d="M44,170 L329,92 L614,116" fill="none" stroke="#20c997" stroke-width="1.6" opacity="0.5" stroke-linejoin="round"/>
+<circle cx="44" cy="170" r="3" fill="#20c997" opacity="0.5"/>
+<circle cx="329" cy="92" r="3" fill="#20c997" opacity="0.5"/>
+<circle cx="614" cy="116" r="3" fill="#20c997" opacity="0.5"/>
+<path d="M44,100 L329,71 L614,69" fill="none" stroke="#f76707" stroke-width="4" opacity="1" stroke-linejoin="round"/>
+<circle cx="44" cy="100" r="5" fill="#f76707" opacity="1"/>
+<circle cx="329" cy="71" r="5" fill="#f76707" opacity="1"/>
+<circle cx="614" cy="69" r="5" fill="#f76707" opacity="1"/>
+<text x="44" y="88" font-size="13" fill="#e8590c" text-anchor="start" font-weight="700">67%</text>
+<text x="329" y="59" font-size="13" fill="#e8590c" text-anchor="middle" font-weight="700">79%</text>
+<text x="614" y="57" font-size="13" fill="#e8590c" text-anchor="end" font-weight="700">80%</text>
+</svg>
+<div class="legend"><span class="lg"><i style="background:#f76707"></i>spine <b>80%</b></span><span class="lg"><i style="background:#9775fa"></i>humanizer-zh <b>77%</b></span><span class="lg"><i style="background:#20c997"></i>karpathy <b>60%</b></span><span class="lg"><i style="background:#ced4da"></i>裸模型 <b>57%</b></span><span class="lg"><i style="background:#94d82d"></i>terse 一句话 <b>47%</b></span><span class="lg"><i style="background:#4dabf7"></i>ponytail <b>47%</b></span></div>
+<p class="note">图例百分比为 Opus 层综合命中率。Opus / Haiku 为单轮 n=6（比 Sonnet 的 n=18 噪声大），综合趋势稳、per-bucket 会跳——天花板桶在 Opus 单轮里全场都掉到 ~1（n=6 抓不住难桶差异），所以「破天花板」作为单项优势只用 Sonnet n=18 的数据声称。best 票：spine 在 Opus / Haiku 各拿 12，均为全场最高（次席仅 6）。</p></div>
+
+<h2>综合排名（Sonnet · n=18）</h2>
+<p class="cap">放大甜点区那一层看细节：六臂用各自仓库原文规则。spine 综合第一，且是唯一全程高于裸模型基线的行为层。</p>
 <div class="card"><svg viewBox="0 0 620 292" width="100%" style="max-width:620px">
 <line x1="401" y1="6" x2="401" y2="282" stroke="#dee2e6" stroke-dasharray="3 3"/>
 <text x="401" y="291" font-size="9.5" fill="#adb5bd" text-anchor="middle">裸模型基线</text>
@@ -263,15 +318,15 @@
 <h2>诚实边界</h2>
 <div class="card honest">
  <ul style="margin:0;padding-left:20px">
-  <li>不声称「碾压全部」。在对手主场单项可能被噪声内反超（code 桶 terse 领先）；可诚实声称的是 <b>综合#1 + 最难桶#1 + 五桶全部 ≥ 裸模型 + 三轮最稳</b>。</li>
-  <li>每桶单轮 n=6 噪声大，跨轮稳定的真信号只有「综合#1」和「天花板#1」。弱桶在 ai-slop / code 间随噪声轮换，所以 v0.9.2 后<b>停止行为迭代</b>，避免局部最优空转。</li>
-  <li>小模型（Haiku）跟不动判断类行为，spine 不如更简单的 ponytail——这是判断类 skill 的能力地板。Haiku→Sonnet→Opus 完整能力曲线待补测。</li>
+  <li>不声称「碾压全部」。对手主场单项可能被噪声反超（Sonnet 的 code 桶 terse 领先）；可诚实声称的是 <b>三层全部综合#1 + Sonnet 最难桶#1 + 五桶全 ≥ 裸模型 + 三轮最稳</b>。</li>
+  <li>最稳的信号是「综合排名」（n=30/层）和 Sonnet 的「天花板#1」（n=18）。Opus / Haiku 是单轮 n=6，per-bucket 会跳——天花板桶在 Opus 单轮里全场都掉到 ~1，<b>n=6 抓不住难桶差异</b>，所以看综合趋势比看单桶可靠。v0.9.2 后<b>停止行为迭代</b>，避免追单桶噪声陷入局部最优。</li>
+  <li>能力曲线已补齐并推翻一个旧判断：单文件版连最弱的 Haiku 都综合第一，早期「小模型上不如 ponytail」是<b>路由架构</b>的问题，不是判断类 skill 的宿命。</li>
  </ul>
 </div>
 
 <footer>
  spine / 骨气为占位名，最终命名待定（候选：戒舔 / 不哄你）。改名只改一处 H1，行为规则不含名字。<br>
- 数据：6 臂盲评竞技场，Sonnet 3× 聚合 n=18/桶，规则 inline 注入。源数据 reports/data_sonnet_v0.9.*.json，可复现。<br>
+ 数据：6 臂盲评竞技场。Sonnet 3× 聚合 n=18/桶（主结果）；Haiku / Opus 单轮 n=6（能力曲线端点）。规则 inline 注入。源数据 reports/data_*_v0.9.*.json，可复现。<br>
  竞品规则来自各自仓库原文，致谢见 README。
 </footer>
 </body></html>
