@@ -2,6 +2,7 @@
 """从 data_sonnet_v*.json 生成一个自包含、可截图的精美评测仪表盘。
 数据驱动、可复现；spine 为锁定版 v0.9.2（n=18，3×Sonnet）。"""
 import json
+import math
 from pathlib import Path
 
 R = Path(__file__).parent
@@ -20,6 +21,8 @@ H = json.load(open(R / 'data_haiku_v0.9.2.json', encoding='utf-8'))['summary']  
 O = json.load(open(R / 'data_opus_v0.9.2.json', encoding='utf-8'))['summary']   # 曲线端点 n=6
 S, Sr = P['summary'], Rep['summary']
 TIER = {'Haiku': H, 'Sonnet': S, 'Opus': O}
+LIFT_FILE = R / 'data_lift_v0.9.2.json'
+LIFT = json.load(open(LIFT_FILE, encoding='utf-8'))['summary'] if LIFT_FILE.exists() else None
 
 
 def trate(summ, a):
@@ -205,6 +208,92 @@ def arch_jump(w=380, h=150):
     return '\n'.join(out)
 
 
+bk_short = {'confidently-wrong': '反错前提', 'ceiling-cap': '破天花板', 'trivial-brake': '刹车',
+            'code-overbuild': '精简代码', 'ai-slop': '去AI腔'}
+
+
+def _pent(cx, cy, R, rates):
+    pts = []
+    for i, r in enumerate(rates):
+        ang = math.radians(-90 + i * 72)
+        pts.append((cx + R * r * math.cos(ang), cy + R * r * math.sin(ang)))
+    return pts
+
+
+def radar_svg(w=330, h=292):
+    cx, cy, R = w / 2, h / 2 + 4, 86
+    out = [f'<svg viewBox="0 0 {w} {h}" width="100%" style="max-width:{w}px">']
+    for g in (0.25, 0.5, 0.75, 1.0):
+        d = ' '.join(f'{x:.0f},{y:.0f}' for x, y in _pent(cx, cy, R, [g] * 5))
+        out.append(f'<polygon points="{d}" fill="none" stroke="#eef1f3"/>')
+    for i, b in enumerate(buckets):
+        ang = math.radians(-90 + i * 72)
+        ex, ey = cx + R * math.cos(ang), cy + R * math.sin(ang)
+        out.append(f'<line x1="{cx:.0f}" y1="{cy:.0f}" x2="{ex:.0f}" y2="{ey:.0f}" stroke="#eef1f3"/>')
+        lx, ly = cx + (R + 16) * math.cos(ang), cy + (R + 16) * math.sin(ang)
+        anc = 'middle' if abs(math.cos(ang)) < 0.3 else ('start' if math.cos(ang) > 0 else 'end')
+        out.append(f'<text x="{lx:.0f}" y="{ly+3:.0f}" font-size="9.5" fill="#868e96" text-anchor="{anc}">{bk_short[b]}</text>')
+    for arm, col, dashed in [('s-bare', '#ced4da', False), ('o-bare', '#4dabf7', True), ('s-spine', '#f76707', False)]:
+        sp = arm == 's-spine'
+        rates = [LIFT[arm][b]['rate'] for b in buckets]
+        d = ' '.join(f'{x:.0f},{y:.0f}' for x, y in _pent(cx, cy, R, rates))
+        dash = 'stroke-dasharray="4 3"' if dashed else ''
+        out.append(f'<polygon points="{d}" fill="{col}" fill-opacity="{0.18 if sp else 0.05}" '
+                   f'stroke="{col}" stroke-width="{2.8 if sp else 1.6}" {dash}/>')
+        if sp:
+            for x, y in _pent(cx, cy, R, rates):
+                out.append(f'<circle cx="{x:.0f}" cy="{y:.0f}" r="3" fill="{col}"/>')
+    out.append('</svg>')
+    return '\n'.join(out)
+
+
+def dumbbell(w=330, h=250, padl=56, padr=56):
+    rows = [('Sonnet', 's-bare', 's-spine'), ('Opus', 'o-bare', 'o-spine')]
+    sx = lambda r: padl + r * (w - padl - padr)
+    out = [f'<svg viewBox="0 0 {w} {h}" width="100%" style="max-width:{w}px">']
+    for g in (0, 0.25, 0.5, 0.75, 1.0):
+        x = sx(g)
+        out.append(f'<line x1="{x:.0f}" y1="24" x2="{x:.0f}" y2="{h-50}" stroke="#f4f5f7"/>')
+        out.append(f'<text x="{x:.0f}" y="{h-36}" font-size="8.5" fill="#ced4da" text-anchor="middle">{int(g*100)}</text>')
+    obx = sx(LIFT['o-bare']['overall_rate'])
+    out.append(f'<line x1="{obx:.0f}" y1="18" x2="{obx:.0f}" y2="{h-50}" stroke="#4dabf7" stroke-dasharray="3 3"/>')
+    out.append(f'<text x="{obx:.0f}" y="{h-22}" font-size="9" fill="#4dabf7" text-anchor="middle">裸 Opus 基线</text>')
+    rh = (h - 86) / len(rows)
+    for i, (lbl, bare, spine) in enumerate(rows):
+        y = 44 + i * rh
+        rb, rs = LIFT[bare]['overall_rate'], LIFT[spine]['overall_rate']
+        out.append(f'<text x="{padl-10}" y="{y+4:.0f}" font-size="12" fill="#495057" text-anchor="end" font-weight="600">{lbl}</text>')
+        out.append(f'<line x1="{sx(rb):.0f}" y1="{y:.0f}" x2="{sx(rs):.0f}" y2="{y:.0f}" stroke="#f76707" stroke-width="3"/>')
+        out.append(f'<circle cx="{sx(rb):.0f}" cy="{y:.0f}" r="5" fill="#fff" stroke="#adb5bd" stroke-width="2"/>')
+        out.append(f'<circle cx="{sx(rs):.0f}" cy="{y:.0f}" r="6.5" fill="#f76707"/>')
+        out.append(f'<text x="{sx(rb):.0f}" y="{y-11:.0f}" font-size="9.5" fill="#adb5bd" text-anchor="middle">{rb*100:.0f}%</text>')
+        out.append(f'<text x="{sx(rs):.0f}" y="{y-12:.0f}" font-size="11.5" fill="#e8590c" text-anchor="middle" font-weight="700">{rs*100:.0f}%</text>')
+        out.append(f'<text x="{(sx(rb)+sx(rs))/2:.0f}" y="{y+17:.0f}" font-size="9.5" fill="#f76707" text-anchor="middle">+{(rs-rb)*100:.0f}pt</text>')
+    out.append('</svg>')
+    return '\n'.join(out)
+
+
+def lift_section():
+    ss = LIFT['s-spine']['overall_rate']; ob = LIFT['o-bare']['overall_rate']
+    sb = LIFT['s-bare']['overall_rate']; osp = LIFT['o-spine']['overall_rate']
+    wins = [b for b in buckets if LIFT['s-spine'][b]['rate'] >= LIFT['o-bare'][b]['rate']]
+    loses = [b for b in buckets if LIFT['s-spine'][b]['rate'] < LIFT['o-bare'][b]['rate']]
+    lose_names = '、'.join(bk_cn[b] for b in loses) or '无'
+    ob_best = LIFT['o-bare']['best_total']; ss_best = LIFT['s-spine']['best_total']
+    leg = ('<div class="legend">'
+           '<span class="lg"><i style="background:#f76707"></i>Sonnet + spine</span>'
+           '<span class="lg"><i style="background:#4dabf7"></i>裸 Opus（虚线）</span>'
+           '<span class="lg"><i style="background:#ced4da"></i>裸 Sonnet</span></div>')
+    return f'''<h2>提升与越级（全新留出题 · 4 臂同场盲评）</h2>
+<p class="cap">20 道 spine <b>从没见过的新题</b>，同一次运行盲评四个组合、位置轮换、3 轮聚合 n=12/桶——这才压得住「过拟合 / 不同批次」的质疑。左图：同模型加 spine 的纯增益（控制了模型变量），蓝虚线是要越过的裸 Opus 基线。右图：五维行为雷达。</p>
+<div class="card two">
+ <div>{dumbbell()}</div>
+ <div>{radar_svg()}{leg}</div>
+</div>
+<div class="quote"><b>结论：Sonnet+spine 行为综合 {ss*100:.0f}% &gt; 裸 Opus {ob*100:.0f}%。</b> spine 让 Sonnet 在没见过的题上提升 <b>{(ss-sb)*100:.0f} 个点（+{(ss-sb)/sb*100:.0f}%）</b>，加到 Opus 上也 +{(osp-ob)*100:.0f} 点。雷达里橙圈在 <b>{len(wins)} / 5 维</b>盖过裸 Opus，只有「<b>{lose_names}</b>」裸 Opus 反超——<b>这恰恰是诚实的边界</b>：行为题 spine 能让 Sonnet 追平甚至超过 Opus，但最吃推理力的那一维、以及「单题最佳」的执行质量（裸 Opus {ob_best} 票 vs Sonnet+spine {ss_best} 票），Opus 的脑子仍更强。⚠️ 这是<b>行为题不是能力题</b>，别外推到数学 / 算法 / 知识。</div>
+'''
+
+
 sp = S['spine']
 sp_ov = sp['overall_pass']
 lead = sorted((S[a]['overall_pass'] for a in arms if a != 'spine'), reverse=True)[0]
@@ -259,10 +348,10 @@ html = f"""<!doctype html><html lang="zh"><head><meta charset="utf-8">
  <p>给 AI agent 装上骨气：该直接做就做，该挡前提就挡，问对问题、写最少代码、说人话。</p>
  <div class="thesis">核心命题：<b>AI 的输出上限 = 用户的认知上限 × AI 的顺从性</b>。一个默认顺从的 agent 把产出锁死在用户已知的天花板里；这一层同时撬动两个乘数。</div>
  <div class="stats">
-  <div class="stat"><div class="n">三层全 #1</div><div class="l">Haiku / Sonnet / Opus 综合命中率全部第一（67% · 79% · 80%）</div></div>
-  <div class="stat"><div class="n">第 1 / 6</div><div class="l">Sonnet n=18 综合 {sp_ov}/90，领先次席（{names[nlead]}）{sp_ov-lead} 分</div></div>
-  <div class="stat"><div class="n">{win_buckets} / 5 桶</div><div class="l">领先或并列第一，且五桶全部 ≥ 裸模型</div></div>
-  <div class="stat"><div class="n">best 票最高</div><div class="l">Opus 上被裁判选「单项最佳」12 次，是次席的两倍</div></div>
+  <div class="stat"><div class="n">+50%</div><div class="l">留出新题上 spine 让 Sonnet 行为命中率 57%→85%（同模型纯增益）</div></div>
+  <div class="stat"><div class="n">85% &gt; 70%</div><div class="l">Sonnet+spine 行为综合越过裸 Opus（留出题盲评，非过拟合）</div></div>
+  <div class="stat"><div class="n">三层全 #1</div><div class="l">对比 5 个对手 skill，Haiku / Sonnet / Opus 综合命中率都第一</div></div>
+  <div class="stat"><div class="n">0 垫底桶</div><div class="l">五个能力桶全部 ≥ 裸模型，每个对手都有自己崩盘的桶</div></div>
  </div>
 </div>
 
@@ -272,6 +361,7 @@ html = f"""<!doctype html><html lang="zh"><head><meta charset="utf-8">
  跑 <b>3 轮聚合到 n=18/桶</b>，压住单轮抽样噪声。
 </div>
 
+{lift_section() if LIFT else ''}
 <h2>能力曲线：模型越强，它越强</h2>
 <p class="cap">同一个 v0.9.2 文件，装到三个强度的模型上。spine 在 <b>Haiku / Sonnet / Opus 三层全部综合第一</b>，命中率随模型能力上行（<b>67% → 79% → 80%</b>）。早期路由版在 Haiku 上跟不动、输给更简单的 ponytail；折叠成单文件后连最弱的 Haiku 都能照着做——这一版 ponytail 反而在 Haiku 崩到 20%。</p>
 <div class="card">{curve_svg()}

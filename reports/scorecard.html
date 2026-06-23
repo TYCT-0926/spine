@@ -46,10 +46,10 @@
  <p>给 AI agent 装上骨气：该直接做就做，该挡前提就挡，问对问题、写最少代码、说人话。</p>
  <div class="thesis">核心命题：<b>AI 的输出上限 = 用户的认知上限 × AI 的顺从性</b>。一个默认顺从的 agent 把产出锁死在用户已知的天花板里；这一层同时撬动两个乘数。</div>
  <div class="stats">
-  <div class="stat"><div class="n">三层全 #1</div><div class="l">Haiku / Sonnet / Opus 综合命中率全部第一（67% · 79% · 80%）</div></div>
-  <div class="stat"><div class="n">第 1 / 6</div><div class="l">Sonnet n=18 综合 71/90，领先次席（terse 一句话）6 分</div></div>
-  <div class="stat"><div class="n">4 / 5 桶</div><div class="l">领先或并列第一，且五桶全部 ≥ 裸模型</div></div>
-  <div class="stat"><div class="n">best 票最高</div><div class="l">Opus 上被裁判选「单项最佳」12 次，是次席的两倍</div></div>
+  <div class="stat"><div class="n">+50%</div><div class="l">留出新题上 spine 让 Sonnet 行为命中率 57%→85%（同模型纯增益）</div></div>
+  <div class="stat"><div class="n">85% &gt; 70%</div><div class="l">Sonnet+spine 行为综合越过裸 Opus（留出题盲评，非过拟合）</div></div>
+  <div class="stat"><div class="n">三层全 #1</div><div class="l">对比 5 个对手 skill，Haiku / Sonnet / Opus 综合命中率都第一</div></div>
+  <div class="stat"><div class="n">0 垫底桶</div><div class="l">五个能力桶全部 ≥ 裸模型，每个对手都有自己崩盘的桶</div></div>
  </div>
 </div>
 
@@ -58,6 +58,64 @@
  30 道难度过滤硬题（5 桶各 6 题），位置轮换匿名，<b>规则 inline 注入</b>（逐字读一次嵌进 prompt，模拟 Claude Code 自动加载 SKILL.md 的公平环境），Sonnet 高强度裁判。
  跑 <b>3 轮聚合到 n=18/桶</b>，压住单轮抽样噪声。
 </div>
+
+<h2>提升与越级（全新留出题 · 4 臂同场盲评）</h2>
+<p class="cap">20 道 spine <b>从没见过的新题</b>，同一次运行盲评四个组合、位置轮换、3 轮聚合 n=12/桶——这才压得住「过拟合 / 不同批次」的质疑。左图：同模型加 spine 的纯增益（控制了模型变量），蓝虚线是要越过的裸 Opus 基线。右图：五维行为雷达。</p>
+<div class="card two">
+ <div><svg viewBox="0 0 330 250" width="100%" style="max-width:330px">
+<line x1="56" y1="24" x2="56" y2="200" stroke="#f4f5f7"/>
+<text x="56" y="214" font-size="8.5" fill="#ced4da" text-anchor="middle">0</text>
+<line x1="110" y1="24" x2="110" y2="200" stroke="#f4f5f7"/>
+<text x="110" y="214" font-size="8.5" fill="#ced4da" text-anchor="middle">25</text>
+<line x1="165" y1="24" x2="165" y2="200" stroke="#f4f5f7"/>
+<text x="165" y="214" font-size="8.5" fill="#ced4da" text-anchor="middle">50</text>
+<line x1="220" y1="24" x2="220" y2="200" stroke="#f4f5f7"/>
+<text x="220" y="214" font-size="8.5" fill="#ced4da" text-anchor="middle">75</text>
+<line x1="274" y1="24" x2="274" y2="200" stroke="#f4f5f7"/>
+<text x="274" y="214" font-size="8.5" fill="#ced4da" text-anchor="middle">100</text>
+<line x1="209" y1="18" x2="209" y2="200" stroke="#4dabf7" stroke-dasharray="3 3"/>
+<text x="209" y="228" font-size="9" fill="#4dabf7" text-anchor="middle">裸 Opus 基线</text>
+<text x="46" y="48" font-size="12" fill="#495057" text-anchor="end" font-weight="600">Sonnet</text>
+<line x1="180" y1="44" x2="241" y2="44" stroke="#f76707" stroke-width="3"/>
+<circle cx="180" cy="44" r="5" fill="#fff" stroke="#adb5bd" stroke-width="2"/>
+<circle cx="241" cy="44" r="6.5" fill="#f76707"/>
+<text x="180" y="33" font-size="9.5" fill="#adb5bd" text-anchor="middle">57%</text>
+<text x="241" y="32" font-size="11.5" fill="#e8590c" text-anchor="middle" font-weight="700">85%</text>
+<text x="210" y="61" font-size="9.5" fill="#f76707" text-anchor="middle">+28pt</text>
+<text x="46" y="130" font-size="12" fill="#495057" text-anchor="end" font-weight="600">Opus</text>
+<line x1="209" y1="126" x2="241" y2="126" stroke="#f76707" stroke-width="3"/>
+<circle cx="209" cy="126" r="5" fill="#fff" stroke="#adb5bd" stroke-width="2"/>
+<circle cx="241" cy="126" r="6.5" fill="#f76707"/>
+<text x="209" y="115" font-size="9.5" fill="#adb5bd" text-anchor="middle">70%</text>
+<text x="241" y="114" font-size="11.5" fill="#e8590c" text-anchor="middle" font-weight="700">85%</text>
+<text x="225" y="143" font-size="9.5" fill="#f76707" text-anchor="middle">+15pt</text>
+</svg></div>
+ <div><svg viewBox="0 0 330 292" width="100%" style="max-width:330px">
+<polygon points="165,128 185,143 178,167 152,167 145,143" fill="none" stroke="#eef1f3"/>
+<polygon points="165,107 206,137 190,185 140,185 124,137" fill="none" stroke="#eef1f3"/>
+<polygon points="165,86 226,130 203,202 127,202 104,130" fill="none" stroke="#eef1f3"/>
+<polygon points="165,64 247,123 216,220 114,220 83,123" fill="none" stroke="#eef1f3"/>
+<line x1="165" y1="150" x2="165" y2="64" stroke="#eef1f3"/>
+<text x="165" y="51" font-size="9.5" fill="#868e96" text-anchor="middle">反错前提</text>
+<line x1="165" y1="150" x2="247" y2="123" stroke="#eef1f3"/>
+<text x="262" y="121" font-size="9.5" fill="#868e96" text-anchor="start">破天花板</text>
+<line x1="165" y1="150" x2="216" y2="220" stroke="#eef1f3"/>
+<text x="225" y="236" font-size="9.5" fill="#868e96" text-anchor="start">刹车</text>
+<line x1="165" y1="150" x2="114" y2="220" stroke="#eef1f3"/>
+<text x="105" y="236" font-size="9.5" fill="#868e96" text-anchor="end">精简代码</text>
+<line x1="165" y1="150" x2="83" y2="123" stroke="#eef1f3"/>
+<text x="68" y="121" font-size="9.5" fill="#868e96" text-anchor="end">去AI腔</text>
+<polygon points="165,93 172,148 207,208 123,208 131,139" fill="#ced4da" fill-opacity="0.05" stroke="#ced4da" stroke-width="1.6" />
+<polygon points="165,64 226,130 211,214 131,196 151,146" fill="#4dabf7" fill-opacity="0.05" stroke="#4dabf7" stroke-width="1.6" stroke-dasharray="4 3"/>
+<polygon points="165,64 199,139 216,220 119,214 90,126" fill="#f76707" fill-opacity="0.18" stroke="#f76707" stroke-width="2.8" />
+<circle cx="165" cy="64" r="3" fill="#f76707"/>
+<circle cx="199" cy="139" r="3" fill="#f76707"/>
+<circle cx="216" cy="220" r="3" fill="#f76707"/>
+<circle cx="119" cy="214" r="3" fill="#f76707"/>
+<circle cx="90" cy="126" r="3" fill="#f76707"/>
+</svg><div class="legend"><span class="lg"><i style="background:#f76707"></i>Sonnet + spine</span><span class="lg"><i style="background:#4dabf7"></i>裸 Opus（虚线）</span><span class="lg"><i style="background:#ced4da"></i>裸 Sonnet</span></div></div>
+</div>
+<div class="quote"><b>结论：Sonnet+spine 行为综合 85% &gt; 裸 Opus 70%。</b> spine 让 Sonnet 在没见过的题上提升 <b>28 个点（+50%）</b>，加到 Opus 上也 +15 点。雷达里橙圈在 <b>4 / 5 维</b>盖过裸 Opus，只有「<b>破认知天花板</b>」裸 Opus 反超——<b>这恰恰是诚实的边界</b>：行为题 spine 能让 Sonnet 追平甚至超过 Opus，但最吃推理力的那一维、以及「单题最佳」的执行质量（裸 Opus 21 票 vs Sonnet+spine 11 票），Opus 的脑子仍更强。⚠️ 这是<b>行为题不是能力题</b>，别外推到数学 / 算法 / 知识。</div>
 
 <h2>能力曲线：模型越强，它越强</h2>
 <p class="cap">同一个 v0.9.2 文件，装到三个强度的模型上。spine 在 <b>Haiku / Sonnet / Opus 三层全部综合第一</b>，命中率随模型能力上行（<b>67% → 79% → 80%</b>）。早期路由版在 Haiku 上跟不动、输给更简单的 ponytail；折叠成单文件后连最弱的 Haiku 都能照着做——这一版 ponytail 反而在 Haiku 崩到 20%。</p>
