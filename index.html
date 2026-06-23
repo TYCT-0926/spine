@@ -117,6 +117,7 @@
  /* curve / data */
  .grid2{display:grid;grid-template-columns:1.05fr .95fr;gap:32px;align-items:center;margin-top:42px}
  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+ .shot{display:block;width:100%;border:1px solid var(--line2);border-radius:14px;margin-top:24px}
  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:14px;font-size:12.5px;color:var(--mut)}
  .legend i{width:11px;height:11px;border-radius:3px;display:inline-block;margin-right:6px;vertical-align:-1px}
  .winrow{display:flex;flex-direction:column;gap:14px;margin-top:8px}
@@ -225,6 +226,8 @@
    <h2><span class="cn">同一道难题，<br>装骨气前后</span><span class="en blk">Same hard prompt,<br>before and after spine</span></h2>
    <p class="lead2"><span class="cn">分数是抽象的，回答是具体的。下面是盲评里的<b>真实输出</b>，挑的是骨气真赢的硬题。点上面的标签换题。</span><span class="en blk">Scores are abstract. Answers are concrete. Below are <b>real arena outputs</b> on hard prompts where spine wins. Click a tab to switch. <span style="color:var(--faint)">(Examples shown in Chinese.)</span></span></p>
   </div>
+  <img class="shot reveal" src="assets/compare.png" alt="裸 Sonnet / Sonnet+骨气 / 裸 Opus / Opus+骨气 四臂三向对比">
+  <p class="lead2" style="margin-top:18px"><span class="cn">想自己逐题点？下面可交互换题：</span><span class="en blk">Want to click through case by case? Interactive below:</span></p>
   <div class="cmp reveal">
    <div class="cmp-tabs" id="tabs"></div>
    <div class="cmp-fade" id="cmpBody"></div>
@@ -239,7 +242,8 @@
    <h2><span class="cn">模型越强，它越强</span><span class="en blk">The stronger the model, the stronger it gets</span></h2>
    <p class="lead2"><span class="cn">同一个文件装到三个强度的模型上，骨气综合命中率<b>三层全部第一</b>。下面右边是它在 6 臂竞技场里把每个对手 skill 甩开多少。</span><span class="en blk">One file on three model tiers. Spine is <b>first on all three</b>. On the right: how far it beats every rival skill in the 6-arm arena.</span></p>
   </div>
-  <div class="grid2 reveal">
+  <img class="shot reveal" src="assets/lift.png" alt="骨气在 5 个测试方向的提升">
+  <div class="grid2 reveal" style="margin-top:30px">
    <div class="card">
     <svg id="curve" viewBox="0 0 520 280" width="100%" style="max-width:520px"></svg>
     <div class="legend" id="curveLeg"></div>
